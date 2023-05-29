@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">secure.diamond-line.com.sy</domain>
+    </domain-config>
+    <domain-config>
+        <domain includeSubdomains="true">diamond-line.com.sy</domain>
+        <pin-set expiration="2023-03-03">
+            <pin digest="SHA-256">WtfJMLC6Oby1V5YrKBTxbcGTZJifVbuj4DDL188LBgM=</pin>
+            <!-- backup pin -->
+            <pin digest="SHA-256">jQJTbIh0grw0/1TkHSumWb+Fs0Ggogr621gT3PvPKG0=</pin>
+        </pin-set>
+    </domain-config>
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="@raw/debug_cas"/>
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>
