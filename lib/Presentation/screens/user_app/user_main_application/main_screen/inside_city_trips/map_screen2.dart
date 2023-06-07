@@ -12,6 +12,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../../../Buisness_logic/provider/User_Provider/nearest_cars_map_provider.dart';
 import '../../../../../Functions/helper.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'order_now.dart';
 import 'package:http/http.dart';
 
@@ -127,7 +128,7 @@ class _MapScreen2State extends State<MapScreen2> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getNearestCarMap(lat.toString(), long.toString());
       if (creat.data.error == false) {
         length = creat.data.data!.length;
@@ -207,172 +208,175 @@ class _MapScreen2State extends State<MapScreen2> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _kGooglePlex == null
-          ? Center(child: CircularProgressIndicator())
-          : Container(
-              height: getScreenHeight(context),
-              width: getScreenWidth(context),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: _kGooglePlex == null
+            ? Center(child: LoaderWidget())
+            : Container(
+                height: getScreenHeight(context),
+                width: getScreenWidth(context),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          height: 91.h,
-                          width: getScreenWidth(context),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 0),
-                              ),
-                            ],
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20)),
-                            color: backgroundColor,
-                          ),
-                          child: GoogleMap(
-                            // markers: {
-                            //   Marker(
-                            //     markerId: MarkerId('1'),
-                            //     infoWindow: InfoWindow(
-                            //         title: 'you are here'.tr(),
-                            //         onTap: () {
-                            //           print('marker info tab');
-                            //         }),
-                            //     position: LatLng(lat, long),
-                            //     onTap: () {
-                            //       print('marker tab');
-                            //     },
-                            //     icon: BitmapDescriptor.defaultMarkerWithHue(
-                            //         BitmapDescriptor.hueBlue),
-                            //   )
-                            // },
-                            markers: myMarker,
-                            mapType: MapType.normal,
-                            initialCameraPosition: _kGooglePlex!,
-                            onMapCreated: (GoogleMapController controller) {
-                              gmc = controller;
-                            },
-                            onTap: (latlng) {},
-                          ),
-                        ),
-                        Positioned(
-                            bottom: 5.h,
-                            left: 12.w,
-                            right: 12.w,
-                            child: Row(
-                              children: [
-                                InkWell(
-                                    child: Container(
-                                        width: 35.w,
-                                        height: 8.h,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(25)),
-                                          gradient: RadialGradient(
-                                            colors: [
-                                              Colors.blueGrey,
-                                              primaryBlue3
-                                            ],
-                                            radius: 1.2,
-                                          ),
-                                        ),
-                                        child: Center(
-                                            child: myText(
-                                          text: 'request now'.tr(),
-                                          fontSize: 5.sp,
-                                          color: white,
-                                        ))),
-                                    onTap: () async {
-                                      Loader.show(context,
-                                          progressIndicator:
-                                              CircularProgressIndicator());
-                                      convertToAddress(lat, long);
-                                      print('address is:');
-                                      print(address);
-                                      Loader.hide();
-                                      Future.delayed(const Duration(seconds: 1))
-                                          .then((_) async {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => OrderNow(
-                                                fromLat: lat,
-                                                fromLon: long,
-                                                sourceAddress: address,
-                                                toLat: 0.0,
-                                                toLon: 0.0,
-                                                destAddress: '',
-                                              ),
-                                            ));
-                                      });
-                                    }),
-                                SizedBox(
-                                  width: 1.w,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            height: 91.h,
+                            width: getScreenWidth(context),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 0),
                                 ),
-                                InkWell(
-                                    child: Container(
-                                        width: 35.w,
-                                        height: 8.h,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(25)),
-                                          gradient: RadialGradient(
-                                            colors: [
-                                              Colors.blueGrey,
-                                              primaryBlue3
-                                            ],
-                                            radius: 1.2,
+                              ],
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                              color: backgroundColor,
+                            ),
+                            child: GoogleMap(
+                              // markers: {
+                              //   Marker(
+                              //     markerId: MarkerId('1'),
+                              //     infoWindow: InfoWindow(
+                              //         title: 'you are here'.tr(),
+                              //         onTap: () {
+                              //           print('marker info tab');
+                              //         }),
+                              //     position: LatLng(lat, long),
+                              //     onTap: () {
+                              //       print('marker tab');
+                              //     },
+                              //     icon: BitmapDescriptor.defaultMarkerWithHue(
+                              //         BitmapDescriptor.hueBlue),
+                              //   )
+                              // },
+                              markers: myMarker,
+                              mapType: MapType.normal,
+                              initialCameraPosition: _kGooglePlex!,
+                              onMapCreated: (GoogleMapController controller) {
+                                gmc = controller;
+                              },
+                              onTap: (latlng) {},
+                            ),
+                          ),
+                          Positioned(
+                              bottom: 5.h,
+                              left: 12.w,
+                              right: 12.w,
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                      child: Container(
+                                          width: 35.w,
+                                          height: 8.h,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(25)),
+                                            gradient: RadialGradient(
+                                              colors: [
+                                                Colors.blueGrey,
+                                                primaryBlue3
+                                              ],
+                                              radius: 1.2,
+                                            ),
                                           ),
-                                        ),
-                                        child: Center(
-                                            child: myText(
-                                          text: 'request later'.tr(),
-                                          fontSize: 5.sp,
-                                          color: white,
-                                        ))),
-                                    onTap: () async {
-                                      Loader.show(context,
-                                          progressIndicator:
-                                              CircularProgressIndicator());
-                                      convertToAddress(lat, long);
-                                      print('address is:');
-                                      print(address);
-                                      Loader.hide();
-                                      Future.delayed(const Duration(seconds: 1))
-                                          .then((_) async {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => OrderNow(
+                                          child: Center(
+                                              child: myText(
+                                            text: 'request now'.tr(),
+                                            fontSize: 5.sp,
+                                            color: white,
+                                          ))),
+                                      onTap: () async {
+                                        Loader.show(context,
+                                            progressIndicator:
+                                                LoaderWidget());
+                                        convertToAddress(lat, long);
+                                        print('address is:');
+                                        print(address);
+                                        Loader.hide();
+                                        Future.delayed(const Duration(seconds: 1))
+                                            .then((_) async {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => OrderNow(
                                                   fromLat: lat,
                                                   fromLon: long,
                                                   sourceAddress: address,
                                                   toLat: 0.0,
                                                   toLon: 0.0,
                                                   destAddress: '',
-                                                  laterOrder: true),
-                                            ));
-                                      });
-                                    }),
-                              ],
-                            ))
-                      ],
-                    ),
-                  ],
-                ),
-              )),
+                                                ),
+                                              ));
+                                        });
+                                      }),
+                                  SizedBox(
+                                    width: 1.w,
+                                  ),
+                                  InkWell(
+                                      child: Container(
+                                          width: 35.w,
+                                          height: 8.h,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(25)),
+                                            gradient: RadialGradient(
+                                              colors: [
+                                                Colors.blueGrey,
+                                                primaryBlue3
+                                              ],
+                                              radius: 1.2,
+                                            ),
+                                          ),
+                                          child: Center(
+                                              child: myText(
+                                            text: 'request later'.tr(),
+                                            fontSize: 5.sp,
+                                            color: white,
+                                          ))),
+                                      onTap: () async {
+                                        Loader.show(context,
+                                            progressIndicator:
+                                                LoaderWidget());
+                                        convertToAddress(lat, long);
+                                        print('address is:');
+                                        print(address);
+                                        Loader.hide();
+                                        Future.delayed(const Duration(seconds: 1))
+                                            .then((_) async {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => OrderNow(
+                                                    fromLat: lat,
+                                                    fromLon: long,
+                                                    sourceAddress: address,
+                                                    toLat: 0.0,
+                                                    toLon: 0.0,
+                                                    destAddress: '',
+                                                    laterOrder: true),
+                                              ));
+                                        });
+                                      }),
+                                ],
+                              ))
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
+      ),
     );
   }
 }

@@ -47,6 +47,12 @@ const String km = 'assets/images/km.png';
 const String date = 'assets/images/date.png';
 const String noData = 'assets/images/no_data.png';
 
+const String loader = 'assets/lottie/loader.json';
+const String arrive = 'assets/lottie/arrive.json';
+const String selectRoute = 'assets/lottie/selectRoute.json';
+const String lookingDriver = 'assets/lottie/lookingDriver.json';
+const String lookingDriver2 = 'assets/lottie/lookingDriver2.json';
+
 //icon image
 // const String add = 'assets/images/add.png';
 const String call = 'assets/images/call.png';

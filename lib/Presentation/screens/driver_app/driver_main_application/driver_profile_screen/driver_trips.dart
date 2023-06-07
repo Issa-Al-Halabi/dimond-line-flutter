@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../Buisness_logic/provider/Driver_Provider/driver_trips_provider.dart';
+import '../../../../Functions/helper.dart';
 
 class DriverTrips extends StatefulWidget {
   const DriverTrips({Key? key}) : super(key: key);
@@ -52,7 +54,7 @@ class _DriverTripsState extends State<DriverTrips> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getDriverTrips();
       if (creat.data.error == false) {
         length = creat.data.data!.allTrips!.length;
@@ -102,251 +104,173 @@ class _DriverTripsState extends State<DriverTrips> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 9.h),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: 82.h,
-                  width: getScreenWidth(context),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    color: backgroundColor,
-                  ),
-                  child: RefreshIndicator(
-                    color: primaryBlue,
-                    key: _refreshIndicatorKey,
-                    onRefresh: init,
-                    child: length == 0
-                        ?
-                    Center(child: Column(
-                      children: [
-                        SizedBox(
-                          height:
-                          20.h,
+          child: Padding(
+            padding: EdgeInsets.only(top: 9.h),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 82.h,
+                    width: getScreenWidth(context),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 7,
+                          offset: const Offset(0, 0),
                         ),
-                        Image.asset(
-                          noData,
-                          fit: BoxFit
-                              .fill,
-                          height:
-                          30.h,
-                        ),
-                        SizedBox(
-                          height:
-                          2.h,
-                        ),
-                        Text(
-                          'there are no trips'
-                              .tr(),
-                          style: TextStyle(
-                              fontFamily:
-                              'cairo',
-                              color:
-                              primaryBlue,
-                              fontSize: 6.sp),
-                        )
                       ],
-                    ))
-                    : Column(
-                            children: [
-                              Expanded(
-                                flex: 8,
-                                child: ListView.builder(
-                                    itemCount: tripsList.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 3.w,
-                                          ),
-                                          Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 1.h),
-                                              child: Container(
-                                                width: 80.w,
-                                                decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.3),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 7,
-                                                      offset:
-                                                          const Offset(0, 0),
-                                                    ),
-                                                  ],
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(20)),
-                                                  color: backgroundColor,
-                                                ),
-                                                child: SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 1.h,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      color: backgroundColor,
+                    ),
+                    child: RefreshIndicator(
+                      color: primaryBlue,
+                      key: _refreshIndicatorKey,
+                      onRefresh: init,
+                      child: length == 0
+                          ?
+                      Center(child: Column(
+                        children: [
+                          SizedBox(
+                            height:
+                            20.h,
+                          ),
+                          Image.asset(
+                            noData,
+                            fit: BoxFit
+                                .fill,
+                            height:
+                            30.h,
+                          ),
+                          SizedBox(
+                            height:
+                            2.h,
+                          ),
+                          Text(
+                            'there are no trips'
+                                .tr(),
+                            style: TextStyle(
+                                fontFamily:
+                                'cairo',
+                                color:
+                                primaryBlue,
+                                fontSize: 6.sp),
+                          )
+                        ],
+                      ))
+                      : Column(
+                              children: [
+                                Expanded(
+                                  flex: 8,
+                                  child: ListView.builder(
+                                      itemCount: tripsList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 3.w,
+                                            ),
+                                            Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 1.h),
+                                                child: Container(
+                                                  width: 80.w,
+                                                  decoration: BoxDecoration(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 7,
+                                                        offset:
+                                                            const Offset(0, 0),
                                                       ),
-                                                      tripsList[index]
-                                                                  .categoryId
-                                                                  .toString() !=
-                                                              '2'
-                                                          ? Center(
-                                                              child: myText(
-                                                                  text: tripsList[
-                                                                          index]
-                                                                      .requestType
+                                                    ],
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(20)),
+                                                    color: backgroundColor,
+                                                  ),
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 1.h,
+                                                        ),
+                                                        tripsList[index]
+                                                                    .categoryId
+                                                                    .toString() !=
+                                                                '2'
+                                                            ? Center(
+                                                                child: myText(
+                                                                    text: tripsList[
+                                                                            index]
+                                                                        .requestType
+                                                                        .toString()
+                                                                        .tr(),
+                                                                    fontSize:
+                                                                        5.sp,
+                                                                    color: Colors.black54,
+                                                                    fontWeight: FontWeight.w600),
+                                                              )
+                                                            : Container(),
+                                                        tripsList[index]
+                                                                    .requestType !=
+                                                                'moment'
+                                                            ? ListTile(
+                                                                leading:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .date_range,
+                                                                  color:
+                                                                      primaryBlue,
+                                                                ),
+                                                                title: Text(
+                                                                  tripsList[index]
+                                                                      .date
                                                                       .toString()
-                                                                      .tr(),
-                                                                  fontSize:
-                                                                      5.sp,
-                                                                  color: Colors.black54,
-                                                                  fontWeight: FontWeight.w600),
-                                                            )
-                                                          : Container(),
-                                                      tripsList[index]
-                                                                  .requestType !=
-                                                              'moment'
-                                                          ? ListTile(
-                                                              leading:
-                                                                  const Icon(
-                                                                Icons
-                                                                    .date_range,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                tripsList[index]
-                                                                    .date
-                                                                    .toString()
-                                                                    .split(' ')
-                                                                    .first,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
-                                                                ),
-                                                              ))
-                                                          :
-                                                          ListTile(
-                                                              leading:
-                                                                  const Icon(
-                                                                Icons
-                                                                    .date_range,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                tripsList[index]
-                                                                    .createdAt
-                                                                    .toString()
-                                                                    .split(' ')
-                                                                    .first,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
-                                                                ),
-                                                              )),
-                                                      tripsList[index]
-                                                                  .requestType !=
-                                                              'moment'
-                                                          ? ListTile(
-                                                              leading:
-                                                                  Image.asset(
-                                                                clock,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                tripsList[index]
-                                                                    .time
-                                                                    .toString(),
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
-                                                                ),
-                                                              ))
-                                                          :
-                                                          // Container(),
-                                                          ListTile(
-                                                              leading:
-                                                                  Image.asset(
-                                                                clock,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                tripsList[index]
-                                                                    .createdAt
-                                                                    .toString()
-                                                                    .split(' ')
-                                                                    .last,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
-                                                                ),
-                                                              )),
-                                                      ListTile(
-                                                          leading: const Icon(
-                                                            Icons.location_on,
-                                                            color: primaryBlue,
-                                                          ),
-                                                          title: tripsList[
-                                                                          index]
-                                                                      .requestType !=
-                                                                  'moment'
-                                                              ? Text(
-                                                                  'from'.tr() +
-                                                                      ' ${tripsList[index].from.toString()}' +
-                                                                      ' ' +
-                                                                      'to'.tr() +
-                                                                      ' ${tripsList[index].to.toString()}',
+                                                                      .split(' ')
+                                                                      .first,
                                                                   style:
                                                                       TextStyle(
                                                                     color: primaryBlue,
                                                                     fontSize:
                                                                         5.sp,
                                                                   ),
-                                                                )
-                                                              : Text(
-                                                                  'from'.tr() +
-                                                                      ' ' +
-                                                                      ' ${tripsList[index].pickupAddr.toString()}' +
-                                                                      ' ' +
-                                                                      'to'.tr() +
-                                                                      ' ' +
-                                                                      '${tripsList[index].destAddr.toString()}',
+                                                                ))
+                                                            :
+                                                            ListTile(
+                                                                leading:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .date_range,
+                                                                  color:
+                                                                      primaryBlue,
+                                                                ),
+                                                                title: Text(
+                                                                  tripsList[index]
+                                                                      .createdAt
+                                                                      .toString()
+                                                                      .split(' ')
+                                                                      .first,
                                                                   style:
                                                                       TextStyle(
                                                                     color: primaryBlue,
@@ -354,63 +278,144 @@ class _DriverTripsState extends State<DriverTrips> {
                                                                         5.sp,
                                                                   ),
                                                                 )),
-                                                      tripsList[index]
-                                                                  .categoryId
-                                                                  .toString() ==
-                                                              '2'
-                                                          ? ListTile(
-                                                              leading:
-                                                                  const Icon(
-                                                                Icons
-                                                                    .directions,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                ' ${tripsList[index].direction.toString()}',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
+                                                        tripsList[index]
+                                                                    .requestType !=
+                                                                'moment'
+                                                            ? ListTile(
+                                                                leading:
+                                                                    Image.asset(
+                                                                  clock,
+                                                                  color:
+                                                                      primaryBlue,
                                                                 ),
-                                                              ),
-                                                            )
-                                                          : Container(),
-                                                      ListTile(
-                                                        leading: const Icon(
-                                                          Icons.money,
-                                                          color: primaryBlue,
-                                                        ),
-                                                        title: Text(
-                                                          formatter.format(int
-                                                                  .parse(tripsList[
-                                                                          index]
-                                                                      .cost
-                                                                      .toString())) +
-                                                              'sp'.tr(),
-                                                          style: TextStyle(
+                                                                title: Text(
+                                                                  tripsList[index]
+                                                                      .time
+                                                                      .toString(),
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: primaryBlue,
+                                                                    fontSize:
+                                                                        5.sp,
+                                                                  ),
+                                                                ))
+                                                            :
+                                                            // Container(),
+                                                            ListTile(
+                                                                leading:
+                                                                    Image.asset(
+                                                                  clock,
+                                                                  color:
+                                                                      primaryBlue,
+                                                                ),
+                                                                title: Text(
+                                                                  tripsList[index]
+                                                                      .createdAt
+                                                                      .toString()
+                                                                      .split(' ')
+                                                                      .last,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: primaryBlue,
+                                                                    fontSize:
+                                                                        5.sp,
+                                                                  ),
+                                                                )),
+                                                        ListTile(
+                                                            leading: const Icon(
+                                                              Icons.location_on,
+                                                              color: primaryBlue,
+                                                            ),
+                                                            title: tripsList[
+                                                                            index]
+                                                                        .requestType !=
+                                                                    'moment'
+                                                                ? Text(
+                                                                    'from'.tr() +
+                                                                        ' ${tripsList[index].from.toString()}' +
+                                                                        ' ' +
+                                                                        'to'.tr() +
+                                                                        ' ${tripsList[index].to.toString()}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: primaryBlue,
+                                                                      fontSize:
+                                                                          5.sp,
+                                                                    ),
+                                                                  )
+                                                                : Text(
+                                                                    'from'.tr() +
+                                                                        ' ' +
+                                                                        ' ${tripsList[index].pickupAddr.toString()}' +
+                                                                        ' ' +
+                                                                        'to'.tr() +
+                                                                        ' ' +
+                                                                        '${tripsList[index].destAddr.toString()}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: primaryBlue,
+                                                                      fontSize:
+                                                                          5.sp,
+                                                                    ),
+                                                                  )),
+                                                        tripsList[index]
+                                                                    .categoryId
+                                                                    .toString() ==
+                                                                '2'
+                                                            ? ListTile(
+                                                                leading:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .directions,
+                                                                  color:
+                                                                      primaryBlue,
+                                                                ),
+                                                                title: Text(
+                                                                  ' ${tripsList[index].direction.toString()}',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: primaryBlue,
+                                                                    fontSize:
+                                                                        5.sp,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : Container(),
+                                                        ListTile(
+                                                          leading: const Icon(
+                                                            Icons.money,
                                                             color: primaryBlue,
-                                                            fontSize: 5.sp,
                                                           ),
-                                                        ),
-                                                      )
-                                                    ],
+                                                          title: Text(
+                                                            formatter.format(int
+                                                                    .parse(tripsList[
+                                                                            index]
+                                                                        .cost
+                                                                        .toString())) +
+                                                                'sp'.tr(),
+                                                            style: TextStyle(
+                                                              color: primaryBlue,
+                                                              fontSize: 5.sp,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              )),
-                                          SizedBox(
-                                            width: 3.w,
-                                          )
-                                        ],
-                                      );
-                                    }),
-                              )
-                            ],
-                          ),
+                                                )),
+                                            SizedBox(
+                                              width: 3.w,
+                                            )
+                                          ],
+                                        );
+                                      }),
+                                )
+                              ],
+                            ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

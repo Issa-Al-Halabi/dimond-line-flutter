@@ -2259,7 +2259,7 @@ class AppRequests {
 //       _isNetworkAvail = await isNetworkAvailable();
 //       if (_isNetworkAvail) {
 //         print("There is internet");
-//         Loader.show(context, progressIndicator: CircularProgressIndicator());
+//         Loader.show(context, progressIndicator: LoaderWidget());
 //         print("deleteAccount");
 //         print("$baseUrl"+"delete_user");
 //         dynamic response =

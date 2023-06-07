@@ -48,7 +48,6 @@ import 'Presentation/screens/welcoming_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-String? language = 'English';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -160,6 +159,12 @@ void main() async {
     print(Locale.fromSubtags(languageCode: deviceLocale.split('_')[0]));
     return Locale.fromSubtags(languageCode: deviceLocale.split('_')[0]);
   }
+
+
+  // to prevent device orientation changes
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 
   final deviceLocale = await getDeviceLocale();
   runApp(

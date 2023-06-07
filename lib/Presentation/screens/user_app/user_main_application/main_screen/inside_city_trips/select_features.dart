@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/get_type_option_provider.dart';
 import 'package:diamond_line/Data/Models/User_Models/get_type_option_Model.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../Functions/helper.dart';
 import '../user_dashboard.dart';
 
 class SelectFeatures extends StatefulWidget {
@@ -235,247 +237,250 @@ class _SelectFeaturesState extends State<SelectFeatures> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: modelList.length == 0
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              height: getScreenHeight(context),
-              width: getScreenWidth(context),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: 9.h,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 82.h,
-                        width: getScreenWidth(context),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 7,
-                              offset: const Offset(0, 0),
-                            ),
-                          ],
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20)),
-                          color: backgroundColor,
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(height: 8.h),
-                            Container(
-                                width: 70.w,
-                                height: 8.h,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: primaryBlue.withOpacity(0.3),
-                                      spreadRadius: 2,
-                                      blurRadius: 7,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: primaryBlue,
-                                ),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      myText(
-                                        text: widget.type,
-                                        fontSize: 5.sp,
-                                        color: white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      myText(
-                                        text: formatter.format(widget.price) +
-                                            'sp'.tr(),
-                                        fontSize: 5.sp,
-                                        color: white,
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                            SizedBox(height: 3.h),
-                            Expanded(
-                              child: ListView.builder(
-                                  itemCount: modelList.length,
-                                  itemBuilder: (_, index) {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 1.h),
-                                          child: Container(
-                                            height: 8.h,
-                                            width: 80.w,
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: primaryBlue
-                                                      .withOpacity(0.3),
-                                                  spreadRadius: 2,
-                                                  blurRadius: 7,
-                                                  offset: const Offset(0, 0),
-                                                ),
-                                              ],
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(20)),
-                                              color: backgroundColor,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(width: 10),
-                                                Checkbox(
-                                                  value: carList[index],
-                                                  onChanged: (value) {
-                                                    carList[index] = value!;
-                                                    if (value == true) {
-                                                      selectedIndexes.add(
-                                                          modelList[index]
-                                                              .name!);
-                                                      print(index);
-                                                      priceoption += int.parse(
-                                                          modelList[index]
-                                                              .price!
-                                                              .toString());
-                                                      widget.price += int.parse(
-                                                          modelList[index]
-                                                              .price!
-                                                              .toString());
-                                                      optionsId.add(
-                                                          modelList[index]
-                                                              .name
-                                                              .toString());
-                                                      setState(() {});
-                                                    } else {
-                                                      setState(() {});
-                                                      selectedIndexes
-                                                          .remove(index);
-                                                      priceoption -= int.parse(
-                                                          modelList[index]
-                                                              .price!
-                                                              .toString());
-                                                      widget.price -= int.parse(
-                                                          modelList[index]
-                                                              .price!
-                                                              .toString());
-                                                      optionsId.remove(
-                                                          modelList[index]
-                                                              .name
-                                                              .toString());
-                                                    }
-                                                    setState(() {});
-                                                  },
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  "${modelList[index].name}",
-                                                  style:
-                                                      TextStyle(fontSize: 17.0),
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  "${modelList[index].price}",
-                                                  // formatter.format(double.parse(modelList[index].price)).toString(),
-                                                  style:
-                                                      TextStyle(fontSize: 17.0),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }),
-                            ),
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                            ContainerWidget(
-                                text: 'request'.tr(),
-                                h: 7.h,
-                                w: 60.w,
-                                onTap: () {
-                                  Loader.show(context,
-                                      progressIndicator:
-                                          CircularProgressIndicator());
-                                  // if order now
-                                  if (widget.date == '') {
-                                    print('********************');
-                                    print(widget.minutes);
-                                    print(optionsId);
-                                    DateTime t = DateTime.now();
-                                    print(t);
-                                    String order_time =
-                                        '${t.hour}:${t.minute}:${t.second}';
-                                    print(order_time);
-                                    Loader.hide();
-                                    // get nearest car
-                                    getNearestCarApi(
-                                        widget.fromLat.toString(),
-                                        widget.fromLon.toString(),
-                                        widget.toLat.toString(),
-                                        widget.toLon.toString(),
-                                        widget.km,
-                                        widget.minutes,
-                                        widget.sourceAdd,
-                                        widget.destAdd,
-                                        widget.price.toString(),
-                                        widget.id,
-                                        optionsId,
-                                        order_time);
-                                  }
-                                  // else if order later
-                                  else {
-                                    // get nearest delayed car
-                                    print(optionsId);
-                                    Loader.hide();
-                                    getNearestCarDelayedApi(
-                                        widget.fromLat.toString(),
-                                        widget.fromLon.toString(),
-                                        widget.toLat.toString(),
-                                        widget.toLon.toString(),
-                                        widget.km,
-                                        widget.minutes,
-                                        widget.sourceAdd,
-                                        widget.destAdd,
-                                        widget.price.toString(),
-                                        widget.id,
-                                        widget.date,
-                                        widget.time,
-                                        optionsId);
-                                  }
-                                }),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: modelList.length == 0
+            ? Center(
+                child: LoaderWidget(),
+              )
+            : Container(
+                height: getScreenHeight(context),
+                width: getScreenWidth(context),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.fill,
                   ),
                 ),
-              )),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 9.h,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 82.h,
+                          width: getScreenWidth(context),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 7,
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20)),
+                            color: backgroundColor,
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 8.h),
+                              Container(
+                                  width: 70.w,
+                                  height: 8.h,
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: primaryBlue.withOpacity(0.3),
+                                        spreadRadius: 2,
+                                        blurRadius: 7,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: primaryBlue,
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        myText(
+                                          text: widget.type,
+                                          fontSize: 5.sp,
+                                          color: white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        myText(
+                                          text: formatter.format(widget.price) +
+                                              'sp'.tr(),
+                                          fontSize: 5.sp,
+                                          color: white,
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                              SizedBox(height: 3.h),
+                              Expanded(
+                                child: ListView.builder(
+                                    itemCount: modelList.length,
+                                    itemBuilder: (_, index) {
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 1.h),
+                                            child: Container(
+                                              height: 8.h,
+                                              width: 80.w,
+                                              decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: primaryBlue
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 7,
+                                                    offset: const Offset(0, 0),
+                                                  ),
+                                                ],
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(20)),
+                                                color: backgroundColor,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(width: 10),
+                                                  Checkbox(
+                                                    value: carList[index],
+                                                    onChanged: (value) {
+                                                      carList[index] = value!;
+                                                      if (value == true) {
+                                                        selectedIndexes.add(
+                                                            modelList[index]
+                                                                .name!);
+                                                        print(index);
+                                                        priceoption += int.parse(
+                                                            modelList[index]
+                                                                .price!
+                                                                .toString());
+                                                        widget.price += int.parse(
+                                                            modelList[index]
+                                                                .price!
+                                                                .toString());
+                                                        optionsId.add(
+                                                            modelList[index]
+                                                                .name
+                                                                .toString());
+                                                        setState(() {});
+                                                      } else {
+                                                        setState(() {});
+                                                        selectedIndexes
+                                                            .remove(index);
+                                                        priceoption -= int.parse(
+                                                            modelList[index]
+                                                                .price!
+                                                                .toString());
+                                                        widget.price -= int.parse(
+                                                            modelList[index]
+                                                                .price!
+                                                                .toString());
+                                                        optionsId.remove(
+                                                            modelList[index]
+                                                                .name
+                                                                .toString());
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    "${modelList[index].name}",
+                                                    style:
+                                                        TextStyle(fontSize: 17.0),
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Text(
+                                                    "${modelList[index].price}",
+                                                    // formatter.format(double.parse(modelList[index].price)).toString(),
+                                                    style:
+                                                        TextStyle(fontSize: 17.0),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                              ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              ContainerWidget(
+                                  text: 'request'.tr(),
+                                  h: 7.h,
+                                  w: 60.w,
+                                  onTap: () {
+                                    Loader.show(context,
+                                        progressIndicator:
+                                            LoaderWidget());
+                                    // if order now
+                                    if (widget.date == '') {
+                                      print('********************');
+                                      print(widget.minutes);
+                                      print(optionsId);
+                                      DateTime t = DateTime.now();
+                                      print(t);
+                                      String order_time =
+                                          '${t.hour}:${t.minute}:${t.second}';
+                                      print(order_time);
+                                      Loader.hide();
+                                      // get nearest car
+                                      getNearestCarApi(
+                                          widget.fromLat.toString(),
+                                          widget.fromLon.toString(),
+                                          widget.toLat.toString(),
+                                          widget.toLon.toString(),
+                                          widget.km,
+                                          widget.minutes,
+                                          widget.sourceAdd,
+                                          widget.destAdd,
+                                          widget.price.toString(),
+                                          widget.id,
+                                          optionsId,
+                                          order_time);
+                                    }
+                                    // else if order later
+                                    else {
+                                      // get nearest delayed car
+                                      print(optionsId);
+                                      Loader.hide();
+                                      getNearestCarDelayedApi(
+                                          widget.fromLat.toString(),
+                                          widget.fromLon.toString(),
+                                          widget.toLat.toString(),
+                                          widget.toLon.toString(),
+                                          widget.km,
+                                          widget.minutes,
+                                          widget.sourceAdd,
+                                          widget.destAdd,
+                                          widget.price.toString(),
+                                          widget.id,
+                                          widget.date,
+                                          widget.time,
+                                          optionsId);
+                                    }
+                                  }),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+      ),
     );
   }
 }

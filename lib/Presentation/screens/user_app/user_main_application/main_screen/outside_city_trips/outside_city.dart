@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/filter_vechile_provider.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/outside_city_trips/select_car_outcity.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
@@ -11,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../Functions/helper.dart';
 
 class OutsideCityScreen extends StatefulWidget {
   OutsideCityScreen(
@@ -61,7 +64,7 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getFilterVechilesCategory(category_id, subcategory_id, seats,
           bags, widget.distance.toString(), widget.timeOfTrip.toString());
       if (creat.data.error == false) {
@@ -180,264 +183,267 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          height: getScreenHeight(context),
-          width: getScreenWidth(context),
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(background),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(top: 9.h),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    height: 82.h,
-                    width: getScreenWidth(context),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 7,
-                          offset: const Offset(0, 0),
-                        ),
-                      ],
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                      color: backgroundColor,
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          myText(
-                            // text: 'inside'.tr(),
-                            text: 'outside city'.tr(),
-                            fontSize: 7.sp,
-                            color: primaryBlue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          const Divider(
-                            color: lightBlue2,
-                            thickness: 7,
-                            indent: 35,
-                            endIndent: 45,
-                          ),
-                          SizedBox(
-                            height: 6.h,
-                          ),
-                          Container(
-                            height: 6.h,
-                            width: 80.w,
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 0),
-                                ),
-                              ],
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(100)),
-                              color: backgroundColor,
-                            ),
-                            child: DropdownButton(
-                              underline: DropdownButtonHideUnderline(
-                                  child: Container()),
-                              isExpanded: true,
-                              hint: Padding(
-                                padding: EdgeInsets.only(left: 5.w),
-                                child: Text(
-                                  'person'.tr(),
-                                  style: TextStyle(color: grey, fontSize: 4.sp),
-                                ),
-                              ),
-                              value: dropDownValue,
-                              icon: Padding(
-                                padding: EdgeInsets.only(right: 1.w),
-                                child: const Icon(Icons.keyboard_arrow_down),
-                              ),
-                              items: personItems.map((String items) {
-                                return DropdownMenuItem(
-                                  value: items,
-                                  child: Padding(
-                                      padding: EdgeInsets.only(left: 1.w),
-                                      child: Text(items)),
-                                );
-                              }).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  dropDownValue = val.toString();
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          Container(
-                            height: 6.h,
-                            width: 80.w,
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 0),
-                                ),
-                              ],
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(100)),
-                              color: backgroundColor,
-                            ),
-                            child: DropdownButton(
-                              underline: DropdownButtonHideUnderline(
-                                  child: Container()),
-                              isExpanded: true,
-                              hint: Padding(
-                                padding: EdgeInsets.only(left: 5.w),
-                                child: Text(
-                                  'bags'.tr(),
-                                  style: TextStyle(color: grey, fontSize: 4.sp),
-                                ),
-                              ),
-                              value: dropDownValue2,
-                              icon: Padding(
-                                padding: EdgeInsets.only(right: 2.w),
-                                child: const Icon(Icons.keyboard_arrow_down),
-                              ),
-                              items: bagsItems.map((String items) {
-                                return DropdownMenuItem(
-                                  value: items,
-                                  child: Padding(
-                                      padding: EdgeInsets.only(left: 1.w),
-                                      child: Text(items)),
-                                );
-                              }).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  dropDownValue2 = val.toString();
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          const Divider(
-                            color: lightBlue2,
-                            thickness: 7,
-                            indent: 35,
-                            endIndent: 45,
-                          ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          ContainerWidget2(
-                            text: 'select date'.tr(),
-                            h: 6.h,
-                            w: 80.w,
-                            onTap: () {
-                              _selectDate(context);
-                              showDate = true;
-                              print('getDate()');
-                              print(getDate());
-                            },
-                            color: backgroundColor,
-                            textColor: lightBlue,
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          showDate
-                              ? Center(
-                                  child: myText(
-                                  text: getDate(),
-                                  fontSize: 4.sp,
-                                  color: primaryBlue,
-                                ))
-                              : const SizedBox(),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          ContainerWidget2(
-                            text: 'select time'.tr(),
-                            h: 6.h,
-                            w: 80.w,
-                            onTap: () {
-                              _selectTime(context);
-                              showTime = true;
-                            },
-                            color: backgroundColor,
-                            textColor: lightBlue,
-                          ),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                          showTime
-                              ? Center(
-                                  child: myText(
-                                  text: getTime(selectedTime),
-                                  fontSize: 4.sp,
-                                  color: primaryBlue,
-                                ))
-                              : const SizedBox(),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          ContainerWidget(
-                            text: 'done'.tr(),
-                            h: 6.h,
-                            w: 60.w,
-                            onTap: () async {
-                              print('selectedTime');
-                              print(selectedTime);
-                              print(selectedDate);
-                              if (selectedTime != DateTime.now() &&
-                                  selectedDate != DateTime.now() &&
-                                  dropDownValue != null &&
-                                  dropDownValue2 != null) {
-                                var creat =
-                                    await Provider.of<filterVechileProvider>(
-                                        context,
-                                        listen: false);
-                                checkNetwork(
-                                    widget.categoryId!,
-                                    widget.subCategoryId!,
-                                    dropDownValue.toString(),
-                                    dropDownValue2.toString(),
-                                    creat);
-                              } else {
-                                setSnackbar(
-                                    'please enter all fields'.tr(), context);
-                              }
-                            },
-                            color: backgroundColor,
-                          ),
-                          SizedBox(
-                            height: 6.h,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+            height: getScreenHeight(context),
+            width: getScreenWidth(context),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(background),
+                fit: BoxFit.fill,
               ),
             ),
-          )),
+            child: Padding(
+              padding: EdgeInsets.only(top: 9.h),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      height: 82.h,
+                      width: getScreenWidth(context),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 7,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)),
+                        color: backgroundColor,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            myText(
+                              // text: 'inside'.tr(),
+                              text: 'outside city'.tr(),
+                              fontSize: 7.sp,
+                              color: primaryBlue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            const Divider(
+                              color: lightBlue2,
+                              thickness: 7,
+                              indent: 35,
+                              endIndent: 45,
+                            ),
+                            SizedBox(
+                              height: 6.h,
+                            ),
+                            Container(
+                              height: 6.h,
+                              width: 80.w,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 0),
+                                  ),
+                                ],
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(100)),
+                                color: backgroundColor,
+                              ),
+                              child: DropdownButton(
+                                underline: DropdownButtonHideUnderline(
+                                    child: Container()),
+                                isExpanded: true,
+                                hint: Padding(
+                                  padding: EdgeInsets.only(left: 5.w),
+                                  child: Text(
+                                    'person'.tr(),
+                                    style: TextStyle(color: grey, fontSize: 4.sp),
+                                  ),
+                                ),
+                                value: dropDownValue,
+                                icon: Padding(
+                                  padding: EdgeInsets.only(right: 1.w),
+                                  child: const Icon(Icons.keyboard_arrow_down),
+                                ),
+                                items: personItems.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Padding(
+                                        padding: EdgeInsets.only(left: 1.w),
+                                        child: Text(items)),
+                                  );
+                                }).toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    dropDownValue = val.toString();
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            Container(
+                              height: 6.h,
+                              width: 80.w,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(100)),
+                                color: backgroundColor,
+                              ),
+                              child: DropdownButton(
+                                underline: DropdownButtonHideUnderline(
+                                    child: Container()),
+                                isExpanded: true,
+                                hint: Padding(
+                                  padding: EdgeInsets.only(left: 5.w),
+                                  child: Text(
+                                    'bags'.tr(),
+                                    style: TextStyle(color: grey, fontSize: 4.sp),
+                                  ),
+                                ),
+                                value: dropDownValue2,
+                                icon: Padding(
+                                  padding: EdgeInsets.only(right: 2.w),
+                                  child: const Icon(Icons.keyboard_arrow_down),
+                                ),
+                                items: bagsItems.map((String items) {
+                                  return DropdownMenuItem(
+                                    value: items,
+                                    child: Padding(
+                                        padding: EdgeInsets.only(left: 1.w),
+                                        child: Text(items)),
+                                  );
+                                }).toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    dropDownValue2 = val.toString();
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            const Divider(
+                              color: lightBlue2,
+                              thickness: 7,
+                              indent: 35,
+                              endIndent: 45,
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            ContainerWidget2(
+                              text: 'select date'.tr(),
+                              h: 6.h,
+                              w: 80.w,
+                              onTap: () {
+                                _selectDate(context);
+                                showDate = true;
+                                print('getDate()');
+                                print(getDate());
+                              },
+                              color: backgroundColor,
+                              textColor: lightBlue,
+                            ),
+                            SizedBox(
+                              height: 1.h,
+                            ),
+                            showDate
+                                ? Center(
+                                    child: myText(
+                                    text: getDate(),
+                                    fontSize: 4.sp,
+                                    color: primaryBlue,
+                                  ))
+                                : const SizedBox(),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            ContainerWidget2(
+                              text: 'select time'.tr(),
+                              h: 6.h,
+                              w: 80.w,
+                              onTap: () {
+                                _selectTime(context);
+                                showTime = true;
+                              },
+                              color: backgroundColor,
+                              textColor: lightBlue,
+                            ),
+                            SizedBox(
+                              height: 1.h,
+                            ),
+                            showTime
+                                ? Center(
+                                    child: myText(
+                                    text: getTime(selectedTime),
+                                    fontSize: 4.sp,
+                                    color: primaryBlue,
+                                  ))
+                                : const SizedBox(),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            ContainerWidget(
+                              text: 'done'.tr(),
+                              h: 6.h,
+                              w: 60.w,
+                              onTap: () async {
+                                print('selectedTime');
+                                print(selectedTime);
+                                print(selectedDate);
+                                if (selectedTime != DateTime.now() &&
+                                    selectedDate != DateTime.now() &&
+                                    dropDownValue != null &&
+                                    dropDownValue2 != null) {
+                                  var creat =
+                                      await Provider.of<filterVechileProvider>(
+                                          context,
+                                          listen: false);
+                                  checkNetwork(
+                                      widget.categoryId!,
+                                      widget.subCategoryId!,
+                                      dropDownValue.toString(),
+                                      dropDownValue2.toString(),
+                                      creat);
+                                } else {
+                                  setSnackbar(
+                                      'please enter all fields'.tr(), context);
+                                }
+                              },
+                              color: backgroundColor,
+                            ),
+                            SizedBox(
+                              height: 6.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )),
+      ),
     );
   }
 }

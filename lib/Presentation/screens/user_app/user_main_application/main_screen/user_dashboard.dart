@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/user_orders.dart';
 import '../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

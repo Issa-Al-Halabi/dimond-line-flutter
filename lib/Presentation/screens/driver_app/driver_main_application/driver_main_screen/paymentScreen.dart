@@ -4,6 +4,7 @@
 // import 'package:connectivity/connectivity.dart';
 // import 'package:easy_localization/src/public_ext.dart';
 // import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 // import 'package:diamond_line/Presentation/widgets/bottom_icons_driver.dart';
 // import 'package:diamond_line/Presentation/widgets/text.dart';
 // import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
@@ -56,7 +57,7 @@
 //     _isNetworkAvail = await isNetworkAvailable();
 //     if (_isNetworkAvail) {
 //       print("There is internet");
-//       Loader.show(context, progressIndicator: CircularProgressIndicator());
+//       Loader.show(context, progressIndicator: LoaderWidget());
 //       await creat.tripPayment(method, amount);
 //       if (creat.data.error == false) {
 //         Loader.hide();
@@ -130,7 +131,7 @@
 //     _isNetworkAvail = await isNetworkAvailable();
 //     if (_isNetworkAvail) {
 //       print("There is internet");
-//       Loader.show(context, progressIndicator: CircularProgressIndicator());
+//       Loader.show(context, progressIndicator: LoaderWidget());
 //       await creat.tripPaymentTransfer(method, amount, imageFile);
 //       if (creat.data.error == false) {
 //         Loader.hide();

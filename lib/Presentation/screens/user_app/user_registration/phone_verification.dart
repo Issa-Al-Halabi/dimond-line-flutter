@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/send_otp_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/verify_otp_provider.dart';
 import 'package:diamond_line/Data/network/requests.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../constants.dart';
+import '../../../Functions/helper.dart';
 import '../../driver_app/driver_registration/driver_login.dart';
 import 'forget_password.dart';
 
@@ -73,7 +75,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
       print(code);
       print(widget.isFromForgetPass);
       print(widget.isDriver);
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getVerifyOtpCode(phone, code);
       if (creat.data.erorr == false) {
         Loader.hide();
@@ -145,7 +147,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getSendOtp(phone, widget. isFromForgetPass == true ? 'forget_password' : 'sign_up',
       widget.isDriver == true ? false : true);
       if (creat.data.error == false) {
@@ -230,97 +232,100 @@ class _PhoneVerificationState extends State<PhoneVerification> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 10.h, bottom: 7.h),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-              color: backgroundColor,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 5.h),
-                  Center(
-                    child: Text(
-                      'phone verification'.tr(),
-                      style: TextStyle(
-                          color: primaryBlue2,
-                          fontSize: 8.sp,
-                          fontWeight: FontWeight.bold),
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(top: 10.h, bottom: 7.h),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                color: backgroundColor,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 5.h),
+                    Center(
+                      child: Text(
+                        'phone verification'.tr(),
+                        style: TextStyle(
+                            color: primaryBlue2,
+                            fontSize: 8.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  Image.asset(
-                    verificationImage,
-                    height: 40.h,
-                    width: 70.w,
-                  ),
-                  SizedBox(height: 1.h),
-                  myText(
-                    text: 'enter code'.tr(),
-                    fontSize: 5.sp,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 1.h),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
-                    child: Builder(builder: (context) {
-                      return VerificationCodeField(
-                        length: 6,
-                        textEditingController: verification,
-                        onChange: (value) {
-                          _code = value;
-                          verification.text = value;
-                        },
-                      );
-                    }),
-                  ),
-                  SizedBox(height: 2.h),
-                  TextButton(
-                      onPressed: () {
-                        if(isClickable == true){
-                          var creat2 = Provider.of<SendOtpProvider>(context,
-                              listen: false);
-                          resendOtp(widget.phone, creat2);
-                        }
-                        else{
-                          setSnackbar('please wait 60 s'.tr(), context);
-                        }
-                      },
-                      child: myText(
-                        text: 'resend code'.tr(),
-                        fontSize: 5.sp,
-                        color: primaryBlue2,
-                      )),
-                  SizedBox(height: 2.h),
-                  ContainerWidget(
-                      text: 'done'.tr(),
-                      h: 6.h,
-                      w: 80.w,
-                      onTap: () async {
-                        print('verification.text' + verification.text);
-                        print('_code' + _code);
-                        print('widget.phone' + widget.phone);
-                        // Navigator.pushNamed(context, 'registration');
-                        var creat = Provider.of<VerifyOtpProvider>(context,
-                            listen: false);
-                        validateAndSubmit(widget.phone, _code, creat);
+                    Image.asset(
+                      verificationImage,
+                      height: 40.h,
+                      width: 70.w,
+                    ),
+                    SizedBox(height: 1.h),
+                    myText(
+                      text: 'enter code'.tr(),
+                      fontSize: 5.sp,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(height: 1.h),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
+                      child: Builder(builder: (context) {
+                        return VerificationCodeField(
+                          length: 6,
+                          textEditingController: verification,
+                          onChange: (value) {
+                            _code = value;
+                            verification.text = value;
+                          },
+                        );
                       }),
-                  SizedBox(height: 2.h),
-                ],
+                    ),
+                    SizedBox(height: 2.h),
+                    TextButton(
+                        onPressed: () {
+                          if(isClickable == true){
+                            var creat2 = Provider.of<SendOtpProvider>(context,
+                                listen: false);
+                            resendOtp(widget.phone, creat2);
+                          }
+                          else{
+                            setSnackbar('please wait 60 s'.tr(), context);
+                          }
+                        },
+                        child: myText(
+                          text: 'resend code'.tr(),
+                          fontSize: 5.sp,
+                          color: primaryBlue2,
+                        )),
+                    SizedBox(height: 2.h),
+                    ContainerWidget(
+                        text: 'done'.tr(),
+                        h: 6.h,
+                        w: 80.w,
+                        onTap: () async {
+                          print('verification.text' + verification.text);
+                          print('_code' + _code);
+                          print('widget.phone' + widget.phone);
+                          // Navigator.pushNamed(context, 'registration');
+                          var creat = Provider.of<VerifyOtpProvider>(context,
+                              listen: false);
+                          validateAndSubmit(widget.phone, _code, creat);
+                        }),
+                    SizedBox(height: 2.h),
+                  ],
+                ),
               ),
             ),
           ),

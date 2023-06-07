@@ -4,6 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +16,7 @@ import '../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 import 'package:crypto/crypto.dart';
+import '../../../../Functions/helper.dart';
 import '../../../../widgets/container_widget.dart';
 import 'driver_dashboard.dart';
 import 'ecash_webview.dart';
@@ -54,7 +56,7 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.createId(amount);
       String orderId = creat.data.data!.id.toString();
       print('orderId ' + orderId);
@@ -79,7 +81,7 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
   //   _isNetworkAvail = await isNetworkAvailable();
   //   if (_isNetworkAvail) {
   //     print("There is internet");
-  //     Loader.show(context, progressIndicator: CircularProgressIndicator());
+  //     Loader.show(context, progressIndicator: LoaderWidget());
   //     await creat.chargeWallet(method, amount);
   //     if (creat.data.error == false) {
   //       Loader.hide();
@@ -153,7 +155,7 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.chargeWalletTransfer(method, amount, imageFile);
       if (creat.data.error == false) {
         Loader.hide();
@@ -253,253 +255,257 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 9.h),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: 82.h,
-                  width: getScreenWidth(context),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    color: backgroundColor,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 3.h,
-                          ),
-                          Container(
-                            // height: 70.h,
-                            width: 90.w,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 0),
-                                ),
-                              ],
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
+          child: Padding(
+            padding: EdgeInsets.only(top: 9.h),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 82.h,
+                    width: getScreenWidth(context),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 7,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      color: backgroundColor,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 3.h,
                             ),
-                            child: SingleChildScrollView(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 3.w),
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 7.h,
-                                    ),
-                                    Center(
-                                      child: myText(
-                                          text: 'choose the charge wallet'.tr(),
+                            Container(
+                              // height: 70.h,
+                              width: 90.w,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(20)),
+                              ),
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 3.w),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 7.h,
+                                      ),
+                                      Center(
+                                        child: myText(
+                                            text: 'choose the charge wallet'.tr(),
+                                            fontSize: 5.sp,
+                                            color: primaryBlue,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      Center(
+                                        child: Container(
+                                          height: 1.h,
+                                          width: 70.w,
+                                          decoration: BoxDecoration(
+                                            color: lightBlue2,
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(20)),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      // RadioListTile(
+                                      //   title: myText(
+                                      //     text: "cash".tr(),
+                                      //     fontSize: 5.sp,
+                                      //     color: primaryBlue,
+                                      //   ),
+                                      //   value: "cash",
+                                      //   groupValue: type,
+                                      //   activeColor: primaryBlue,
+                                      //   onChanged: (value) {
+                                      //     setState(() {
+                                      //       type = "cash";
+                                      //     });
+                                      //   },
+                                      // ),
+
+
+
+                                      // // TODO
+                                      // RadioListTile(
+                                      //   title: myText(
+                                      //     text: "ecash".tr(),
+                                      //     fontSize: 5.sp,
+                                      //     color: primaryBlue,
+                                      //   ),
+                                      //   value: "ecash",
+                                      //   groupValue: type,
+                                      //   activeColor: primaryBlue,
+                                      //   onChanged: (value) {
+                                      //     setState(() {
+                                      //       // type = "ecash".tr();
+                                      //       type = "ecash";
+                                      //     });
+                                      //   },
+                                      // ),
+                                      RadioListTile(
+                                        title: myText(
+                                          text: "transfer".tr(),
                                           fontSize: 5.sp,
                                           color: primaryBlue,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
-                                    Center(
-                                      child: Container(
-                                        height: 1.h,
-                                        width: 70.w,
+                                        ),
+                                        value: "transfer",
+                                        groupValue: type,
+                                        activeColor: primaryBlue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            type = "transfer";
+                                          });
+                                        },
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10.w, right: 10.w),
+                                          child: TextFormField(
+                                            controller: amountController,
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                              errorStyle: TextStyle(
+                                                  fontSize: 4.sp, height: 0.01.h),
+                                              fillColor: Colors.white,
+                                              hintStyle: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 5.sp,
+                                              ),
+                                              suffixIcon: Icon(
+                                                // Icons.money,
+                                                Icons.edit,
+                                                // color: primaryBlue,
+                                                color: grey,
+                                                size: 18,
+                                              ),
+                                              hintText:
+                                                  'tap your amount please'.tr(),
+                                            ),
+                                            onChanged: (value) {},
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Container(
+                                        width: 40.w,
+                                        height: 6.h,
                                         decoration: BoxDecoration(
-                                          color: lightBlue2,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: primaryBlue.withOpacity(0.3),
+                                              spreadRadius: 2,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 0),
+                                            ),
+                                          ],
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(20)),
+                                          color: primaryBlue,
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    // RadioListTile(
-                                    //   title: myText(
-                                    //     text: "cash".tr(),
-                                    //     fontSize: 5.sp,
-                                    //     color: primaryBlue,
-                                    //   ),
-                                    //   value: "cash",
-                                    //   groupValue: type,
-                                    //   activeColor: primaryBlue,
-                                    //   onChanged: (value) {
-                                    //     setState(() {
-                                    //       type = "cash";
-                                    //     });
-                                    //   },
-                                    // ),
-
-
-
-                                    RadioListTile(
-                                      title: myText(
-                                        text: "ecash".tr(),
-                                        fontSize: 5.sp,
-                                        color: primaryBlue,
-                                      ),
-                                      value: "ecash",
-                                      groupValue: type,
-                                      activeColor: primaryBlue,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          // type = "ecash".tr();
-                                          type = "ecash";
-                                        });
-                                      },
-                                    ),
-                                    RadioListTile(
-                                      title: myText(
-                                        text: "transfer".tr(),
-                                        fontSize: 5.sp,
-                                        color: primaryBlue,
-                                      ),
-                                      value: "transfer",
-                                      groupValue: type,
-                                      activeColor: primaryBlue,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          type = "transfer";
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 10.w, right: 10.w),
-                                        child: TextFormField(
-                                          controller: amountController,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            errorStyle: TextStyle(
-                                                fontSize: 4.sp, height: 0.01.h),
-                                            fillColor: Colors.white,
-                                            hintStyle: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 5.sp,
+                                        child: TextButton(
+                                            child: Text(
+                                              'submit'.tr(),
+                                              style: TextStyle(
+                                                  color: backgroundColor,
+                                                  fontSize: 5.sp),
                                             ),
-                                            suffixIcon: Icon(
-                                              // Icons.money,
-                                              Icons.edit,
-                                              // color: primaryBlue,
-                                              color: grey,
-                                              size: 18,
-                                            ),
-                                            hintText:
-                                                'tap your amount please'.tr(),
-                                          ),
-                                          onChanged: (value) {},
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                    Container(
-                                      width: 40.w,
-                                      height: 6.h,
-                                      decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: primaryBlue.withOpacity(0.3),
-                                            spreadRadius: 2,
-                                            blurRadius: 7,
-                                            offset: const Offset(0, 0),
-                                          ),
-                                        ],
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                        color: primaryBlue,
-                                      ),
-                                      child: TextButton(
-                                          child: Text(
-                                            'submit'.tr(),
-                                            style: TextStyle(
-                                                color: backgroundColor,
-                                                fontSize: 5.sp),
-                                          ),
-                                          onPressed: () async {
-                                            print(type);
-                                            print(amountController.text);
-                                            if (amountController.text != '') {
-                                              if (type == 'ecash') {
-                                                var creat = Provider.of<
-                                                        CreatePaymentIdProvider>(
-                                                    context,
-                                                    listen: false);
-                                                createPaymentIdApi(
-                                                    amountController.text,
-                                                    creat);
-                                                // createPaymentEcash(
-                                                //   // widget.tripId
-                                                // );
-                                              } else if (type == 'transfer') {
-                                                getDialog();
+                                            onPressed: () async {
+                                              print(type);
+                                              print(amountController.text);
+                                              if (amountController.text != '') {
+                                                if (type == 'ecash') {
+                                                  var creat = Provider.of<
+                                                          CreatePaymentIdProvider>(
+                                                      context,
+                                                      listen: false);
+                                                  createPaymentIdApi(
+                                                      amountController.text,
+                                                      creat);
+                                                  // createPaymentEcash(
+                                                  //   // widget.tripId
+                                                  // );
+                                                } else if (type == 'transfer') {
+                                                  getDialog();
+                                                }
+                                                // else {
+                                                //   var creat =
+                                                //   Provider.of<ChargeWalletProvider>(
+                                                //       context,
+                                                //       listen: false);
+                                                //   chargeWalletApi(type, amountController.text, creat);
+                                                // }
+                                                else {}
+                                              } else {
+                                                setSnackbar(
+                                                    'The amount field is required'
+                                                        .tr(),
+                                                    context);
                                               }
-                                              // else {
-                                              //   var creat =
-                                              //   Provider.of<ChargeWalletProvider>(
-                                              //       context,
-                                              //       listen: false);
-                                              //   chargeWalletApi(type, amountController.text, creat);
-                                              // }
-                                              else {}
-                                            } else {
-                                              setSnackbar(
-                                                  'The amount field is required'
-                                                      .tr(),
-                                                  context);
-                                            }
-                                          }),
-                                    ),
-                                    SizedBox(
-                                      height: 5.h,
-                                    ),
-                                  ],
+                                            }),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // SizedBox(
-                //   height: 3.h,
-                // ),
-                // BottomIconsDriver(),
-              ],
+                  // SizedBox(
+                  //   height: 3.h,
+                  // ),
+                  // BottomIconsDriver(),
+                ],
+              ),
             ),
           ),
         ),

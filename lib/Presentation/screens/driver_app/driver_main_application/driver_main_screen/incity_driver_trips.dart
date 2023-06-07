@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/Driver_Provider/driver_trips_provider.dart';
@@ -15,6 +16,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../Functions/helper.dart';
 
 String? userIdForTrip = '';
 
@@ -164,7 +167,7 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getDriverTrips();
       if (creat.data.error == false) {
         length = creat.data.data!.nearestTrips!.length;
@@ -346,326 +349,329 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _kGooglePlex == null
-          ? Center(child: CircularProgressIndicator())
-          : Container(
-              height: getScreenHeight(context),
-              width: getScreenWidth(context),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.fill,
+    return WillPopScope(
+        onWillPop: willPopLoader,
+      child: Scaffold(
+        body: _kGooglePlex == null
+            ? Center(child: LoaderWidget())
+            : Container(
+                height: getScreenHeight(context),
+                width: getScreenWidth(context),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(top: 9.h),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      RefreshIndicator(
-                        color: primaryBlue,
-                        key: _refreshIndicatorKey,
-                        onRefresh: init2,
-                        child: Container(
-                          height: 82.h,
-                          width: getScreenWidth(context),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 0),
-                              ),
-                            ],
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20)),
-                            color: backgroundColor,
-                          ),
-                          child: SingleChildScrollView(
-                            physics: NeverScrollableScrollPhysics(),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Stack(
-                                    children: [
-                                      isUpdate
-                                          ? Container(
-                                              height: 82.h,
-                                              width: getScreenWidth(context),
-                                              decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.3),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 7,
-                                                    offset: const Offset(0, 0),
-                                                  ),
-                                                ],
-                                                color: backgroundColor,
-                                              ),
-                                              child: GoogleMap(
-                                                mapType: MapType.normal,
-                                                markers: myMarker,
-                                                initialCameraPosition:
-                                                    _kGooglePlex!,
-                                                onMapCreated:
-                                                    (GoogleMapController
-                                                        controller) {
-                                                  gmc = controller;
-                                                },
-                                                onTap: (latlng) {},
-                                              ),
-                                            )
-                                          : shimmer(context),
-                                      Positioned(
-                                          bottom: 1.h,
-                                          child: Visibility(
-                                            visible: isGetTrips,
-                                            child: Container(
-                                              height: 25.h,
-                                              width: getScreenWidth(context),
-                                              child: ListView.builder(
-                                                  itemCount: length,
-                                                  // itemCount: 3,
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical:
-                                                                      1.h),
-                                                          child: length == 0
-                                                              ?
-                                                          Center(child: Column(
-                                                            children: [
-                                                              SizedBox(
-                                                                height:
-                                                                20.h,
-                                                              ),
-                                                              Image.asset(
-                                                                noData,
-                                                                fit: BoxFit
-                                                                    .fill,
-                                                                height:
-                                                                30.h,
-                                                              ),
-                                                              SizedBox(
-                                                                height:
-                                                                2.h,
-                                                              ),
-                                                              Text(
-                                                                'there are no trips'
-                                                                    .tr(),
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                    'cairo',
-                                                                    color:
-                                                                    primaryBlue,
-                                                                    fontSize: 6.sp),
-                                                              )
-                                                            ],
-                                                          ))
-                                                              : Padding(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          horizontal:
-                                                                              2.w),
-                                                                  child:
-                                                                      InkWell(
-                                                                    onTap: () {
-                                                                      print('id of trip' +
-                                                                          idList[index]
-                                                                              .toString());
-                                                                      setState(
-                                                                          () {
-                                                                        idTrip =
-                                                                            idList[index].toString();
-                                                                        pickupAddTrip =
-                                                                            pickupAddr[index];
-                                                                        destAddrTrip =
-                                                                            destAddr[index];
-                                                                        fNameTrip =
-                                                                            fNameList[index];
-                                                                        lNameTrip =
-                                                                            lNameList[index];
-                                                                        phoneTrip =
-                                                                            phoneList[index];
-                                                                        priceTrip =
-                                                                            priceList[index].toString();
-                                                                        minTrip =
-                                                                            minutesList[index].toString();
-                                                                        kmTrip =
-                                                                            kmList[index].toString();
-                                                                        requestType =
-                                                                            requestTypeList[index].toString();
-                                                                        time = timeList[index]
-                                                                            .toString();
-                                                                        date = dateList[index]
-                                                                            .toString();
-                                                                        userIdForTrip =
-                                                                            userIdList[index].toString();
-                                                                      });
-                                                                      navigate(
-                                                                          idList[index]
-                                                                              .toString(),
-                                                                          tripsList[index]
-                                                                              .pickupLatitude,
-                                                                          tripsList[index]
-                                                                              .pickupLongitude,
-                                                                          tripsList[index]
-                                                                              .dropLatitude,
-                                                                          tripsList[index]
-                                                                              .dropLongitude,
-                                                                          tripsList[index]
-                                                                              .optionId,
-                                                                          tripsList[index]
-                                                                              .profileImage
-                                                                              .toString(),
-                                                                          tripsList[index]
-                                                                              .options
-                                                                              .toString());
-                                                                    },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 9.h),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        RefreshIndicator(
+                          color: primaryBlue,
+                          key: _refreshIndicatorKey,
+                          onRefresh: init2,
+                          child: Container(
+                            height: 82.h,
+                            width: getScreenWidth(context),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 0),
+                                ),
+                              ],
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                              color: backgroundColor,
+                            ),
+                            child: SingleChildScrollView(
+                              physics: NeverScrollableScrollPhysics(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        isUpdate
+                                            ? Container(
+                                                height: 82.h,
+                                                width: getScreenWidth(context),
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 7,
+                                                      offset: const Offset(0, 0),
+                                                    ),
+                                                  ],
+                                                  color: backgroundColor,
+                                                ),
+                                                child: GoogleMap(
+                                                  mapType: MapType.normal,
+                                                  markers: myMarker,
+                                                  initialCameraPosition:
+                                                      _kGooglePlex!,
+                                                  onMapCreated:
+                                                      (GoogleMapController
+                                                          controller) {
+                                                    gmc = controller;
+                                                  },
+                                                  onTap: (latlng) {},
+                                                ),
+                                              )
+                                            : shimmer(context),
+                                        Positioned(
+                                            bottom: 1.h,
+                                            child: Visibility(
+                                              visible: isGetTrips,
+                                              child: Container(
+                                                height: 25.h,
+                                                width: getScreenWidth(context),
+                                                child: ListView.builder(
+                                                    itemCount: length,
+                                                    // itemCount: 3,
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    vertical:
+                                                                        1.h),
+                                                            child: length == 0
+                                                                ?
+                                                            Center(child: Column(
+                                                              children: [
+                                                                SizedBox(
+                                                                  height:
+                                                                  20.h,
+                                                                ),
+                                                                Image.asset(
+                                                                  noData,
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                  height:
+                                                                  30.h,
+                                                                ),
+                                                                SizedBox(
+                                                                  height:
+                                                                  2.h,
+                                                                ),
+                                                                Text(
+                                                                  'there are no trips'
+                                                                      .tr(),
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                      'cairo',
+                                                                      color:
+                                                                      primaryBlue,
+                                                                      fontSize: 6.sp),
+                                                                )
+                                                              ],
+                                                            ))
+                                                                : Padding(
+                                                                    padding: EdgeInsets
+                                                                        .symmetric(
+                                                                            horizontal:
+                                                                                2.w),
                                                                     child:
-                                                                        Container(
-                                                                      height:
-                                                                          25.h,
-                                                                      width:
-                                                                          67.w,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        boxShadow: [
-                                                                          BoxShadow(
-                                                                            color:
-                                                                                primaryBlue.withOpacity(0.3),
-                                                                            spreadRadius:
-                                                                                2,
-                                                                            blurRadius:
-                                                                                7,
-                                                                            offset:
-                                                                                Offset(0, 0),
-                                                                          ),
-                                                                        ],
-                                                                        borderRadius:
-                                                                            BorderRadius.all(Radius.circular(20)),
-                                                                        color:
-                                                                            white,
-                                                                      ),
+                                                                        InkWell(
+                                                                      onTap: () {
+                                                                        print('id of trip' +
+                                                                            idList[index]
+                                                                                .toString());
+                                                                        setState(
+                                                                            () {
+                                                                          idTrip =
+                                                                              idList[index].toString();
+                                                                          pickupAddTrip =
+                                                                              pickupAddr[index];
+                                                                          destAddrTrip =
+                                                                              destAddr[index];
+                                                                          fNameTrip =
+                                                                              fNameList[index];
+                                                                          lNameTrip =
+                                                                              lNameList[index];
+                                                                          phoneTrip =
+                                                                              phoneList[index];
+                                                                          priceTrip =
+                                                                              priceList[index].toString();
+                                                                          minTrip =
+                                                                              minutesList[index].toString();
+                                                                          kmTrip =
+                                                                              kmList[index].toString();
+                                                                          requestType =
+                                                                              requestTypeList[index].toString();
+                                                                          time = timeList[index]
+                                                                              .toString();
+                                                                          date = dateList[index]
+                                                                              .toString();
+                                                                          userIdForTrip =
+                                                                              userIdList[index].toString();
+                                                                        });
+                                                                        navigate(
+                                                                            idList[index]
+                                                                                .toString(),
+                                                                            tripsList[index]
+                                                                                .pickupLatitude,
+                                                                            tripsList[index]
+                                                                                .pickupLongitude,
+                                                                            tripsList[index]
+                                                                                .dropLatitude,
+                                                                            tripsList[index]
+                                                                                .dropLongitude,
+                                                                            tripsList[index]
+                                                                                .optionId,
+                                                                            tripsList[index]
+                                                                                .profileImage
+                                                                                .toString(),
+                                                                            tripsList[index]
+                                                                                .options
+                                                                                .toString());
+                                                                      },
                                                                       child:
-                                                                          Padding(
-                                                                        padding: EdgeInsets.only(
-                                                                            left:
-                                                                                2.w,
-                                                                            right: 2.w),
+                                                                          Container(
+                                                                        height:
+                                                                            25.h,
+                                                                        width:
+                                                                            67.w,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          boxShadow: [
+                                                                            BoxShadow(
+                                                                              color:
+                                                                                  primaryBlue.withOpacity(0.3),
+                                                                              spreadRadius:
+                                                                                  2,
+                                                                              blurRadius:
+                                                                                  7,
+                                                                              offset:
+                                                                                  Offset(0, 0),
+                                                                            ),
+                                                                          ],
+                                                                          borderRadius:
+                                                                              BorderRadius.all(Radius.circular(20)),
+                                                                          color:
+                                                                              white,
+                                                                        ),
                                                                         child:
-                                                                            SingleChildScrollView(
+                                                                            Padding(
+                                                                          padding: EdgeInsets.only(
+                                                                              left:
+                                                                                  2.w,
+                                                                              right: 2.w),
                                                                           child:
-                                                                              Column(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.start,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              SizedBox(
-                                                                                height: 1.h,
-                                                                              ),
-                                                                              Center(
-                                                                                child: Text(
-                                                                                  requestTypeList[index],
-                                                                                  style: TextStyle(color: primaryBlue, fontSize: 5.sp, fontWeight: FontWeight.w700),
+                                                                              SingleChildScrollView(
+                                                                            child:
+                                                                                Column(
+                                                                              mainAxisAlignment:
+                                                                                  MainAxisAlignment.start,
+                                                                              crossAxisAlignment:
+                                                                                  CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                SizedBox(
+                                                                                  height: 1.h,
                                                                                 ),
-                                                                              ),
-                                                                              Row(
-                                                                                children: [
-                                                                                  Text(
-                                                                                    'from'.tr(),
-                                                                                    style: TextStyle(
-                                                                                      color: primaryBlue,
-                                                                                      fontSize: 5.sp,
-                                                                                    ),
+                                                                                Center(
+                                                                                  child: Text(
+                                                                                    requestTypeList[index],
+                                                                                    style: TextStyle(color: primaryBlue, fontSize: 5.sp, fontWeight: FontWeight.w700),
                                                                                   ),
-                                                                                  SizedBox(
-                                                                                    width: 5.w,
-                                                                                  ),
-                                                                                  Expanded(
-                                                                                    child: Text(
-                                                                                      '${pickupAddr[index]}',
+                                                                                ),
+                                                                                Row(
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      'from'.tr(),
                                                                                       style: TextStyle(
-                                                                                        color: grey,
+                                                                                        color: primaryBlue,
                                                                                         fontSize: 5.sp,
                                                                                       ),
                                                                                     ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                              Row(
-                                                                                children: [
-                                                                                  Text(
-                                                                                    'to'.tr(),
-                                                                                    style: TextStyle(
-                                                                                      color: primaryBlue,
-                                                                                      fontSize: 5.sp,
+                                                                                    SizedBox(
+                                                                                      width: 5.w,
                                                                                     ),
-                                                                                  ),
-                                                                                  SizedBox(
-                                                                                    width: 12.w,
-                                                                                  ),
-                                                                                  Expanded(
-                                                                                    child: Text(
-                                                                                      '${destAddr[index]}',
+                                                                                    Expanded(
+                                                                                      child: Text(
+                                                                                        '${pickupAddr[index]}',
+                                                                                        style: TextStyle(
+                                                                                          color: grey,
+                                                                                          fontSize: 5.sp,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                                Row(
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      'to'.tr(),
                                                                                       style: TextStyle(
-                                                                                        color: grey,
+                                                                                        color: primaryBlue,
                                                                                         fontSize: 5.sp,
                                                                                       ),
                                                                                     ),
-                                                                                  ),
-                                                                                ],
-                                                                              ),
-                                                                              SizedBox(
-                                                                                height: 2.5.h,
-                                                                              ),
-                                                                            ],
+                                                                                    SizedBox(
+                                                                                      width: 12.w,
+                                                                                    ),
+                                                                                    Expanded(
+                                                                                      child: Text(
+                                                                                        '${destAddr[index]}',
+                                                                                        style: TextStyle(
+                                                                                          color: grey,
+                                                                                          fontSize: 5.sp,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 2.5.h,
+                                                                                ),
+                                                                              ],
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5.w,
-                                                        ),
-                                                      ],
-                                                    );
-                                                  }),
-                                            ),
-                                          ))
-                                    ],
-                                  ),
-                                ],
+                                                          ),
+                                                          SizedBox(
+                                                            width: 5.w,
+                                                          ),
+                                                        ],
+                                                      );
+                                                    }),
+                                              ),
+                                            ))
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

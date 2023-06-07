@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_ended_outcity.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
@@ -15,6 +16,8 @@ import 'package:web_socket_channel/io.dart';
 import '../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart';
+
+import '../../../../Functions/helper.dart';
 
 class TrackingScreenOutside extends StatefulWidget {
   TrackingScreenOutside(
@@ -248,6 +251,29 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     );
   }
 
+  void updateMainPolyline(double pickupLatitude, double pickupLongitude) async {
+    polylineCoordinates.clear();
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      APIKEY,
+      PointLatLng(pickupLatitude, pickupLongitude),
+      PointLatLng(double.parse(widget.dropLatitude),
+          double.parse(widget.dropLongitude)),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    if (mounted) {
+      setState(() {});
+    }
+
+    // delete from marker
+    marker2 = Marker(markerId: MarkerId("from"));
+  }
+
+
   /// رسم المسار الاساسي
   Future getPolyPoints() async {
     polylineCoordinates.clear();
@@ -308,7 +334,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     print(finalDistance);
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       var data =
           await AppRequests.endTripRequest(trip_id, end_time, finalDistance);
       print(data);
@@ -384,226 +410,240 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _kGooglePlex == null || _channel == null
-          ? Center(child: CircularProgressIndicator())
-          : Container(
-              height: getScreenHeight(context),
-              width: getScreenWidth(context),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: _kGooglePlex == null || _channel == null
+            ? Center(child: LoaderWidget())
+            : Container(
+                height: getScreenHeight(context),
+                width: getScreenWidth(context),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(top: 9.h),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 82.h,
-                        width: getScreenWidth(context),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 7,
-                              offset: const Offset(0, 0),
-                            ),
-                          ],
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20)),
-                          color: backgroundColor,
-                        ),
-                        child: Stack(children: [
-                          StreamBuilder(
-                            stream: _channel.stream,
-                            builder: (context, snapshot) {
-                              print(snapshot.data);
-                              print(snapshot.connectionState);
-                              if (snapshot.hasData == true) {
-                                var data =
-                                    json.decode(snapshot.data.toString());
-                                print('--------------------------------');
-                                if (data['positions'] != null) {
-                                  // if (data['positions'][0]['deviceId'] == 252) {
-                                  //TODO
-                                  // if (data['positions'][0]['deviceId'] ==
-                                  //     274) {
-                                    if (data['positions'][0]['deviceId'] == deviceNumb) {
-                                    print('////////////////////////////');
-                                    // print(data['positions'][0]['deviceId']);
-                                    // print(data['positions'][0]['latitude']);
-                                    // print(data['positions'][0]['longitude']);
-                                    print('course me');
-                                    print(data['positions'][0]['course']);
-                                    lat = data['positions'][0]['latitude'];
-                                    lng = data['positions'][0]['longitude'];
-                                    course = data['positions'][0]['course'];
-                                    if (latList.last != lat &&
-                                        lngList.last != lng) {
-                                      print('lats and longs isnt equal');
-                                      latList.add(lat);
-                                      lngList.add(lng);
-                                      List<String> strList = latList
-                                          .map((i) => i.toString())
-                                          .toList();
-                                      prefs.setStringList(
-                                          "latList", strList);
-                                      List<String> strList2 = lngList
-                                          .map((i) => i.toString())
-                                          .toList();
-                                      prefs.setStringList("lngList", strList2);
-                                      // for (int i = 0;
-                                      //     i < latList.length;
-                                      //     i++) {
-                                      //   points.add(
-                                      //       LatLng(latList[i], lngList[i]));
-                                      // }
-                                      points.add(LatLng(lat, lng));
-                                      // print(points);
-                                      updatePolyline();
-                                      getLocationApi(
-                                          lat.toString(),
-                                          lng.toString(),
-                                          deviceNumb.toString());
+                child: Padding(
+                  padding: EdgeInsets.only(top: 9.h),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 82.h,
+                          width: getScreenWidth(context),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 7,
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20)),
+                            color: backgroundColor,
+                          ),
+                          child: Stack(children: [
+                            StreamBuilder(
+                              stream: _channel.stream,
+                              builder: (context, snapshot) {
+                                print(snapshot.data);
+                                print(snapshot.connectionState);
+                                if (snapshot.hasData == true) {
+                                  var data =
+                                      json.decode(snapshot.data.toString());
+                                  print('--------------------------------');
+                                  if (data['positions'] != null) {
+                                    // if (data['positions'][0]['deviceId'] == 252) {
+                                    //TODO
+                                    // if (data['positions'][0]['deviceId'] ==
+                                    //     274) {
+                                      if (data['positions'][0]['deviceId'] == deviceNumb) {
+                                      print('////////////////////////////');
+                                      // print(data['positions'][0]['deviceId']);
+                                      // print(data['positions'][0]['latitude']);
+                                      // print(data['positions'][0]['longitude']);
+                                      print('course me');
+                                      print(data['positions'][0]['course']);
+                                      lat = data['positions'][0]['latitude'];
+                                      lng = data['positions'][0]['longitude'];
+                                      course = data['positions'][0]['course'];
+                                      if (latList.last != lat &&
+                                          lngList.last != lng) {
+                                        print('lats and longs isnt equal');
+                                        latList.add(lat);
+                                        lngList.add(lng);
+                                        List<String> strList = latList
+                                            .map((i) => i.toString())
+                                            .toList();
+                                        prefs.setStringList(
+                                            "latList", strList);
+                                        List<String> strList2 = lngList
+                                            .map((i) => i.toString())
+                                            .toList();
+                                        prefs.setStringList("lngList", strList2);
+                                        // for (int i = 0;
+                                        //     i < latList.length;
+                                        //     i++) {
+                                        //   points.add(
+                                        //       LatLng(latList[i], lngList[i]));
+                                        // }
+                                        points.add(LatLng(lat, lng));
+                                        // print(points);
+                                        updatePolyline();
+                                        updateMainPolyline(lat, lng);
+                                        getLocationApi(
+                                            lat.toString(),
+                                            lng.toString(),
+                                            deviceNumb.toString());
+                                      }
+                                      //   latList.add(lat);
+                                      //   lngList.add(lng);
+                                      //   List<String> strList = latList.map((i) => i.toString()).toList();
+                                      //   prefs.setStringList("latList", strList);
+                                      //   List<String> strList2 = lngList.map((i) => i.toString()).toList();
+                                      //   prefs.setStringList("lngList", strList2);
+                                    //  //   for (int i = 0 ; i < latList.length; i++){
+                                   //   //     points.add(LatLng(latList[i],lngList[i]));
+                                   //   //   };
+                                      // points.add(LatLng(lat, lng));
+                                      //   // print(points);
+                                      //   updatePolyline();
+                                      //   getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
                                     }
-                                    //   latList.add(lat);
-                                    //   lngList.add(lng);
-                                    //   List<String> strList = latList.map((i) => i.toString()).toList();
-                                    //   prefs.setStringList("latList", strList);
-                                    //   List<String> strList2 = lngList.map((i) => i.toString()).toList();
-                                    //   prefs.setStringList("lngList", strList2);
-                                  //  //   for (int i = 0 ; i < latList.length; i++){
-                                 //   //     points.add(LatLng(latList[i],lngList[i]));
-                                 //   //   };
-                                    // points.add(LatLng(lat, lng));
-                                    //   // print(points);
-                                    //   updatePolyline();
-                                    //   getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
                                   }
-                                }
-                              } else {}
-                              return Text('');
-                            },
-                          ),
-                          Container(
-                            height: 82.h,
-                            width: getScreenWidth(context),
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.3),
-                                  spreadRadius: 2,
-                                  blurRadius: 7,
-                                  offset: const Offset(0, 0),
-                                ),
-                              ],
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20)),
-                              color: backgroundColor,
-                            ),
-                            child: GoogleMap(
-                              mapType: MapType.normal,
-                              zoomControlsEnabled: true,
-                              zoomGesturesEnabled: true,
-                              scrollGesturesEnabled: true,
-                              // padding: EdgeInsets.all(2.w),
-
-                              markers: Set.of((marker != null)
-                                  ? [marker!, marker2!, marker3!]
-                                  : []),
-                              circles:
-                                  Set.of((circle != null) ? [circle!] : []),
-
-                              /// مع المسار الاساسي
-                              polylines: {
-                                Polyline(
-                                  polylineId: PolylineId('route'),
-                                  points: polylineCoordinates,
-                                  color: primaryBlue,
-                                  width: 5,
-                                ),
-                                Polyline(
-                                    points: points,
-                                    polylineId: PolylineId('track'),
-                                    color: Colors.red,
-                                    width: 4,
-                                    // points: latLngList,
-                                    patterns: [
-                                      PatternItem.dash(20),
-                                      PatternItem.gap(10),
-                                    ]),
+                                } else {}
+                                return Text('');
                               },
-
-                              /// بدون المسار الاساسي
-                              // polylines: pathPolyline,
-                              //TODO
-                              initialCameraPosition: _kGooglePlex!,
-                              onMapCreated:
-                                  (GoogleMapController controller) {
-                                gmc = controller;
-                              },
-                              onTap: (latlng) {},
                             ),
-                          ),
-                          Positioned(
-                              bottom: 2.h,
-                              left: 30.w,
-                              right: 30.w,
-                              child: ContainerWidget(
-                                  text: 'end'.tr(),
-                                  h: 7.h,
-                                  w: 50.w,
-                                  onTap: () {
-                                    DateTime t = DateTime.now();
-                                    print(t);
-                                    String end_time =
-                                        '${t.hour}:${t.minute}:${t.second}';
-                                    print(end_time);
-                                    print(latList);
-                                    print(lngList);
-                                    print(latList.first);
-                                    print(latList.last);
-                                    print(lngList.first);
-                                    print(lngList.last);
-                                    getDistance(
-                                        latList.first,
-                                        lngList.first,
-                                        latList.last,
-                                        lngList.last);
-                                    print(widget.tripId);
-                                    print(end_time);
-                                    print(finalDistance.toString());
-                                    latList = [];
-                                    lngList = [];
-                                    prefs.remove('latList');
-                                    prefs.remove('lngList');
-                                    for (int i = 0;
-                                        i < latList.length;
-                                        i++) {
-                                      points.add(
-                                          LatLng(latList[i], lngList[i]));
-                                    }
-                                    ;
-                                    endTripApi(widget.tripId, end_time,
-                                        finalDistance.toString());
-                                  }))
-                        ]),
-                      ),
-                      // SizedBox(
-                      //   height: 3.h,
-                      // ),
-                      // BottomIconsDriver(),
-                    ],
+                            Container(
+                              height: 82.h,
+                              width: getScreenWidth(context),
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20)),
+                                 color: backgroundColor,
+                              ),
+                              child: GoogleMap(
+                                mapType: MapType.normal,
+                                zoomControlsEnabled: true,
+                                zoomGesturesEnabled: true,
+                                scrollGesturesEnabled: true,
+                                // padding: EdgeInsets.all(2.w),
+
+                                markers: Set.of((marker != null)
+                                    ? [marker!, marker2!, marker3!]
+                                    : []),
+                                circles:
+                                    Set.of((circle != null) ? [circle!] : []),
+
+                                polylines: {
+                                  Polyline(
+                                    polylineId: PolylineId('route'),
+                                    points: polylineCoordinates,
+                                    color: primaryBlue,
+                                    width: 5,
+                                  ),
+                                },
+
+
+                                // /// مع المسار الاساسي
+                                // polylines: {
+                                //   Polyline(
+                                //     polylineId: PolylineId('route'),
+                                //     points: polylineCoordinates,
+                                //     color: primaryBlue,
+                                //     width: 5,
+                                //   ),
+                                //   Polyline(
+                                //       points: points,
+                                //       polylineId: PolylineId('track'),
+                                //       color: Colors.red,
+                                //       width: 4,
+                                //       // points: latLngList,
+                                //       patterns: [
+                                //         PatternItem.dash(20),
+                                //         PatternItem.gap(10),
+                                //       ]),
+                                // },
+
+                                /// بدون المسار الاساسي
+                                // polylines: pathPolyline,
+
+                                initialCameraPosition: _kGooglePlex!,
+                                onMapCreated:
+                                    (GoogleMapController controller) {
+                                  gmc = controller;
+                                },
+                                onTap: (latlng) {},
+                              ),
+                            ),
+                            Positioned(
+                                bottom: 2.h,
+                                left: 30.w,
+                                right: 30.w,
+                                child: ContainerWidget(
+                                    text: 'end'.tr(),
+                                    h: 7.h,
+                                    w: 50.w,
+                                    onTap: () {
+                                      DateTime t = DateTime.now();
+                                      print(t);
+                                      String end_time =
+                                          '${t.hour}:${t.minute}:${t.second}';
+                                      print(end_time);
+                                      print(latList);
+                                      print(lngList);
+                                      print(latList.first);
+                                      print(latList.last);
+                                      print(lngList.first);
+                                      print(lngList.last);
+                                      getDistance(
+                                          latList.first,
+                                          lngList.first,
+                                          latList.last,
+                                          lngList.last);
+                                      print(widget.tripId);
+                                      print(end_time);
+                                      print(finalDistance.toString());
+                                      latList = [];
+                                      lngList = [];
+                                      prefs.remove('latList');
+                                      prefs.remove('lngList');
+                                      for (int i = 0;
+                                          i < latList.length;
+                                          i++) {
+                                        points.add(
+                                            LatLng(latList[i], lngList[i]));
+                                      }
+                                      ;
+                                      endTripApi(widget.tripId, end_time,
+                                          finalDistance.toString());
+                                    }))
+                          ]),
+                        ),
+                        // SizedBox(
+                        //   height: 3.h,
+                        // ),
+                        // BottomIconsDriver(),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

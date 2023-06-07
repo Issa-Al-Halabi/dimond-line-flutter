@@ -1,4 +1,3 @@
-import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

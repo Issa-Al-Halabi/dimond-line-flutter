@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_ended.dart';
@@ -267,6 +268,29 @@ class _TrackingScreenState extends State<TrackingScreen> {
     }
   }
 
+  void updateMainPolyline(double pickupLatitude, double pickupLongitude) async {
+    polylineCoordinates.clear();
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      APIKEY,
+      PointLatLng(pickupLatitude, pickupLongitude),
+      PointLatLng(double.parse(widget.dropLatitude),
+          double.parse(widget.dropLongitude)),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    if (mounted) {
+      setState(() {});
+    }
+
+    // delete from marker
+    marker2 = Marker(markerId: MarkerId("from"));
+  }
+
+
   getDistance(double latcurrent, double lancurrent, double lat, double lng) {
     finalDistance = Geolocator.distanceBetween(
       latcurrent,
@@ -298,7 +322,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
       String trip_id, String end_time, String finalDistance) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       var data =
           await AppRequests.endTripRequest(trip_id, end_time, finalDistance);
       print(data);
@@ -379,6 +403,9 @@ class _TrackingScreenState extends State<TrackingScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        if (Loader.isShown == true) {
+          Loader.hide();
+        }
         final differance = DateTime.now().difference(timeback);
         final isExitWarning = differance >= Duration(seconds: 2);
         timeback = DateTime.now();
@@ -401,7 +428,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
       },
       child: Scaffold(
         body: _kGooglePlex == null
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
                 width: getScreenWidth(context),
@@ -442,9 +469,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                   var data =
                                       json.decode(snapshot.data.toString());
                                   if (data['positions'] != null) {
-                                    // if (data['positions'][0]['deviceId'] == 204) {
-                                      if (data['positions'][0]['deviceId'] ==
-                                          deviceNumb) {
+                                    // if (data['positions'][0]['deviceId'] == 248) {
+                                      if (data['positions'][0]['deviceId'] == deviceNumb) {
                                       print('--------------------------------');
                                       lat = data['positions'][0]['latitude'];
                                       lng = data['positions'][0]['longitude'];
@@ -465,6 +491,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                             "lngListIn", strList2);
                                         latLngList.add(LatLng(lat, lng));
                                         updatePolyline();
+                                        updateMainPolyline(lat, lng);
                                         getLocationApi(
                                             lat.toString(),
                                             lng.toString(),
@@ -507,38 +534,40 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                         : []),
                                 circles:
                                     Set.of((circle != null) ? [circle!] : []),
-                                // polylines: {
-                                //   Polyline(
-                                //     polylineId: PolylineId('route'),
-                                //     points: polylineCoordinates,
-                                //     color: primaryBlue,
-                                //     width: 5,
-                                //   ),
-                                // },
-
-                                /// مع المسار الاساسي
                                 polylines: {
                                   Polyline(
                                     polylineId: PolylineId('route'),
                                     points: polylineCoordinates,
                                     color: primaryBlue,
-                                    width: 4,
+                                    width: 5,
                                   ),
-
-                                  //TODO
-                                  Polyline(
-                                      points: latLngList,
-                                      polylineId: PolylineId('track'),
-                                      color: Colors.red,
-                                      width: 4,
-                                      patterns: [
-                                        PatternItem.dash(20),
-                                        PatternItem.gap(10),
-                                      ]),
                                 },
+
+                                // /// مع المسار الاساسي
+                                // polylines: {
+                                //   Polyline(
+                                //     polylineId: PolylineId('route'),
+                                //     points: polylineCoordinates,
+                                //     color: primaryBlue,
+                                //     width: 4,
+                                //   ),
+                                //
+                                //   //TODO
+                                //   Polyline(
+                                //       points: latLngList,
+                                //       polylineId: PolylineId('track'),
+                                //       color: Colors.red,
+                                //       width: 4,
+                                //       patterns: [
+                                //         PatternItem.dash(20),
+                                //         PatternItem.gap(10),
+                                //       ]),
+                                // },
 
                                 /// بدون المسار الاساسي
                                 // polylines: pathPolyline,
+
+
                                 initialCameraPosition: _kGooglePlex!,
                                 onMapCreated:
                                     (GoogleMapController controller) {

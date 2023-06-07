@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -13,6 +14,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import '../../../../../Functions/helper.dart';
 import 'outside_city.dart';
 
 String addressFromMarker = '', addressToMarker = '';
@@ -349,372 +351,375 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _kGooglePlex == null
-          ? Center(child: CircularProgressIndicator())
-          : Container(
-              height: getScreenHeight(context),
-              width: getScreenWidth(context),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: _kGooglePlex == null
+            ? Center(child: LoaderWidget())
+            : Container(
+                height: getScreenHeight(context),
+                width: getScreenWidth(context),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          height: 91.h,
-                          width: getScreenWidth(context),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 7,
-                                offset: const Offset(0, 0),
-                              ),
-                            ],
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20)),
-                            color: backgroundColor,
-                          ),
-                          child: GoogleMap(
-                            markers: myMarker,
-                            polylines: {
-                              Polyline(
-                                polylineId: PolylineId('route'),
-                                points: polylineCoordinates,
-                                color: primaryBlue,
-                                width: 5,
-                              ),
-                            },
-                            mapType: MapType.normal,
-                            initialCameraPosition: _kGooglePlex!,
-                            onMapCreated: (GoogleMapController controller) {
-                              gmc = controller;
-                            },
-                            onTap: (latlng) {},
-                          ),
-                        ),
-                        Positioned(
-                            bottom: 5.h,
-                            left: 10.w,
-                            right: 10.w,
-                            child: Column(
-                              children: [
-                                // InkWell(
-                                //     child: Container(
-                                //         width: 60.w,
-                                //         height: 8.h,
-                                //         decoration: const BoxDecoration(
-                                //           borderRadius: BorderRadius.all(
-                                //               Radius.circular(25)),
-                                //           gradient: RadialGradient(
-                                //             colors: [
-                                //               Colors.blueGrey,
-                                //               primaryBlue3
-                                //             ],
-                                //             radius: 1.2,
-                                //           ),
-                                //         ),
-                                //         child: Center(
-                                //             child: myText(
-                                //           text: 'tap to select'.tr(),
-                                //           fontSize: 5.sp,
-                                //           color: white,
-                                //         ))),
-                                //     onTap: () async {
-                                //       // AwesomeDialog(
-                                //       //   context: context,
-                                //       //   animType: AnimType.SCALE,
-                                //       //   btnOkColor: primaryBlue,
-                                //       //   dialogType: DialogType.NO_HEADER,
-                                //       //   padding: const EdgeInsets.all(10),
-                                //       //   body: StatefulBuilder(
-                                //       //     builder: (context, setState) {
-                                //       //       return Column(
-                                //       //         children: [
-                                //       //           myText(
-                                //       //             text: 'from'.tr(),
-                                //       //             fontSize: 4.sp,
-                                //       //             color: primaryBlue,
-                                //       //           ),
-                                //       //           GooglePlaceAutoCompleteTextField(
-                                //       //               textEditingController:
-                                //       //                   controllerFrom,
-                                //       //               googleAPIKey: APIKEY,
-                                //       //               inputDecoration:
-                                //       //                   const InputDecoration(),
-                                //       //               countries: const [
-                                //       //                 "sy",
-                                //       //                 "sy"
-                                //       //               ],
-                                //       //               // optional by default null is set
-                                //       //               isLatLngRequired: true,
-                                //       //               // if you required coordinates from place detail
-                                //       //               getPlaceDetailWithLatLng:
-                                //       //                   (prediction) {
-                                //       //                 setState(() {
-                                //       //                   controllerFrom.text =
-                                //       //                       prediction
-                                //       //                           .description!;
-                                //       //                   controllerFrom
-                                //       //                           .selection =
-                                //       //                       TextSelection.fromPosition(
-                                //       //                           TextPosition(
-                                //       //                               offset: prediction
-                                //       //                                   .description!
-                                //       //                                   .length));
-                                //       //                 });
-                                //       //                 fromLat = double.tryParse(
-                                //       //                     "${prediction.lat}")!;
-                                //       //                 fromLon = double.tryParse(
-                                //       //                     "${prediction.lng}")!;
-                                //       //                 setState(() {});
-                                //       //                 print("placeDetails 1 :" +
-                                //       //                     prediction.lng
-                                //       //                         .toString());
-                                //       //                 print("point lat 1 :" +
-                                //       //                     fromLat.toString());
-                                //       //                 print("point lan 1 :" +
-                                //       //                     fromLon.toString());
-                                //       //               },
-                                //       //               // this callback is called when isLatLngRequired is true
-                                //       //               itmClick: (prediction) {
-                                //       //                 setState(() {
-                                //       //                   controllerFrom.text =
-                                //       //                       prediction
-                                //       //                           .description!;
-                                //       //                   controllerFrom
-                                //       //                           .selection =
-                                //       //                       TextSelection.fromPosition(
-                                //       //                           TextPosition(
-                                //       //                               offset: prediction
-                                //       //                                   .description!
-                                //       //                                   .length));
-                                //       //                 });
-                                //       //               }),
-                                //       //           SizedBox(
-                                //       //             height: 2.h,
-                                //       //           ),
-                                //       //           myText(
-                                //       //             text: 'to'.tr(),
-                                //       //             fontSize: 4.sp,
-                                //       //             color: primaryBlue,
-                                //       //           ),
-                                //       //           GooglePlaceAutoCompleteTextField(
-                                //       //               textEditingController:
-                                //       //                   controllerTo,
-                                //       //               googleAPIKey: APIKEY,
-                                //       //               inputDecoration:
-                                //       //                   const InputDecoration(),
-                                //       //               countries: const [
-                                //       //                 "sy",
-                                //       //                 "sy"
-                                //       //               ],
-                                //       //               // optional by default null is set
-                                //       //               isLatLngRequired: true,
-                                //       //               // if you required coordinates from place detail
-                                //       //               getPlaceDetailWithLatLng:
-                                //       //                   (prediction) {
-                                //       //                 controllerTo.text =
-                                //       //                     prediction
-                                //       //                         .description!;
-                                //       //                 controllerTo.selection =
-                                //       //                     TextSelection.fromPosition(
-                                //       //                         TextPosition(
-                                //       //                             offset: prediction
-                                //       //                                 .description!
-                                //       //                                 .length));
-                                //       //                 toLat = double.tryParse(
-                                //       //                     "${prediction.lat}")!;
-                                //       //                 toLon = double.tryParse(
-                                //       //                     "${prediction.lng}")!;
-                                //       //                 print("placeDetails 2 :" +
-                                //       //                     prediction.lng
-                                //       //                         .toString());
-                                //       //                 print("point lat 2 :" +
-                                //       //                     toLat.toString());
-                                //       //                 print("point lan 2 :" +
-                                //       //                     toLon.toString());
-                                //       //               },
-                                //       //               // this callback is called when isLatLngRequired is true
-                                //       //               itmClick: (prediction) {
-                                //       //                 setState(() {
-                                //       //                   controllerTo.text =
-                                //       //                       prediction
-                                //       //                           .description!;
-                                //       //                   controllerTo.selection =
-                                //       //                       TextSelection.fromPosition(
-                                //       //                           TextPosition(
-                                //       //                               offset: prediction
-                                //       //                                   .description!
-                                //       //                                   .length));
-                                //       //                 });
-                                //       //               }),
-                                //       //         ],
-                                //       //       );
-                                //       //     },
-                                //       //   ),
-                                //       //   btnOkOnPress: () {
-                                //       //     LatLng fromLatLng =
-                                //       //         LatLng(fromLat, fromLon);
-                                //       //     LatLng toLatLng =
-                                //       //         LatLng(toLat, toLon);
-                                //       //     print(fromLatLng);
-                                //       //     print(toLatLng);
-                                //       //     Future.delayed(
-                                //       //             const Duration(seconds: 1))
-                                //       //         .then((_) async {
-                                //       //       gmc!.animateCamera(
-                                //       //           CameraUpdate.newCameraPosition(
-                                //       //               CameraPosition(
-                                //       //                   target: toLatLng,
-                                //       //                   zoom: 10)));
-                                //       //       myMarker.add(
-                                //       //         Marker(
-                                //       //           markerId:
-                                //       //               const MarkerId('from'),
-                                //       //           position: fromLatLng,
-                                //       //           draggable: true,
-                                //       //           onDragEnd: (LatLng latlng) {
-                                //       //             print(latlng);
-                                //       //             setState(() {
-                                //       //               fromLat = latlng.latitude;
-                                //       //               fromLon = latlng.longitude;
-                                //       //             });
-                                //       //             getPolyPoints(fromLat,
-                                //       //                 fromLon, toLat, toLon);
-                                //       //             getDistance(fromLat, fromLon,
-                                //       //                 toLat, toLon);
-                                //       //             getTimeOfTrip(fromLat,
-                                //       //                 fromLon, toLat, toLon);
-                                //       //             convertFromAddress(
-                                //       //                 fromLat, fromLon);
-                                //       //           },
-                                //       //           infoWindow: const InfoWindow(
-                                //       //             title: 'source',
-                                //       //           ),
-                                //       //           icon: BitmapDescriptor
-                                //       //               .defaultMarkerWithHue(
-                                //       //                   BitmapDescriptor
-                                //       //                       .hueBlue),
-                                //       //         ),
-                                //       //       );
-                                //       //       myMarker.add(Marker(
-                                //       //         markerId: const MarkerId('to'),
-                                //       //         position: toLatLng,
-                                //       //         draggable: true,
-                                //       //         onDragEnd: (LatLng latlng) {
-                                //       //           print(latlng);
-                                //       //           setState(() {
-                                //       //             toLat = latlng.latitude;
-                                //       //             toLon = latlng.longitude;
-                                //       //           });
-                                //       //           getPolyPoints(fromLat, fromLon,
-                                //       //               toLat, toLon);
-                                //       //           getDistance(fromLat, fromLon,
-                                //       //               toLat, toLon);
-                                //       //           getTimeOfTrip(fromLat, fromLon,
-                                //       //               toLat, toLon);
-                                //       //           convertToAddress(toLat, toLon);
-                                //       //         },
-                                //       //         infoWindow: const InfoWindow(
-                                //       //           title: 'distenation',
-                                //       //         ),
-                                //       //         icon: BitmapDescriptor
-                                //       //             .defaultMarkerWithHue(
-                                //       //                 BitmapDescriptor.hueBlue),
-                                //       //       ));
-                                //       //       getPolyPoints(
-                                //       //           fromLat, fromLon, toLat, toLon);
-                                //       //       getDistance(
-                                //       //           fromLat, fromLon, toLat, toLon);
-                                //       //       getTimeOfTrip(
-                                //       //           fromLat, fromLon, toLat, toLon);
-                                //       //       convertFromAddress(
-                                //       //           fromLat, fromLon);
-                                //       //       convertToAddress(toLat, toLon);
-                                //       //     });
-                                //       //     setState(() {});
-                                //       //   },
-                                //       // ).show();
-                                //     }),
-                                SizedBox(
-                                  height: 2.h,
-                                ),
-                                InkWell(
-                                  child: Container(
-                                    width: 60.w,
-                                    height: 8.h,
-                                    decoration: const BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(25)),
-                                      gradient: RadialGradient(
-                                        colors: [Colors.blueGrey, primaryBlue3],
-                                        radius: 1.2,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'confirm'.tr(),
-                                        style: TextStyle(
-                                            fontSize: 5.sp,
-                                            color: backgroundColor),
-                                      ),
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Loader.show(context,
-                                        progressIndicator:
-                                            CircularProgressIndicator());
-                                    print(fromLat);
-                                    print(fromLon);
-                                    print(toLat);
-                                    print(toLon);
-                                    print(widget.categoryId);
-                                    print(widget.subCategoryId);
-                                    print(timeOfTrip);
-                                    print(distance);
-                                    print(widget.to);
-                                    if (fromLat != 0.0 && toLat != 0.0) {
-                                      Loader.hide();
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OutsideCityScreen(
-                                                    categoryId:
-                                                        widget.categoryId,
-                                                    subCategoryId:
-                                                        widget.subCategoryId,
-                                                    timeOfTrip: timeOfTrip,
-                                                    distance:
-                                                        distance.toString(),
-                                                    fromLat: fromLat.toString(),
-                                                    fromLon: fromLon.toString(),
-                                                    toLat: toLat.toString(),
-                                                    toLon: toLon.toString(),
-                                                    to: widget.to,
-                                                  )));
-                                    } else {
-                                      Loader.hide();
-                                      setSnackbar(
-                                          'enter all fields'.tr(), context);
-                                    }
-                                  },
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                            height: 91.h,
+                            width: getScreenWidth(context),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 0),
                                 ),
                               ],
-                            ))
-                      ],
-                    ),
-                  ],
-                ),
-              )),
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                              color: backgroundColor,
+                            ),
+                            child: GoogleMap(
+                              markers: myMarker,
+                              polylines: {
+                                Polyline(
+                                  polylineId: PolylineId('route'),
+                                  points: polylineCoordinates,
+                                  color: primaryBlue,
+                                  width: 5,
+                                ),
+                              },
+                              mapType: MapType.normal,
+                              initialCameraPosition: _kGooglePlex!,
+                              onMapCreated: (GoogleMapController controller) {
+                                gmc = controller;
+                              },
+                              onTap: (latlng) {},
+                            ),
+                          ),
+                          Positioned(
+                              bottom: 5.h,
+                              left: 10.w,
+                              right: 10.w,
+                              child: Column(
+                                children: [
+                                  // InkWell(
+                                  //     child: Container(
+                                  //         width: 60.w,
+                                  //         height: 8.h,
+                                  //         decoration: const BoxDecoration(
+                                  //           borderRadius: BorderRadius.all(
+                                  //               Radius.circular(25)),
+                                  //           gradient: RadialGradient(
+                                  //             colors: [
+                                  //               Colors.blueGrey,
+                                  //               primaryBlue3
+                                  //             ],
+                                  //             radius: 1.2,
+                                  //           ),
+                                  //         ),
+                                  //         child: Center(
+                                  //             child: myText(
+                                  //           text: 'tap to select'.tr(),
+                                  //           fontSize: 5.sp,
+                                  //           color: white,
+                                  //         ))),
+                                  //     onTap: () async {
+                                  //       // AwesomeDialog(
+                                  //       //   context: context,
+                                  //       //   animType: AnimType.SCALE,
+                                  //       //   btnOkColor: primaryBlue,
+                                  //       //   dialogType: DialogType.NO_HEADER,
+                                  //       //   padding: const EdgeInsets.all(10),
+                                  //       //   body: StatefulBuilder(
+                                  //       //     builder: (context, setState) {
+                                  //       //       return Column(
+                                  //       //         children: [
+                                  //       //           myText(
+                                  //       //             text: 'from'.tr(),
+                                  //       //             fontSize: 4.sp,
+                                  //       //             color: primaryBlue,
+                                  //       //           ),
+                                  //       //           GooglePlaceAutoCompleteTextField(
+                                  //       //               textEditingController:
+                                  //       //                   controllerFrom,
+                                  //       //               googleAPIKey: APIKEY,
+                                  //       //               inputDecoration:
+                                  //       //                   const InputDecoration(),
+                                  //       //               countries: const [
+                                  //       //                 "sy",
+                                  //       //                 "sy"
+                                  //       //               ],
+                                  //       //               // optional by default null is set
+                                  //       //               isLatLngRequired: true,
+                                  //       //               // if you required coordinates from place detail
+                                  //       //               getPlaceDetailWithLatLng:
+                                  //       //                   (prediction) {
+                                  //       //                 setState(() {
+                                  //       //                   controllerFrom.text =
+                                  //       //                       prediction
+                                  //       //                           .description!;
+                                  //       //                   controllerFrom
+                                  //       //                           .selection =
+                                  //       //                       TextSelection.fromPosition(
+                                  //       //                           TextPosition(
+                                  //       //                               offset: prediction
+                                  //       //                                   .description!
+                                  //       //                                   .length));
+                                  //       //                 });
+                                  //       //                 fromLat = double.tryParse(
+                                  //       //                     "${prediction.lat}")!;
+                                  //       //                 fromLon = double.tryParse(
+                                  //       //                     "${prediction.lng}")!;
+                                  //       //                 setState(() {});
+                                  //       //                 print("placeDetails 1 :" +
+                                  //       //                     prediction.lng
+                                  //       //                         .toString());
+                                  //       //                 print("point lat 1 :" +
+                                  //       //                     fromLat.toString());
+                                  //       //                 print("point lan 1 :" +
+                                  //       //                     fromLon.toString());
+                                  //       //               },
+                                  //       //               // this callback is called when isLatLngRequired is true
+                                  //       //               itmClick: (prediction) {
+                                  //       //                 setState(() {
+                                  //       //                   controllerFrom.text =
+                                  //       //                       prediction
+                                  //       //                           .description!;
+                                  //       //                   controllerFrom
+                                  //       //                           .selection =
+                                  //       //                       TextSelection.fromPosition(
+                                  //       //                           TextPosition(
+                                  //       //                               offset: prediction
+                                  //       //                                   .description!
+                                  //       //                                   .length));
+                                  //       //                 });
+                                  //       //               }),
+                                  //       //           SizedBox(
+                                  //       //             height: 2.h,
+                                  //       //           ),
+                                  //       //           myText(
+                                  //       //             text: 'to'.tr(),
+                                  //       //             fontSize: 4.sp,
+                                  //       //             color: primaryBlue,
+                                  //       //           ),
+                                  //       //           GooglePlaceAutoCompleteTextField(
+                                  //       //               textEditingController:
+                                  //       //                   controllerTo,
+                                  //       //               googleAPIKey: APIKEY,
+                                  //       //               inputDecoration:
+                                  //       //                   const InputDecoration(),
+                                  //       //               countries: const [
+                                  //       //                 "sy",
+                                  //       //                 "sy"
+                                  //       //               ],
+                                  //       //               // optional by default null is set
+                                  //       //               isLatLngRequired: true,
+                                  //       //               // if you required coordinates from place detail
+                                  //       //               getPlaceDetailWithLatLng:
+                                  //       //                   (prediction) {
+                                  //       //                 controllerTo.text =
+                                  //       //                     prediction
+                                  //       //                         .description!;
+                                  //       //                 controllerTo.selection =
+                                  //       //                     TextSelection.fromPosition(
+                                  //       //                         TextPosition(
+                                  //       //                             offset: prediction
+                                  //       //                                 .description!
+                                  //       //                                 .length));
+                                  //       //                 toLat = double.tryParse(
+                                  //       //                     "${prediction.lat}")!;
+                                  //       //                 toLon = double.tryParse(
+                                  //       //                     "${prediction.lng}")!;
+                                  //       //                 print("placeDetails 2 :" +
+                                  //       //                     prediction.lng
+                                  //       //                         .toString());
+                                  //       //                 print("point lat 2 :" +
+                                  //       //                     toLat.toString());
+                                  //       //                 print("point lan 2 :" +
+                                  //       //                     toLon.toString());
+                                  //       //               },
+                                  //       //               // this callback is called when isLatLngRequired is true
+                                  //       //               itmClick: (prediction) {
+                                  //       //                 setState(() {
+                                  //       //                   controllerTo.text =
+                                  //       //                       prediction
+                                  //       //                           .description!;
+                                  //       //                   controllerTo.selection =
+                                  //       //                       TextSelection.fromPosition(
+                                  //       //                           TextPosition(
+                                  //       //                               offset: prediction
+                                  //       //                                   .description!
+                                  //       //                                   .length));
+                                  //       //                 });
+                                  //       //               }),
+                                  //       //         ],
+                                  //       //       );
+                                  //       //     },
+                                  //       //   ),
+                                  //       //   btnOkOnPress: () {
+                                  //       //     LatLng fromLatLng =
+                                  //       //         LatLng(fromLat, fromLon);
+                                  //       //     LatLng toLatLng =
+                                  //       //         LatLng(toLat, toLon);
+                                  //       //     print(fromLatLng);
+                                  //       //     print(toLatLng);
+                                  //       //     Future.delayed(
+                                  //       //             const Duration(seconds: 1))
+                                  //       //         .then((_) async {
+                                  //       //       gmc!.animateCamera(
+                                  //       //           CameraUpdate.newCameraPosition(
+                                  //       //               CameraPosition(
+                                  //       //                   target: toLatLng,
+                                  //       //                   zoom: 10)));
+                                  //       //       myMarker.add(
+                                  //       //         Marker(
+                                  //       //           markerId:
+                                  //       //               const MarkerId('from'),
+                                  //       //           position: fromLatLng,
+                                  //       //           draggable: true,
+                                  //       //           onDragEnd: (LatLng latlng) {
+                                  //       //             print(latlng);
+                                  //       //             setState(() {
+                                  //       //               fromLat = latlng.latitude;
+                                  //       //               fromLon = latlng.longitude;
+                                  //       //             });
+                                  //       //             getPolyPoints(fromLat,
+                                  //       //                 fromLon, toLat, toLon);
+                                  //       //             getDistance(fromLat, fromLon,
+                                  //       //                 toLat, toLon);
+                                  //       //             getTimeOfTrip(fromLat,
+                                  //       //                 fromLon, toLat, toLon);
+                                  //       //             convertFromAddress(
+                                  //       //                 fromLat, fromLon);
+                                  //       //           },
+                                  //       //           infoWindow: const InfoWindow(
+                                  //       //             title: 'source',
+                                  //       //           ),
+                                  //       //           icon: BitmapDescriptor
+                                  //       //               .defaultMarkerWithHue(
+                                  //       //                   BitmapDescriptor
+                                  //       //                       .hueBlue),
+                                  //       //         ),
+                                  //       //       );
+                                  //       //       myMarker.add(Marker(
+                                  //       //         markerId: const MarkerId('to'),
+                                  //       //         position: toLatLng,
+                                  //       //         draggable: true,
+                                  //       //         onDragEnd: (LatLng latlng) {
+                                  //       //           print(latlng);
+                                  //       //           setState(() {
+                                  //       //             toLat = latlng.latitude;
+                                  //       //             toLon = latlng.longitude;
+                                  //       //           });
+                                  //       //           getPolyPoints(fromLat, fromLon,
+                                  //       //               toLat, toLon);
+                                  //       //           getDistance(fromLat, fromLon,
+                                  //       //               toLat, toLon);
+                                  //       //           getTimeOfTrip(fromLat, fromLon,
+                                  //       //               toLat, toLon);
+                                  //       //           convertToAddress(toLat, toLon);
+                                  //       //         },
+                                  //       //         infoWindow: const InfoWindow(
+                                  //       //           title: 'distenation',
+                                  //       //         ),
+                                  //       //         icon: BitmapDescriptor
+                                  //       //             .defaultMarkerWithHue(
+                                  //       //                 BitmapDescriptor.hueBlue),
+                                  //       //       ));
+                                  //       //       getPolyPoints(
+                                  //       //           fromLat, fromLon, toLat, toLon);
+                                  //       //       getDistance(
+                                  //       //           fromLat, fromLon, toLat, toLon);
+                                  //       //       getTimeOfTrip(
+                                  //       //           fromLat, fromLon, toLat, toLon);
+                                  //       //       convertFromAddress(
+                                  //       //           fromLat, fromLon);
+                                  //       //       convertToAddress(toLat, toLon);
+                                  //       //     });
+                                  //       //     setState(() {});
+                                  //       //   },
+                                  //       // ).show();
+                                  //     }),
+                                  SizedBox(
+                                    height: 2.h,
+                                  ),
+                                  InkWell(
+                                    child: Container(
+                                      width: 60.w,
+                                      height: 8.h,
+                                      decoration: const BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.all(Radius.circular(25)),
+                                        gradient: RadialGradient(
+                                          colors: [Colors.blueGrey, primaryBlue3],
+                                          radius: 1.2,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'confirm'.tr(),
+                                          style: TextStyle(
+                                              fontSize: 5.sp,
+                                              color: backgroundColor),
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      Loader.show(context,
+                                          progressIndicator:
+                                              LoaderWidget());
+                                      print(fromLat);
+                                      print(fromLon);
+                                      print(toLat);
+                                      print(toLon);
+                                      print(widget.categoryId);
+                                      print(widget.subCategoryId);
+                                      print(timeOfTrip);
+                                      print(distance);
+                                      print(widget.to);
+                                      if (fromLat != 0.0 && toLat != 0.0) {
+                                        Loader.hide();
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OutsideCityScreen(
+                                                      categoryId:
+                                                          widget.categoryId,
+                                                      subCategoryId:
+                                                          widget.subCategoryId,
+                                                      timeOfTrip: timeOfTrip,
+                                                      distance:
+                                                          distance.toString(),
+                                                      fromLat: fromLat.toString(),
+                                                      fromLon: fromLon.toString(),
+                                                      toLat: toLat.toString(),
+                                                      toLon: toLon.toString(),
+                                                      to: widget.to,
+                                                    )));
+                                      } else {
+                                        Loader.hide();
+                                        setSnackbar(
+                                            'enter all fields'.tr(), context);
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ))
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
+      ),
     );
   }
 }

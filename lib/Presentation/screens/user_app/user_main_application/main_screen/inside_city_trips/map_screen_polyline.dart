@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/Functions/helper.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/select_features.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
@@ -140,252 +141,255 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-            height: getScreenHeight(context),
-            width: getScreenWidth(context),
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(background),
-                fit: BoxFit.fill,
-              ),
-            ),
-            child: SingleChildScrollView(
-                child: Column(children: [
-              Container(
-                height: 91.h,
-                width: getScreenWidth(context),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
-                      spreadRadius: 2,
-                      blurRadius: 7,
-                      offset: const Offset(0, 0),
-                    ),
-                  ],
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  color: backgroundColor,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+          body: Container(
+              height: getScreenHeight(context),
+              width: getScreenWidth(context),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(background),
+                  fit: BoxFit.fill,
                 ),
-                child: Stack(children: [
-                  Container(
-                    height: 91.h,
-                    width: getScreenWidth(context),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 7,
-                          offset: const Offset(0, 0),
-                        ),
-                      ],
-                      color: backgroundColor,
-                    ),
-                    child: widget.fromLat == null
-                        ? CircularProgressIndicator()
-                        : GoogleMap(
-                            markers: {
-                              Marker(
-                                markerId: MarkerId('1'),
-                                // draggable: true,
-                                infoWindow: InfoWindow(
-                                    title: 'source'.tr(),
-                                    onTap: () {
-                                      print('marker info tab');
-                                    }),
-                                position:
-                                    LatLng(widget.fromLat!, widget.fromLng!),
-                                onTap: () {
-                                  print('marker tab');
-                                },
-                                icon: BitmapDescriptor.defaultMarkerWithHue(
-                                    BitmapDescriptor.hueBlue),
-                              ),
-                              Marker(
-                                markerId: MarkerId('2'),
-                                infoWindow: InfoWindow(
-                                    title: 'destination'.tr(),
-                                    onTap: () {
-                                      print('marker2 info tab');
-                                    }),
-                                position: LatLng(widget.toLat!, widget.toLng!),
-                                onTap: () {
-                                  print('marker2 tab');
-                                },
-                                icon: BitmapDescriptor.defaultMarkerWithHue(
-                                    BitmapDescriptor.hueBlue),
-                              )
-                            },
-                            polylines: {
-                              Polyline(
-                                polylineId: PolylineId('route'),
-                                points: polylineCoordinates,
-                                color: primaryBlue,
-                                width: 5,
-                              ),
-                            },
-                            mapType: MapType.normal,
-                            initialCameraPosition: CameraPosition(
-                              target: LatLng(widget.fromLat!, widget.fromLng!),
-                              zoom: 12,
-                            ),
-                            onMapCreated: (GoogleMapController controller) {
-                              gmc = controller;
-                            },
-                            onTap: (latlng) {},
-                          ),
+              ),
+              child: SingleChildScrollView(
+                  child: Column(children: [
+                Container(
+                  height: 91.h,
+                  width: getScreenWidth(context),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 2,
+                        blurRadius: 7,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                    color: backgroundColor,
                   ),
-                  Positioned(
-                    bottom: 1.h,
-                    child: Container(
-                      height: 20.h,
+                  child: Stack(children: [
+                    Container(
+                      height: 91.h,
                       width: getScreenWidth(context),
-                      child: ListView.builder(
-                          itemCount: widget.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 2.w,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 7,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                        color: backgroundColor,
+                      ),
+                      child: widget.fromLat == null
+                          ? LoaderWidget()
+                          : GoogleMap(
+                              markers: {
+                                Marker(
+                                  markerId: MarkerId('1'),
+                                  // draggable: true,
+                                  infoWindow: InfoWindow(
+                                      title: 'source'.tr(),
+                                      onTap: () {
+                                        print('marker info tab');
+                                      }),
+                                  position:
+                                      LatLng(widget.fromLat!, widget.fromLng!),
+                                  onTap: () {
+                                    print('marker tab');
+                                  },
+                                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                                      BitmapDescriptor.hueBlue),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 1.h),
-                                  child: InkWell(
-                                    onTap: () async {
-                                      Loader.show(context,
-                                          progressIndicator:
-                                              CircularProgressIndicator());
-                                      getDistance(
-                                          widget.fromLat!,
-                                          widget.fromLng!,
-                                          widget.toLat!,
-                                          widget.toLng!);
-                                      // getTimeOfTrip(widget.fromLat!, widget.fromLng!, widget.toLat!, widget.toLng!);
-                                      if (widget.fromLat != 0.0 &&
-                                          widget.fromLng != 0.0 &&
-                                          widget.toLat != 0.0 &&
-                                          widget.toLng != 0.0) {
-                                        await getTimeOfTrip(
+                                Marker(
+                                  markerId: MarkerId('2'),
+                                  infoWindow: InfoWindow(
+                                      title: 'destination'.tr(),
+                                      onTap: () {
+                                        print('marker2 info tab');
+                                      }),
+                                  position: LatLng(widget.toLat!, widget.toLng!),
+                                  onTap: () {
+                                    print('marker2 tab');
+                                  },
+                                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                                      BitmapDescriptor.hueBlue),
+                                )
+                              },
+                              polylines: {
+                                Polyline(
+                                  polylineId: PolylineId('route'),
+                                  points: polylineCoordinates,
+                                  color: primaryBlue,
+                                  width: 5,
+                                ),
+                              },
+                              mapType: MapType.normal,
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(widget.fromLat!, widget.fromLng!),
+                                zoom: 12,
+                              ),
+                              onMapCreated: (GoogleMapController controller) {
+                                gmc = controller;
+                              },
+                              onTap: (latlng) {},
+                            ),
+                    ),
+                    Positioned(
+                      bottom: 1.h,
+                      child: Container(
+                        height: 20.h,
+                        width: getScreenWidth(context),
+                        child: ListView.builder(
+                            itemCount: widget.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 1.h),
+                                    child: InkWell(
+                                      onTap: () async {
+                                        Loader.show(context,
+                                            progressIndicator:
+                                                LoaderWidget());
+                                        getDistance(
                                             widget.fromLat!,
                                             widget.fromLng!,
                                             widget.toLat!,
                                             widget.toLng!);
-                                      }
-                                      print(timeOfTrip);
-                                      Loader.hide();
-                                      Future.delayed(const Duration(seconds: 0))
-                                          .then((_) async {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SelectFeatures(
-                                                fromLat: widget.fromLat!,
-                                                fromLon: widget.fromLng!,
-                                                toLat: widget.toLat!,
-                                                toLon: widget.toLng!,
-                                                id: widget.idList[index]
+                                        // getTimeOfTrip(widget.fromLat!, widget.fromLng!, widget.toLat!, widget.toLng!);
+                                        if (widget.fromLat != 0.0 &&
+                                            widget.fromLng != 0.0 &&
+                                            widget.toLat != 0.0 &&
+                                            widget.toLng != 0.0) {
+                                          await getTimeOfTrip(
+                                              widget.fromLat!,
+                                              widget.fromLng!,
+                                              widget.toLat!,
+                                              widget.toLng!);
+                                        }
+                                        print(timeOfTrip);
+                                        Loader.hide();
+                                        Future.delayed(const Duration(seconds: 0))
+                                            .then((_) async {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SelectFeatures(
+                                                  fromLat: widget.fromLat!,
+                                                  fromLon: widget.fromLng!,
+                                                  toLat: widget.toLat!,
+                                                  toLon: widget.toLng!,
+                                                  id: widget.idList[index]
+                                                      .toString(),
+                                                  price: widget.priceList[index],
+                                                  km: distance
+                                                      .toString()
+                                                      .toString(),
+                                                  minutes: timeOfTrip,
+                                                  sourceAdd:
+                                                      widget.sourceAdd.toString(),
+                                                  destAdd:
+                                                      widget.destAdd.toString(),
+                                                  date: widget.date,
+                                                  time: widget.time,
+                                                  type: widget
+                                                      .vehicletypeList[index],
+                                                ),
+                                              ));
+                                          setState(() {});
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 30.h,
+                                        width: 80.w,
+                                        decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.3),
+                                              spreadRadius: 2,
+                                              blurRadius: 7,
+                                              offset: const Offset(0, 0),
+                                            ),
+                                          ],
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(20)),
+                                          color: backgroundColor,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            FadeInImage(
+                                              image: NetworkImage(
+                                                widget.vechileImageList[index]
                                                     .toString(),
-                                                price: widget.priceList[index],
-                                                km: distance
-                                                    .toString()
-                                                    .toString(),
-                                                minutes: timeOfTrip,
-                                                sourceAdd:
-                                                    widget.sourceAdd.toString(),
-                                                destAdd:
-                                                    widget.destAdd.toString(),
-                                                date: widget.date,
-                                                time: widget.time,
-                                                type: widget
-                                                    .vehicletypeList[index],
                                               ),
-                                            ));
-                                        setState(() {});
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 30.h,
-                                      width: 80.w,
-                                      decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.3),
-                                            spreadRadius: 2,
-                                            blurRadius: 7,
-                                            offset: const Offset(0, 0),
-                                          ),
-                                        ],
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                        color: backgroundColor,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          FadeInImage(
-                                            image: NetworkImage(
-                                              widget.vechileImageList[index]
-                                                  .toString(),
+                                              // height: 100.0,
+                                              width: 40.w,
+                                              fit: BoxFit.contain,
+                                              imageErrorBuilder:
+                                                  (context, error, stackTrace) =>
+                                                      erroWidget(20.h),
+                                              placeholder: placeHolder(100),
                                             ),
-                                            // height: 100.0,
-                                            width: 40.w,
-                                            fit: BoxFit.contain,
-                                            imageErrorBuilder:
-                                                (context, error, stackTrace) =>
-                                                    erroWidget(20.h),
-                                            placeholder: placeHolder(100),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 2.w, right: 2.w),
-                                            child: Column(
-                                              children: [
-                                                SizedBox(
-                                                  height: 5.h,
-                                                ),
-                                                Text(
-                                                  '${widget.vehicletypeList[index]}',
-                                                  style: TextStyle(
-                                                      color: primaryBlue,
-                                                      fontSize: 5.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                  formatter.format(widget
-                                                          .priceList[index]) +
-                                                      'sp'.tr(),
-
-                                                  style: TextStyle(
-                                                    color: grey,
-                                                    fontSize: 5.sp,
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 2.w, right: 2.w),
+                                              child: Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 5.h,
                                                   ),
-                                                ),
-                                              ],
+                                                  Text(
+                                                    '${widget.vehicletypeList[index]}',
+                                                    style: TextStyle(
+                                                        color: primaryBlue,
+                                                        fontSize: 5.sp,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    formatter.format(widget
+                                                            .priceList[index]) +
+                                                        'sp'.tr(),
+
+                                                    style: TextStyle(
+                                                      color: grey,
+                                                      fontSize: 5.sp,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 5.w,
-                                ),
-                              ],
-                            );
-                          }),
-                    ),
-                  )
-                ]),
-              ),
-            ]))));
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                ],
+                              );
+                            }),
+                      ),
+                    )
+                  ]),
+                ),
+              ])))),
+    );
   }
 }

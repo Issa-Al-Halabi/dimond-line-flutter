@@ -1,6 +1,7 @@
 // import 'package:connectivity/connectivity.dart';
 // import 'package:easy_localization/src/public_ext.dart';
 // import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 // import 'package:diamond_line/Buisness_logic/provider/User_Provider/filter_vechile_provider.dart';
 // import 'package:diamond_line/Presentation/widgets/bottom_icons.dart';
 // import 'package:diamond_line/Presentation/widgets/container_widget.dart';
@@ -44,7 +45,7 @@
 //     _isNetworkAvail = await isNetworkAvailable();
 //     if (_isNetworkAvail) {
 //       print("There is internet");
-//       Loader.show(context, progressIndicator: CircularProgressIndicator());
+//       Loader.show(context, progressIndicator: LoaderWidget());
 //       await creat.getFilterVechilesCategory(category_id, subcategory_id, seats, bags);
 //       if (creat.data.error == false) {
 //         Loader.hide();

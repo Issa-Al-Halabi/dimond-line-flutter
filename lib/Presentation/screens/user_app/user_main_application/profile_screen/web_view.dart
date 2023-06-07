@@ -1,4 +1,6 @@
+import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../../constants.dart';
@@ -22,25 +24,22 @@ class _WebViewScreenState extends State<WebViewScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: Builder(builder: (BuildContext context) {
-          return Container(
-            margin: EdgeInsets.all(10),
-            child: Card(
-              elevation: 0,
-              child: InkWell(
-                onTap: () async {
-                  Navigator.of(context).pop();
-                },
-                child: Center(
-                  child: Icon(
-                    Icons.keyboard_arrow_left,
-                    size: 32,
-                    color: primaryBlue,
-                  ),
+          return InkWell(
+            onTap: () async {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              child: Center(
+                child: Icon(
+                  Icons.keyboard_arrow_left,
+                  size: 32,
+                  color: primaryBlue,
                 ),
               ),
             ),
           );
         }),
+        // leadingWidth: 3.w,
         centerTitle: true,
         title: Center(
           child: Text(

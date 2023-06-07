@@ -1,4 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../constants.dart';
 
 
 class Validators{
@@ -40,20 +44,43 @@ class Validators{
     else if (value.length < 8 ) {
       return 'short'.tr();
     }
-    return null;
+
+    if (value.length == 9) {
+      if (int.tryParse(value) != null) {
+        print('kkkk');
+        return null;
+      } else {
+        print('zzzz');
+        return 'nonNumeric'.tr();
+      }
+    }
+    // return null;
   }
 
   static String? validatePhoneNumber(String? value){
     if (value == null || value.isEmpty) {
       return 'empty'.tr();
     }
-    if( value.length == 9)
-      return null;
+    if (value?.startsWith('9') == false) {
+      return 'start 9'.tr();
+    }
+    // if( value.length == 9)
+    //   return null;
+
+    if (value.length == 9) {
+      if (int.tryParse(value) != null) {
+        return null;
+      } else {
+        return 'nonNumeric'.tr();
+      }
+    }
     else if (value.length < 9)
       return "short".tr();
     else
       return "long".tr();
   }
+
+
 
   static String? validateName(String? value){
     if (value == null || value.isEmpty) {
@@ -62,11 +89,16 @@ class Validators{
     if( value.length <= 2)
       return "short".tr();
 
+    if (!value.contains(RegExp(r'^[a-zA-Z]+$'))) {
+      return 'nonAlphabetic'.tr();
+    }
+
     else if ( value.length <= 15)
       return null;
     else
       return "long".tr();
   }
+
 
   static String? validateEmail(String? value){
     if (value == null || value.isEmpty) {
@@ -102,6 +134,15 @@ class Validators{
     else if (value.length >= 8){
       RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
       if (!regex.hasMatch(value)) {
+        final Message = "weak pass".tr();
+        Fluttertoast.showToast(
+            msg: Message,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: primaryBlue,
+            textColor: white,
+            fontSize: 5.sp);
         return 'Enter valid password'.tr();
       } else {
         return null;

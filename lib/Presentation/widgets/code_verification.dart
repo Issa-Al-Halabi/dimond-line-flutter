@@ -1,8 +1,5 @@
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:flutter/material.dart';
-
-import '../../constants.dart';
 import '../../constants.dart';
 
 class VerificationCodeField extends StatefulWidget {

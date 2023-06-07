@@ -36,13 +36,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_screenutil: ^5.1.1
-  modal_progress_hud_nsn: 
-  sms_autofill:
   intl_phone_field: ^3.0.1
   easy_localization:
   image_picker: 
-  flutter_datetime_picker: 
   intl: ^0.17.0
+  shimmer:
   awesome_dialog: ^3.0.1
   shared_preferences:
   google_maps_flutter:
@@ -50,36 +48,42 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   flutter_overlay_loader:
   pin_code_fields:
-  country_code_picker:
   connectivity:
   provider:
   google_places_flutter:
   fluttertoast:
-  flutter_launcher_icons:
   webview_flutter:
-  slider_button:
   web_socket_channel:
   geocoder2:
-  # rating_dialog:
   flutter_rating_bar:
   url_launcher:
-  # # flutter_masked_text:
   flutter_masked_text2:
   share: ^2.0.4
   firebase_messaging:
   firebase_core_platform_interface: ^4.5.1
   firebase_core: ^1.7.0
-#  flutter_local_notifications: ^13.0.0
   flutter_local_notifications:
-  #for task
-  curved_navigation_bar:
-  auto_size_text:
-  bottom_bar_page_transition:
   animated_bottom_navigation_bar:
-  carousel_slider:
   package_info: ^2.0.2
   flutter_html: ^2.1.5
-  geocoding:
+  lottie: ^1.1.0
+  socket_io_client:
+  #  modal_progress_hud_nsn:
+  #  sms_autofill:
+  #  country_code_picker:
+  #  flutter_launcher_icons:
+  #  slider_button:
+  #  flutter_datetime_picker:
+  # rating_dialog:
+  # # flutter_masked_text:
+  #  flutter_local_notifications: ^13.0.0
+  #for task
+#  curved_navigation_bar:
+#  auto_size_text:
+#  bottom_bar_page_transition:
+#  carousel_slider:
+#  gecoding:
+#  flutter_bloc: ^8.1.2
 #  flutter_svg: ^0.23.0+1
   #  analytics_library: ^1.0.0
 #  firebase_analytics: ^5.0.14
@@ -87,9 +91,6 @@ dependencies:
 #  firebase_auth:
 #  flutter_inappwebview: ^5.3.2
 #  flutter_webview_plugin:
-
-
-
   # flutter_time_picker_spinner:
   # form_data:
   # geocoder:
@@ -174,6 +175,7 @@ flutter:
     - assets/
     - assets/translations/
     - assets/fonts/
+    - assets/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

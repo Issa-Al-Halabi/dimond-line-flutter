@@ -239,7 +239,7 @@
   "I with" : "أنا مع هذا السائق:",
   "AppName" : "دايموند لاين",
   "admin fare" : "نسبة الأدمن",
-  "tap to refresh" : "انقر لإعادة االتحميل",
+  "tap to refresh" : "انقر لإعادة التحميل",
   "options" : "الميزات",
   "your trip is pending" : "رحلتك قيد المعالجة",
   "please select the destination" : "الرجاء اختيار الوجهة",
@@ -254,6 +254,10 @@
   "Payment success" : "تمت عملية الدفع بنجاح",
   "Enter valid password" : "كلمة المرور ضعيفة",
   "Your Request has not been approved" : "لم تتم الموافقة على طلبك بعد",
-  "password not matching" : "كلمة السر وتأكيدها غير متطابقين"
+  "password not matching" : "كلمة السر وتأكيدها غير متطابقين",
+  "weak pass" : "كلمة السر يجب أن تحتوي على الأقل على حرف واحد كبير, حرف واحد صغير, رمز واحد, رقم واحد",
+  "nonNumeric" : "أرقام فقط",
+  "nonAlphabetic" : "أحرف فقط",
+  "start 9" : "ابدأ ب 9"
 
 }

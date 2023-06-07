@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:diamond_line/Presentation/Functions/color.dart';
 import 'package:flutter_screenutil/src/size_extension.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../constants.dart';
 
 Widget shimmer(BuildContext context) {
-  print("shimmerrrrrrrrrr");
   return Container(
     width: double.infinity,
     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
@@ -68,21 +66,19 @@ Widget shimmer(BuildContext context) {
       //                       ],
       //                     ),
       //                   )
-                     
       //                 ],
       //               ),
       //             ))
       //         .toList(),
       //   ),
-      
       // ),
-      child:    Center(
-                           child: Container(
-                            width: 100.w,
-                            height: 100.h,
-                            color: white,
-                        ),
-                         ),
+      child: Center(
+        child: Container(
+          width: 100.w,
+          height: 100.h,
+          color: white,
+        ),
+      ),
     ),
   );
 }

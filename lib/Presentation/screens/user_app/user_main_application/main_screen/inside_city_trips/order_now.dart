@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/source_destination_delayed_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/source_destination_provider.dart';
@@ -16,6 +17,7 @@ import 'package:provider/provider.dart';
 import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
+import '../../../../../Functions/helper.dart';
 import 'map_screen_destination.dart';
 import 'map_screen_polyline.dart';
 import 'map_screen_source.dart';
@@ -216,7 +218,7 @@ class _OrderNowState extends State<OrderNow> {
       baseTimeList = [];
       priceList = [];
       vechileImage = [];
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getSourceDistenation(pickup_latitude, pickup_longitude,
           drop_latitude, drop_longitude, km, minutes);
       if (creat.data.error == false) {
@@ -289,7 +291,7 @@ class _OrderNowState extends State<OrderNow> {
       baseTimeList = [];
       priceList = [];
       vechileImage = [];
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getSourceDistenationDelayed(pickup_latitude, pickup_longitude,
           drop_latitude, drop_longitude, km, minutes, date, time);
       if (creat.data.error == false) {
@@ -397,454 +399,457 @@ class _OrderNowState extends State<OrderNow> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: widget.sourceAddress == ''
-          ? Center(child: CircularProgressIndicator())
-          : Container(
-              height: getScreenHeight(context),
-              width: getScreenWidth(context),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: widget.sourceAddress == ''
+            ? Center(child: LoaderWidget())
+            : Container(
+                height: getScreenHeight(context),
+                width: getScreenWidth(context),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 91.h,
-                      width: getScreenWidth(context),
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 7,
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                        color: backgroundColor,
-                      ),
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 3.w, vertical: 2.h),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 50,
-                              ),
-                              myText(
-                                text: 'from address'.tr(),
-                                fontSize: 7.sp,
-                                fontWeight: FontWeight.bold,
-                                color: lightBlue4,
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: primaryBlue.withOpacity(0.3),
-                                      spreadRadius: 2,
-                                      blurRadius: 7,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ],
-                                  borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20)),
-                                  color: backgroundColor,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 91.h,
+                        width: getScreenWidth(context),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 7,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20)),
+                          color: backgroundColor,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 3.w, vertical: 2.h),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 50,
                                 ),
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 2.w),
-                                  child: GooglePlaceAutoCompleteTextField(
-                                      textEditingController: controllerFrom,
-                                      // textStyle: TextStyle(),
-                                      googleAPIKey: APIKEY,
-                                      inputDecoration: const InputDecoration(
-                                          border: InputBorder.none),
-                                      countries: const ["sy", "sy"],
-                                      isLatLngRequired: true,
-                                      getPlaceDetailWithLatLng: (prediction) {
-                                        setState(() {
-                                          controllerFrom.text =
-                                              prediction.description!;
-                                          controllerFrom.selection =
-                                              TextSelection.fromPosition(
-                                                  TextPosition(
-                                                      offset: prediction
-                                                          .description!
-                                                          .length));
-                                        });
-                                        widget.fromLat = double.tryParse(
-                                            "${prediction.lat}")!;
-                                        widget.fromLon = double.tryParse(
-                                            "${prediction.lng}")!;
-                                        setState(() {});
-                                        print("placeDetails 1 :" +
-                                            prediction.lng.toString());
-                                        print("point lat 1 :" +
-                                            widget.fromLat.toString());
-                                        print("point lan 1 :" +
-                                            widget.fromLon.toString());
-                                      },
-                                      // this callback is called when isLatLngRequired is true
-                                      itmClick: (prediction) {
-                                        setState(() {
-                                          controllerFrom.text =
-                                              prediction.description!;
-                                          controllerFrom.selection =
-                                              TextSelection.fromPosition(
-                                                  TextPosition(
-                                                      offset: prediction
-                                                          .description!
-                                                          .length));
-                                        });
-                                      }),
+                                myText(
+                                  text: 'from address'.tr(),
+                                  fontSize: 7.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: lightBlue4,
                                 ),
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              InkWell(
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: primaryBlue2,
-                                    ),
-                                    Text('select address on map'.tr(),
-                                        style: TextStyle(color: primaryBlue)),
-                                  ],
+                                SizedBox(
+                                  height: 2.h,
                                 ),
-                                onTap: () {
-                                  print('order now select from on map icon ');
-                                  print(widget.fromLat);
-                                  print(widget.fromLon);
-                                  print(widget.sourceAddress);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MapScreenSource(
-                                          fromLat: widget.fromLat,
-                                          fromLon: widget.fromLon,
-                                          sourceAddress: widget.sourceAddress,
-                                          laterOrder: widget.laterOrder,
-                                        ),
-                                      ));
-                                },
-                              ),
-                              SizedBox(
-                                height: 50,
-                              ),
-                              myText(
-                                text: 'to address'.tr(),
-                                fontSize: 7.sp,
-                                fontWeight: FontWeight.bold,
-                                color: lightBlue4,
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: primaryBlue.withOpacity(0.3),
-                                      spreadRadius: 2,
-                                      blurRadius: 7,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ],
-                                  borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20)),
-                                  color: backgroundColor,
+                                Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: primaryBlue.withOpacity(0.3),
+                                        spreadRadius: 2,
+                                        blurRadius: 7,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                    borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20)),
+                                    color: backgroundColor,
+                                  ),
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: GooglePlaceAutoCompleteTextField(
+                                        textEditingController: controllerFrom,
+                                        // textStyle: TextStyle(),
+                                        googleAPIKey: APIKEY,
+                                        inputDecoration: const InputDecoration(
+                                            border: InputBorder.none),
+                                        countries: const ["sy", "sy"],
+                                        isLatLngRequired: true,
+                                        getPlaceDetailWithLatLng: (prediction) {
+                                          setState(() {
+                                            controllerFrom.text =
+                                                prediction.description!;
+                                            controllerFrom.selection =
+                                                TextSelection.fromPosition(
+                                                    TextPosition(
+                                                        offset: prediction
+                                                            .description!
+                                                            .length));
+                                          });
+                                          widget.fromLat = double.tryParse(
+                                              "${prediction.lat}")!;
+                                          widget.fromLon = double.tryParse(
+                                              "${prediction.lng}")!;
+                                          setState(() {});
+                                          print("placeDetails 1 :" +
+                                              prediction.lng.toString());
+                                          print("point lat 1 :" +
+                                              widget.fromLat.toString());
+                                          print("point lan 1 :" +
+                                              widget.fromLon.toString());
+                                        },
+                                        // this callback is called when isLatLngRequired is true
+                                        itmClick: (prediction) {
+                                          setState(() {
+                                            controllerFrom.text =
+                                                prediction.description!;
+                                            controllerFrom.selection =
+                                                TextSelection.fromPosition(
+                                                    TextPosition(
+                                                        offset: prediction
+                                                            .description!
+                                                            .length));
+                                          });
+                                        }),
+                                  ),
                                 ),
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 2.w),
-                                  child: GooglePlaceAutoCompleteTextField(
-                                      textEditingController: controllerTo,
-                                      googleAPIKey: APIKEY,
-                                      inputDecoration: const InputDecoration(
-                                          border: InputBorder.none),
-                                      countries: const ["sy", "sy"],
-                                      // optional by default null is set
-                                      isLatLngRequired: true,
-                                      // if you required coordinates from place detail
-                                      getPlaceDetailWithLatLng: (prediction) {
-                                        setState(() {
-                                          controllerTo.text =
-                                              prediction.description!;
-                                          controllerTo.selection =
-                                              TextSelection.fromPosition(
-                                                  TextPosition(
-                                                      offset: prediction
-                                                          .description!
-                                                          .length));
-                                        });
-                                        widget.toLat = double.tryParse(
-                                            "${prediction.lat}")!;
-                                        widget.toLon = double.tryParse(
-                                            "${prediction.lng}")!;
-                                        setState(() {});
-                                        print("placeDetails 2 :" +
-                                            prediction.lng.toString());
-                                        print("point lat 2 :" +
-                                            widget.toLat.toString());
-                                        print("point lan 2 :" +
-                                            widget.toLon.toString());
-                                      },
-                                      // this callback is called when isLatLngRequired is true
-                                      itmClick: (prediction) {
-                                        setState(() {
-                                          controllerTo.text =
-                                              prediction.description!;
-                                          controllerTo.selection =
-                                              TextSelection.fromPosition(
-                                                  TextPosition(
-                                                      offset: prediction
-                                                          .description!
-                                                          .length));
-                                        });
-                                      }),
+                                SizedBox(
+                                  height: 2.h,
                                 ),
-                              ),
-                              SizedBox(
-                                height: 2.h,
-                              ),
-                              InkWell(
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: primaryBlue2,
-                                    ),
-                                    Text('select address on map'.tr(),
-                                        style: TextStyle(color: primaryBlue)),
-                                  ],
-                                ),
-                                onTap: () {
-                                  if (widget.fromLat == 0.0) {
-                                    setSnackbar("select from".tr(), context);
-                                  } else {
-                                    print('order now select to on map icon');
+                                InkWell(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: primaryBlue2,
+                                      ),
+                                      Text('select address on map'.tr(),
+                                          style: TextStyle(color: primaryBlue)),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    print('order now select from on map icon ');
                                     print(widget.fromLat);
                                     print(widget.fromLon);
-                                    print(widget.toLat);
-                                    print(widget.toLon);
                                     print(widget.sourceAddress);
-                                    print(widget.destAddress);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              MapScreenDestination(
+                                          builder: (context) => MapScreenSource(
                                             fromLat: widget.fromLat,
-                                            toLat: widget.toLat,
                                             fromLon: widget.fromLon,
-                                            toLon: widget.toLon,
                                             sourceAddress: widget.sourceAddress,
-                                            destinationAddress:
-                                                widget.destAddress,
                                             laterOrder: widget.laterOrder,
                                           ),
                                         ));
-                                  }
-                                },
-                              ),
-                              widget.laterOrder == true
-                                  ? SizedBox(
-                                      height: 4.h,
-                                    )
-                                  : SizedBox(
-                                      height: 5.h,
-                                    ),
-                              widget.laterOrder == true
-                                  ? Column(
-                                      children: [
-                                        ContainerWidget2(
-                                          text: 'select date'.tr(),
-                                          // text: getDate(),
-                                          h: 6.h,
-                                          w: 80.w,
-                                          onTap: () {
-                                            _selectDate(context);
-                                            showDate = true;
-                                          },
-                                          color: backgroundColor,
-                                          textColor: lightBlue,
-                                        ),
-                                        Container(
-                                          height: 1,
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
-                                        showDate
-                                            ? Center(
-                                                child: myText(
-                                                text: getDate(),
-                                                fontSize: 4.sp,
-                                                color: primaryBlue,
-                                              ))
-                                            : const SizedBox(),
-                                        SizedBox(
-                                          height: 2.h,
-                                        ),
-                                        ContainerWidget2(
-                                          text: 'select time'.tr(),
-                                          h: 6.h,
-                                          w: 80.w,
-                                          onTap: () {
-                                            _selectTime(context);
-                                            showTime = true;
-                                          },
-                                          color: backgroundColor,
-                                          textColor: lightBlue,
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
-                                        showTime
-                                            ? Center(
-                                                child: myText(
-                                                text: getTime(selectedTime),
-                                                fontSize: 4.sp,
-                                                color: primaryBlue,
-                                              ))
-                                            : const SizedBox(),
-                                        SizedBox(
-                                          height: 50,
-                                        ),
-                                      ],
-                                    )
-                                  : Container(),
-                              widget.laterOrder == true
-                                  ? SizedBox(
-                                      height: 0.h,
-                                    )
-                                  : SizedBox(
-                                      height: 20.h,
-                                    ),
-                              widget.laterOrder == true
-                                  ? Center(
-                                      child: ContainerWidget(
-                                        text: 'request'.tr(),
-                                        h: 7.h,
-                                        w: 60.w,
-                                        onTap: () async {
-                                          Loader.show(context,
-                                              progressIndicator:
-                                                  CircularProgressIndicator());
-                                          print('later');
-                                          print(widget.fromLat);
-                                          print(widget.fromLon);
-                                          print(widget.toLat);
-                                          print(widget.toLon);
-                                          print(widget.sourceAddress);
-                                          print(getDate());
-                                          print(getTime(selectedTime));
-                                          getDistance(
-                                              widget.fromLat,
-                                              widget.fromLon,
-                                              widget.toLat,
-                                              widget.toLon);
-                                          if (widget.fromLat != 0.0 &&
-                                              widget.fromLon != 0.0 &&
-                                              widget.toLat != 0.0 &&
-                                              widget.toLon != 0.0) {
-                                            await getTimeOfTrip(
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 50,
+                                ),
+                                myText(
+                                  text: 'to address'.tr(),
+                                  fontSize: 7.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: lightBlue4,
+                                ),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: primaryBlue.withOpacity(0.3),
+                                        spreadRadius: 2,
+                                        blurRadius: 7,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                    borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20)),
+                                    color: backgroundColor,
+                                  ),
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: GooglePlaceAutoCompleteTextField(
+                                        textEditingController: controllerTo,
+                                        googleAPIKey: APIKEY,
+                                        inputDecoration: const InputDecoration(
+                                            border: InputBorder.none),
+                                        countries: const ["sy", "sy"],
+                                        // optional by default null is set
+                                        isLatLngRequired: true,
+                                        // if you required coordinates from place detail
+                                        getPlaceDetailWithLatLng: (prediction) {
+                                          setState(() {
+                                            controllerTo.text =
+                                                prediction.description!;
+                                            controllerTo.selection =
+                                                TextSelection.fromPosition(
+                                                    TextPosition(
+                                                        offset: prediction
+                                                            .description!
+                                                            .length));
+                                          });
+                                          widget.toLat = double.tryParse(
+                                              "${prediction.lat}")!;
+                                          widget.toLon = double.tryParse(
+                                              "${prediction.lng}")!;
+                                          setState(() {});
+                                          print("placeDetails 2 :" +
+                                              prediction.lng.toString());
+                                          print("point lat 2 :" +
+                                              widget.toLat.toString());
+                                          print("point lan 2 :" +
+                                              widget.toLon.toString());
+                                        },
+                                        // this callback is called when isLatLngRequired is true
+                                        itmClick: (prediction) {
+                                          setState(() {
+                                            controllerTo.text =
+                                                prediction.description!;
+                                            controllerTo.selection =
+                                                TextSelection.fromPosition(
+                                                    TextPosition(
+                                                        offset: prediction
+                                                            .description!
+                                                            .length));
+                                          });
+                                        }),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                                InkWell(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: primaryBlue2,
+                                      ),
+                                      Text('select address on map'.tr(),
+                                          style: TextStyle(color: primaryBlue)),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    if (widget.fromLat == 0.0) {
+                                      setSnackbar("select from".tr(), context);
+                                    } else {
+                                      print('order now select to on map icon');
+                                      print(widget.fromLat);
+                                      print(widget.fromLon);
+                                      print(widget.toLat);
+                                      print(widget.toLon);
+                                      print(widget.sourceAddress);
+                                      print(widget.destAddress);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                MapScreenDestination(
+                                              fromLat: widget.fromLat,
+                                              toLat: widget.toLat,
+                                              fromLon: widget.fromLon,
+                                              toLon: widget.toLon,
+                                              sourceAddress: widget.sourceAddress,
+                                              destinationAddress:
+                                                  widget.destAddress,
+                                              laterOrder: widget.laterOrder,
+                                            ),
+                                          ));
+                                    }
+                                  },
+                                ),
+                                widget.laterOrder == true
+                                    ? SizedBox(
+                                        height: 4.h,
+                                      )
+                                    : SizedBox(
+                                        height: 5.h,
+                                      ),
+                                widget.laterOrder == true
+                                    ? Column(
+                                        children: [
+                                          ContainerWidget2(
+                                            text: 'select date'.tr(),
+                                            // text: getDate(),
+                                            h: 6.h,
+                                            w: 80.w,
+                                            onTap: () {
+                                              _selectDate(context);
+                                              showDate = true;
+                                            },
+                                            color: backgroundColor,
+                                            textColor: lightBlue,
+                                          ),
+                                          Container(
+                                            height: 1,
+                                          ),
+                                          SizedBox(
+                                            height: 1.h,
+                                          ),
+                                          showDate
+                                              ? Center(
+                                                  child: myText(
+                                                  text: getDate(),
+                                                  fontSize: 4.sp,
+                                                  color: primaryBlue,
+                                                ))
+                                              : const SizedBox(),
+                                          SizedBox(
+                                            height: 2.h,
+                                          ),
+                                          ContainerWidget2(
+                                            text: 'select time'.tr(),
+                                            h: 6.h,
+                                            w: 80.w,
+                                            onTap: () {
+                                              _selectTime(context);
+                                              showTime = true;
+                                            },
+                                            color: backgroundColor,
+                                            textColor: lightBlue,
+                                          ),
+                                          SizedBox(
+                                            height: 1.h,
+                                          ),
+                                          showTime
+                                              ? Center(
+                                                  child: myText(
+                                                  text: getTime(selectedTime),
+                                                  fontSize: 4.sp,
+                                                  color: primaryBlue,
+                                                ))
+                                              : const SizedBox(),
+                                          SizedBox(
+                                            height: 50,
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
+                                widget.laterOrder == true
+                                    ? SizedBox(
+                                        height: 0.h,
+                                      )
+                                    : SizedBox(
+                                        height: 20.h,
+                                      ),
+                                widget.laterOrder == true
+                                    ? Center(
+                                        child: ContainerWidget(
+                                          text: 'request'.tr(),
+                                          h: 7.h,
+                                          w: 60.w,
+                                          onTap: () async {
+                                            Loader.show(context,
+                                                progressIndicator:
+                                                    LoaderWidget());
+                                            print('later');
+                                            print(widget.fromLat);
+                                            print(widget.fromLon);
+                                            print(widget.toLat);
+                                            print(widget.toLon);
+                                            print(widget.sourceAddress);
+                                            print(getDate());
+                                            print(getTime(selectedTime));
+                                            getDistance(
                                                 widget.fromLat,
                                                 widget.fromLon,
                                                 widget.toLat,
                                                 widget.toLon);
-                                          }
-                                          print(timeOfTrip);
-                                          Loader.hide();
-                                          // api source and distenation delayed
-                                          var getSourceDistDelay = await Provider
-                                              .of<SourceDestinationDelayedProvider>(
-                                                  context,
-                                                  listen: false);
-                                          sourceDistDelayApi(
-                                              widget.fromLat.toString(),
-                                              widget.fromLon.toString(),
-                                              widget.toLat.toString(),
-                                              widget.toLon.toString(),
-                                              distance.toString(),
-                                              timeOfTrip,
-                                              getDate(),
-                                              getTime(selectedTime),
-                                              getSourceDistDelay);
-                                        },
-                                      ),
-                                    )
-                                  : Center(
-                                      child: ContainerWidget(
-                                        text: 'request'.tr(),
-                                        h: 7.h,
-                                        w: 60.w,
-                                        onTap: () async {
-                                          Loader.show(context,
-                                              progressIndicator:
-                                                  CircularProgressIndicator());
-                                          print(widget.fromLat);
-                                          print(widget.fromLon);
-                                          print(widget.toLat);
-                                          print(widget.toLon);
-                                          print(widget.sourceAddress);
-                                          getDistance(
-                                              widget.fromLat,
-                                              widget.fromLon,
-                                              widget.toLat,
-                                              widget.toLon);
-                                          if (widget.fromLat != 0.0 &&
-                                              widget.fromLon != 0.0 &&
-                                              widget.toLat != 0.0 &&
-                                              widget.toLon != 0.0) {
-                                            await getTimeOfTrip(
+                                            if (widget.fromLat != 0.0 &&
+                                                widget.fromLon != 0.0 &&
+                                                widget.toLat != 0.0 &&
+                                                widget.toLon != 0.0) {
+                                              await getTimeOfTrip(
+                                                  widget.fromLat,
+                                                  widget.fromLon,
+                                                  widget.toLat,
+                                                  widget.toLon);
+                                            }
+                                            print(timeOfTrip);
+                                            Loader.hide();
+                                            // api source and distenation delayed
+                                            var getSourceDistDelay = await Provider
+                                                .of<SourceDestinationDelayedProvider>(
+                                                    context,
+                                                    listen: false);
+                                            sourceDistDelayApi(
+                                                widget.fromLat.toString(),
+                                                widget.fromLon.toString(),
+                                                widget.toLat.toString(),
+                                                widget.toLon.toString(),
+                                                distance.toString(),
+                                                timeOfTrip,
+                                                getDate(),
+                                                getTime(selectedTime),
+                                                getSourceDistDelay);
+                                          },
+                                        ),
+                                      )
+                                    : Center(
+                                        child: ContainerWidget(
+                                          text: 'request'.tr(),
+                                          h: 7.h,
+                                          w: 60.w,
+                                          onTap: () async {
+                                            Loader.show(context,
+                                                progressIndicator:
+                                                    LoaderWidget());
+                                            print(widget.fromLat);
+                                            print(widget.fromLon);
+                                            print(widget.toLat);
+                                            print(widget.toLon);
+                                            print(widget.sourceAddress);
+                                            getDistance(
                                                 widget.fromLat,
                                                 widget.fromLon,
                                                 widget.toLat,
                                                 widget.toLon);
-                                          }
-                                          print(timeOfTrip);
-                                          Loader.hide();
-                                          var getSourceDist = await Provider.of<
-                                                  SourceDestinationProvider>(
-                                              context,
-                                              listen: false);
-                                          sourceDistApi(
-                                              widget.fromLat.toString(),
-                                              widget.fromLon.toString(),
-                                              widget.toLat.toString(),
-                                              widget.toLon.toString(),
-                                              distance.toString(),
-                                              timeOfTrip,
-                                              getSourceDist);
-                                        },
-                                      ),
-                                    )
-                            ],
+                                            if (widget.fromLat != 0.0 &&
+                                                widget.fromLon != 0.0 &&
+                                                widget.toLat != 0.0 &&
+                                                widget.toLon != 0.0) {
+                                              await getTimeOfTrip(
+                                                  widget.fromLat,
+                                                  widget.fromLon,
+                                                  widget.toLat,
+                                                  widget.toLon);
+                                            }
+                                            print(timeOfTrip);
+                                            Loader.hide();
+                                            var getSourceDist = await Provider.of<
+                                                    SourceDestinationProvider>(
+                                                context,
+                                                listen: false);
+                                            sourceDistApi(
+                                                widget.fromLat.toString(),
+                                                widget.fromLon.toString(),
+                                                widget.toLat.toString(),
+                                                widget.toLon.toString(),
+                                                distance.toString(),
+                                                timeOfTrip,
+                                                getSourceDist);
+                                          },
+                                        ),
+                                      )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              )),
+                    ],
+                  ),
+                )),
+      ),
     );
   }
 }

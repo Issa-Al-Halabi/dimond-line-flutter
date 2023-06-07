@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 placeHolder(double height) {
@@ -27,4 +28,13 @@ Future<bool> isNetworkAvailable() async {
     return true;
   }
   return false;
+}
+
+Future<bool> willPopLoader() async {
+  if (Loader.isShown == true) {
+    Loader.hide();
+    return true;
+  } else {
+    return true;
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/order_tour_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/trip_outcity_provider.dart';
 import 'package:diamond_line/Data/network/requests.dart';
@@ -131,7 +132,7 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getTripOutcity(
           pickup_latitude,
           pickup_longitude,
@@ -173,7 +174,7 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
   Future<void> cancelTrip(String trip_id) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       setSnackbar('There is internet', context);
       var data = await AppRequests.cancelTripRequest(trip_id);
       data = json.decode(data);
@@ -201,7 +202,7 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.orderTour(trip_id, start_time, end_time);
       if (creat.data.error == false) {
         Loader.hide();
@@ -224,7 +225,7 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
   Future<void> cancelTour(String tour_id) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       setSnackbar('There is internet', context);
       var data = await AppRequests.cancelTourRequest(tour_id);
       data = json.decode(data);
@@ -767,188 +768,191 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 9.h),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: 82.h,
-                  width: getScreenWidth(context),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    color: backgroundColor,
-                  ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 8,
-                        child: ListView.builder(
-                            itemCount: widget.filteredLength,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 1.h),
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          print('***********');
-                                          print(widget.vechileId[index]
-                                              .toString());
-                                          oneVechileId = widget.vechileId[index]
-                                              .toString();
-                                          getDialog();
-                                        });
-                                      },
-                                      child: Container(
-                                        width: 95.w,
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.3),
-                                              spreadRadius: 2,
-                                              blurRadius: 7,
-                                              offset: const Offset(0, 0),
-                                            ),
-                                          ],
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20)),
-                                          color: backgroundColor,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        widget
-                                                            .vechileType[index],
-                                                        style: TextStyle(
-                                                            color: primaryBlue,
-                                                            fontSize: 6.sp,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        widget.carModel[index],
-                                                        style: TextStyle(
-                                                          color: primaryBlue,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        '${widget.seats}' +
-                                                            ' ' +
-                                                            'person'.tr(),
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        '${widget.bags}' +
-                                                            ' ' +
-                                                            'bags'.tr(),
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        formatter
-                                                                .format(double
-                                                                    .parse(widget
-                                                                            .priceList[
-                                                                        index]))
-                                                                .toString() +
-                                                            'sp'.tr(),
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  FadeInImage(
-                                                    image: NetworkImage(widget
-                                                        .vechileImage[index]),
-                                                    height: 12.h,
-                                                    width: 25.w,
-                                                    fit: BoxFit.contain,
-                                                    imageErrorBuilder: (context,
-                                                            error,
-                                                            stackTrace) =>
-                                                        erroWidget(100),
-                                                    placeholder:
-                                                        placeHolder(100),
-                                                  ),
-                                                ],
+          child: Padding(
+            padding: EdgeInsets.only(top: 9.h),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 82.h,
+                    width: getScreenWidth(context),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 7,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      color: backgroundColor,
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 8,
+                          child: ListView.builder(
+                              itemCount: widget.filteredLength,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 1.h),
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            print('***********');
+                                            print(widget.vechileId[index]
+                                                .toString());
+                                            oneVechileId = widget.vechileId[index]
+                                                .toString();
+                                            getDialog();
+                                          });
+                                        },
+                                        child: Container(
+                                          width: 95.w,
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color:
+                                                    Colors.grey.withOpacity(0.3),
+                                                spreadRadius: 2,
+                                                blurRadius: 7,
+                                                offset: const Offset(0, 0),
                                               ),
                                             ],
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(20)),
+                                            color: backgroundColor,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 2.h,
+                                                        ),
+                                                        Text(
+                                                          widget
+                                                              .vechileType[index],
+                                                          style: TextStyle(
+                                                              color: primaryBlue,
+                                                              fontSize: 6.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2.h,
+                                                        ),
+                                                        Text(
+                                                          widget.carModel[index],
+                                                          style: TextStyle(
+                                                            color: primaryBlue,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2.h,
+                                                        ),
+                                                        Text(
+                                                          '${widget.seats}' +
+                                                              ' ' +
+                                                              'person'.tr(),
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2.h,
+                                                        ),
+                                                        Text(
+                                                          '${widget.bags}' +
+                                                              ' ' +
+                                                              'bags'.tr(),
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2.h,
+                                                        ),
+                                                        Text(
+                                                          formatter
+                                                                  .format(double
+                                                                      .parse(widget
+                                                                              .priceList[
+                                                                          index]))
+                                                                  .toString() +
+                                                              'sp'.tr(),
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    FadeInImage(
+                                                      image: NetworkImage(widget
+                                                          .vechileImage[index]),
+                                                      height: 12.h,
+                                                      width: 25.w,
+                                                      fit: BoxFit.contain,
+                                                      imageErrorBuilder: (context,
+                                                              error,
+                                                              stackTrace) =>
+                                                          erroWidget(100),
+                                                      placeholder:
+                                                          placeHolder(100),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            }),
-                      ),
-                    ],
+                                  ],
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

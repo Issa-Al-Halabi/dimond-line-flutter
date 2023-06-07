@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/get_user_trips_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/order_tour_provider.dart';
 import 'package:diamond_line/Data/network/requests.dart';
@@ -13,6 +14,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../Functions/helper.dart';
 
 class UserTripsSettings extends StatefulWidget {
   const UserTripsSettings({Key? key}) : super(key: key);
@@ -87,7 +90,7 @@ class _UserTripsSettingsState extends State<UserTripsSettings> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getUserTrips();
       if (creat.data.error == false) {
         Loader.hide();
@@ -112,7 +115,7 @@ class _UserTripsSettingsState extends State<UserTripsSettings> {
   Future<void> cancelTrip(String trip_id) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       var data = await AppRequests.cancelTripRequest(trip_id);
       data = json.decode(data);
       if (data["error"] == false) {
@@ -136,7 +139,7 @@ class _UserTripsSettingsState extends State<UserTripsSettings> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.orderTour(trip_id, start_time, end_time);
       if (creat.data.error == false) {
         Loader.hide();
@@ -164,7 +167,7 @@ class _UserTripsSettingsState extends State<UserTripsSettings> {
   Future<void> cancelTour(String tour_id) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       var data = await AppRequests.cancelTourRequest(tour_id);
       data = json.decode(data);
       if (data["error"] == false) {
@@ -358,148 +361,125 @@ class _UserTripsSettingsState extends State<UserTripsSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 9.h),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                    height: 82.h,
-                    width: getScreenWidth(context),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 7,
-                          offset: const Offset(0, 0),
-                        ),
-                      ],
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                      color: backgroundColor,
-                    ),
-                    child: noTrips == false
-                        ? RefreshIndicator(
-                            color: primaryBlue,
-                            key: _refreshIndicatorKey,
-                            onRefresh: init,
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  flex: 8,
-                                  child: ListView.builder(
-                                      itemCount: tripsList.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: 3.w,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 1.h),
-                                              child: Container(
-                                                width: 80.w,
-                                                decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.3),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 7,
-                                                      offset:
-                                                          const Offset(0, 0),
-                                                    ),
-                                                  ],
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(20)),
-                                                  color: backgroundColor,
-                                                ),
-                                                child: SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      tripsList[index]
-                                                                  .requestType !=
-                                                              'moment'
-                                                          ? ListTile(
-                                                              leading:
-                                                                  const Icon(
-                                                                Icons
-                                                                    .date_range,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                tripsList[index]
-                                                                    .date
-                                                                    .toString()
-                                                                    .split(' ')
-                                                                    .first,
-                                                                style:
-                                                                    TextStyle(
-                                                                  // color: grey,
+          child: Padding(
+            padding: EdgeInsets.only(top: 9.h),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                      height: 82.h,
+                      width: getScreenWidth(context),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 7,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)),
+                        color: backgroundColor,
+                      ),
+                      child: noTrips == false
+                          ? RefreshIndicator(
+                              color: primaryBlue,
+                              key: _refreshIndicatorKey,
+                              onRefresh: init,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    flex: 8,
+                                    child: ListView.builder(
+                                        itemCount: tripsList.length,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                width: 3.w,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 1.h),
+                                                child: Container(
+                                                  width: 80.w,
+                                                  decoration: BoxDecoration(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 7,
+                                                        offset:
+                                                            const Offset(0, 0),
+                                                      ),
+                                                    ],
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(20)),
+                                                    color: backgroundColor,
+                                                  ),
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      children: [
+                                                        tripsList[index]
+                                                                    .requestType !=
+                                                                'moment'
+                                                            ? ListTile(
+                                                                leading:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .date_range,
                                                                   color:
                                                                       primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
                                                                 ),
-                                                              ))
-                                                          : Container(),
-                                                      tripsList[index]
-                                                                  .requestType !=
-                                                              'moment'
-                                                          ? ListTile(
-                                                              leading:
-                                                                  Image.asset(
-                                                                clock,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                tripsList[index]
-                                                                    .time
-                                                                    .toString(),
-                                                                style:
-                                                                    TextStyle(
+                                                                title: Text(
+                                                                  tripsList[index]
+                                                                      .date
+                                                                      .toString()
+                                                                      .split(' ')
+                                                                      .first,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    // color: grey,
+                                                                    color:
+                                                                        primaryBlue,
+                                                                    fontSize:
+                                                                        5.sp,
+                                                                  ),
+                                                                ))
+                                                            : Container(),
+                                                        tripsList[index]
+                                                                    .requestType !=
+                                                                'moment'
+                                                            ? ListTile(
+                                                                leading:
+                                                                    Image.asset(
+                                                                  clock,
                                                                   color:
                                                                       primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
                                                                 ),
-                                                              ))
-                                                          : Container(),
-                                                      ListTile(
-                                                          leading: const Icon(
-                                                            Icons.location_on,
-                                                            color: primaryBlue,
-                                                          ),
-                                                          title: tripsList[
-                                                                          index]
-                                                                      .categoryId
-                                                                      .toString() ==
-                                                                  '2'
-                                                              ? Text(
-                                                                  'from'.tr() +
-                                                                      ' ${tripsList[index].from.toString()}' +
-                                                                      '\n' +
-                                                                      'to'.tr() +
-                                                                      ' ${tripsList[index].to.toString()}',
+                                                                title: Text(
+                                                                  tripsList[index]
+                                                                      .time
+                                                                      .toString(),
                                                                   style:
                                                                       TextStyle(
                                                                     color:
@@ -507,457 +487,483 @@ class _UserTripsSettingsState extends State<UserTripsSettings> {
                                                                     fontSize:
                                                                         5.sp,
                                                                   ),
-                                                                )
-                                                              : Text(
-                                                                  'from'.tr() +
-                                                                      ' ${tripsList[index].pickupAddr.toString()}' +
-                                                                      '\n' +
-                                                                      'to'.tr() +
-                                                                      ' ${tripsList[index].destAddr.toString()}',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        primaryBlue,
-                                                                    fontSize:
-                                                                        5.sp,
-                                                                  ),
-                                                                )),
-                                                      tripsList[index]
-                                                                  .categoryId
-                                                                  .toString() ==
-                                                              '2'
-                                                          ? ListTile(
-                                                              leading:
-                                                                  const Icon(
-                                                                Icons
-                                                                    .directions,
-                                                                color:
-                                                                    primaryBlue,
-                                                              ),
-                                                              title: Text(
-                                                                ' ${tripsList[index].direction.toString()}',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      primaryBlue,
-                                                                  fontSize:
-                                                                      5.sp,
-                                                                ),
-                                                              ),
-                                                            )
-                                                          : Container(),
-                                                      ListTile(
-                                                        leading: const Icon(
-                                                          Icons.money,
-                                                          color: primaryBlue,
-                                                        ),
-                                                        title: Text(
-                                                          formatter.format(int
-                                                                  .parse(tripsList[
-                                                                          index]
-                                                                      .cost
-                                                                      .toString())) +
-                                                              'sp'.tr(),
-                                                          style: TextStyle(
-                                                            color: primaryBlue,
-                                                            fontSize: 5.sp,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      ListTile(
-                                                        leading: Text(
-                                                          '${tripsList[index].status.toString()}',
-                                                          style: TextStyle(
-                                                            // color: primaryBlue,
-                                                            color: green,
-                                                            fontSize: 5.sp,
-                                                          ),
-                                                        ),
-                                                        trailing:
-                                                            // tripsList[index]
-                                                            // .status
-                                                            // .toString() ==
-                                                            // 'pending'
-                                                            // &&
-                                                            tripsList[index]
-                                                                        .canCancle
-                                                                        .toString() ==
-                                                                    'yes'
-                                                                ? Container(
-                                                                    height: 6.h,
-                                                                    width: 35.w,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .withOpacity(0.3),
-                                                                          spreadRadius:
-                                                                              2,
-                                                                          blurRadius:
-                                                                              7,
-                                                                          offset: const Offset(
-                                                                              0,
-                                                                              0),
-                                                                        ),
-                                                                      ],
-                                                                      borderRadius: const BorderRadius
-                                                                              .all(
-                                                                          Radius.circular(
-                                                                              20)),
-                                                                      color:
-                                                                          lightBlue2,
-                                                                    ),
-                                                                    child:
-                                                                        TextButton(
-                                                                      child:
-                                                                          Text(
-                                                                        'cancel'
-                                                                            .tr(),
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                5.sp,
-                                                                            color: Colors.red),
-                                                                      ),
-                                                                      onPressed:
-                                                                          () async {
-                                                                        await cancelTrip(tripsList[index]
-                                                                            .id
-                                                                            .toString());
-                                                                      },
-                                                                    ),
-                                                                  )
-                                                                : Container(
-                                                                    height: 6.h,
-                                                                    width: 35.w,
-                                                                  ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 1.h,
-                                                      ),
-                                                      tripsList[index]
-                                                                      .status
-                                                                      .toString() ==
-                                                                  'pending' &&
-                                                              tripsList[index]
-                                                                      .isTour ==
-                                                                  'Yes' &&
-                                                              tripsList[index]
-                                                                      .categoryId
-                                                                      .toString() ==
-                                                                  '2'
-                                                          ? Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                SizedBox(
-                                                                  height: 1.h,
-                                                                ),
-                                                                Divider(
-                                                                  color:
-                                                                      lightBlue,
-                                                                  thickness:
-                                                                      3.0,
-                                                                  endIndent:
-                                                                      20.w,
-                                                                  indent: 20.w,
-                                                                ),
-                                                                Padding(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          left: 2
-                                                                              .w,
-                                                                          right:
-                                                                              2.w),
-                                                                  child: Text(
-                                                                    'the tour'
-                                                                        .tr(),
-                                                                    style: TextStyle(
-                                                                        fontSize: 6
-                                                                            .sp,
-                                                                        color:
-                                                                            primaryBlue,
-                                                                        fontWeight:
-                                                                            FontWeight.w600),
-                                                                  ),
-                                                                ),
-                                                                ListTile(
-                                                                    leading: Image
-                                                                        .asset(
-                                                                      clock,
-                                                                      color:
-                                                                          primaryBlue,
-                                                                    ),
-                                                                    title: Text(
-                                                                      'from'.tr() +
-                                                                          ' ' +
-                                                                          tripsList[index]
-                                                                              .tourDetail[0]
-                                                                              .startTime
-                                                                              .toString(),
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color:
-                                                                            primaryBlue,
-                                                                        fontSize:
-                                                                            5.sp,
-                                                                      ),
-                                                                    )),
-                                                                ListTile(
-                                                                    leading: Image
-                                                                        .asset(
-                                                                      clock,
-                                                                      color:
-                                                                          primaryBlue,
-                                                                    ),
-                                                                    title: Text(
-                                                                      'to'.tr() +
-                                                                          ' ' +
-                                                                          tripsList[index]
-                                                                              .tourDetail[0]
-                                                                              .endTime
-                                                                              .toString(),
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color:
-                                                                            primaryBlue,
-                                                                        fontSize:
-                                                                            5.sp,
-                                                                      ),
-                                                                    )),
-                                                                ListTile(
-                                                                    leading: Icon(
-                                                                        Icons
-                                                                            .money,
-                                                                        size:
-                                                                            iconSize,
-                                                                        color:
-                                                                            primaryBlue),
-                                                                    title: Text(
-                                                                      formatter.format(int.parse(tripsList[index]
-                                                                              .tourDetail[0]
-                                                                              .cost
-                                                                              .toString())) +
-                                                                          'sp'.tr(),
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color:
-                                                                            primaryBlue,
-                                                                        fontSize:
-                                                                            5.sp,
-                                                                      ),
-                                                                    )),
-                                                                ListTile(
-                                                                  leading: Text(
-                                                                    tripsList[
+                                                                ))
+                                                            : Container(),
+                                                        ListTile(
+                                                            leading: const Icon(
+                                                              Icons.location_on,
+                                                              color: primaryBlue,
+                                                            ),
+                                                            title: tripsList[
                                                                             index]
-                                                                        .tourDetail[
-                                                                            0]
-                                                                        .status,
+                                                                        .categoryId
+                                                                        .toString() ==
+                                                                    '2'
+                                                                ? Text(
+                                                                    'from'.tr() +
+                                                                        ' ${tripsList[index].from.toString()}' +
+                                                                        '\n' +
+                                                                        'to'.tr() +
+                                                                        ' ${tripsList[index].to.toString()}',
                                                                     style:
                                                                         TextStyle(
                                                                       color:
-                                                                          green,
+                                                                          primaryBlue,
                                                                       fontSize:
                                                                           5.sp,
                                                                     ),
-                                                                  ),
-                                                                  trailing:
-                                                                  tripsList[index]
-                                                                      .canCancle
-                                                                      .toString() ==
-                                                                      'yes'
-                                                                  ?
-                                                                      Container(
-                                                                    height: 6.h,
-                                                                    width: 35.w,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .withOpacity(0.3),
-                                                                          spreadRadius:
-                                                                              2,
-                                                                          blurRadius:
-                                                                              7,
-                                                                          offset: const Offset(
-                                                                              0,
-                                                                              0),
-                                                                        ),
-                                                                      ],
-                                                                      borderRadius: const BorderRadius
-                                                                              .all(
-                                                                          Radius.circular(
-                                                                              20)),
+                                                                  )
+                                                                : Text(
+                                                                    'from'.tr() +
+                                                                        ' ${tripsList[index].pickupAddr.toString()}' +
+                                                                        '\n' +
+                                                                        'to'.tr() +
+                                                                        ' ${tripsList[index].destAddr.toString()}',
+                                                                    style:
+                                                                        TextStyle(
                                                                       color:
-                                                                          lightBlue2,
+                                                                          primaryBlue,
+                                                                      fontSize:
+                                                                          5.sp,
                                                                     ),
-                                                                    child:
-                                                                        TextButton(
-                                                                      child:
-                                                                          Text(
-                                                                        'cancel'
-                                                                            .tr(),
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                5.sp,
-                                                                            color: Colors.red),
+                                                                  )),
+                                                        tripsList[index]
+                                                                    .categoryId
+                                                                    .toString() ==
+                                                                '2'
+                                                            ? ListTile(
+                                                                leading:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .directions,
+                                                                  color:
+                                                                      primaryBlue,
+                                                                ),
+                                                                title: Text(
+                                                                  ' ${tripsList[index].direction.toString()}',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        primaryBlue,
+                                                                    fontSize:
+                                                                        5.sp,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : Container(),
+                                                        ListTile(
+                                                          leading: const Icon(
+                                                            Icons.money,
+                                                            color: primaryBlue,
+                                                          ),
+                                                          title: Text(
+                                                            formatter.format(int
+                                                                    .parse(tripsList[
+                                                                            index]
+                                                                        .cost
+                                                                        .toString())) +
+                                                                'sp'.tr(),
+                                                            style: TextStyle(
+                                                              color: primaryBlue,
+                                                              fontSize: 5.sp,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        ListTile(
+                                                          leading: Text(
+                                                            '${tripsList[index].status.toString()}',
+                                                            style: TextStyle(
+                                                              // color: primaryBlue,
+                                                              color: green,
+                                                              fontSize: 5.sp,
+                                                            ),
+                                                          ),
+                                                          trailing:
+                                                              // tripsList[index]
+                                                              // .status
+                                                              // .toString() ==
+                                                              // 'pending'
+                                                              // &&
+                                                              tripsList[index]
+                                                                          .canCancle
+                                                                          .toString() ==
+                                                                      'yes'
+                                                                  ? Container(
+                                                                      height: 6.h,
+                                                                      width: 35.w,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                            color: Colors
+                                                                                .grey
+                                                                                .withOpacity(0.3),
+                                                                            spreadRadius:
+                                                                                2,
+                                                                            blurRadius:
+                                                                                7,
+                                                                            offset: const Offset(
+                                                                                0,
+                                                                                0),
+                                                                          ),
+                                                                        ],
+                                                                        borderRadius: const BorderRadius
+                                                                                .all(
+                                                                            Radius.circular(
+                                                                                20)),
+                                                                        color:
+                                                                            lightBlue2,
                                                                       ),
-                                                                      onPressed:
-                                                                          () async {
-                                                                        print(
-                                                                            'call api cancel');
-                                                                        print(tripsList[index]
-                                                                            .tourDetail[0]
-                                                                            .id
-                                                                            .toString());
-                                                                        await cancelTour(tripsList[index]
-                                                                            .tourDetail[0]
-                                                                            .id
-                                                                            .toString());
-                                                                      },
+                                                                      child:
+                                                                          TextButton(
+                                                                        child:
+                                                                            Text(
+                                                                          'cancel'
+                                                                              .tr(),
+                                                                          style: TextStyle(
+                                                                              fontSize:
+                                                                                  5.sp,
+                                                                              color: Colors.red),
+                                                                        ),
+                                                                        onPressed:
+                                                                            () async {
+                                                                          await cancelTrip(tripsList[index]
+                                                                              .id
+                                                                              .toString());
+                                                                        },
+                                                                      ),
+                                                                    )
+                                                                  : Container(
+                                                                      height: 6.h,
+                                                                      width: 35.w,
+                                                                    ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 1.h,
+                                                        ),
+                                                        tripsList[index]
+                                                                        .status
+                                                                        .toString() ==
+                                                                    'pending' &&
+                                                                tripsList[index]
+                                                                        .isTour ==
+                                                                    'Yes' &&
+                                                                tripsList[index]
+                                                                        .categoryId
+                                                                        .toString() ==
+                                                                    '2'
+                                                            ? Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  SizedBox(
+                                                                    height: 1.h,
+                                                                  ),
+                                                                  Divider(
+                                                                    color:
+                                                                        lightBlue,
+                                                                    thickness:
+                                                                        3.0,
+                                                                    endIndent:
+                                                                        20.w,
+                                                                    indent: 20.w,
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            left: 2
+                                                                                .w,
+                                                                            right:
+                                                                                2.w),
+                                                                    child: Text(
+                                                                      'the tour'
+                                                                          .tr(),
+                                                                      style: TextStyle(
+                                                                          fontSize: 6
+                                                                              .sp,
+                                                                          color:
+                                                                              primaryBlue,
+                                                                          fontWeight:
+                                                                              FontWeight.w600),
+                                                                    ),
+                                                                  ),
+                                                                  ListTile(
+                                                                      leading: Image
+                                                                          .asset(
+                                                                        clock,
+                                                                        color:
+                                                                            primaryBlue,
+                                                                      ),
+                                                                      title: Text(
+                                                                        'from'.tr() +
+                                                                            ' ' +
+                                                                            tripsList[index]
+                                                                                .tourDetail[0]
+                                                                                .startTime
+                                                                                .toString(),
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              primaryBlue,
+                                                                          fontSize:
+                                                                              5.sp,
+                                                                        ),
+                                                                      )),
+                                                                  ListTile(
+                                                                      leading: Image
+                                                                          .asset(
+                                                                        clock,
+                                                                        color:
+                                                                            primaryBlue,
+                                                                      ),
+                                                                      title: Text(
+                                                                        'to'.tr() +
+                                                                            ' ' +
+                                                                            tripsList[index]
+                                                                                .tourDetail[0]
+                                                                                .endTime
+                                                                                .toString(),
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              primaryBlue,
+                                                                          fontSize:
+                                                                              5.sp,
+                                                                        ),
+                                                                      )),
+                                                                  ListTile(
+                                                                      leading: Icon(
+                                                                          Icons
+                                                                              .money,
+                                                                          size:
+                                                                              iconSize,
+                                                                          color:
+                                                                              primaryBlue),
+                                                                      title: Text(
+                                                                        formatter.format(int.parse(tripsList[index]
+                                                                                .tourDetail[0]
+                                                                                .cost
+                                                                                .toString())) +
+                                                                            'sp'.tr(),
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              primaryBlue,
+                                                                          fontSize:
+                                                                              5.sp,
+                                                                        ),
+                                                                      )),
+                                                                  ListTile(
+                                                                    leading: Text(
+                                                                      tripsList[
+                                                                              index]
+                                                                          .tourDetail[
+                                                                              0]
+                                                                          .status,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color:
+                                                                            green,
+                                                                        fontSize:
+                                                                            5.sp,
+                                                                      ),
+                                                                    ),
+                                                                    trailing:
+                                                                    tripsList[index]
+                                                                        .canCancle
+                                                                        .toString() ==
+                                                                        'yes'
+                                                                    ?
+                                                                        Container(
+                                                                      height: 6.h,
+                                                                      width: 35.w,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                            color: Colors
+                                                                                .grey
+                                                                                .withOpacity(0.3),
+                                                                            spreadRadius:
+                                                                                2,
+                                                                            blurRadius:
+                                                                                7,
+                                                                            offset: const Offset(
+                                                                                0,
+                                                                                0),
+                                                                          ),
+                                                                        ],
+                                                                        borderRadius: const BorderRadius
+                                                                                .all(
+                                                                            Radius.circular(
+                                                                                20)),
+                                                                        color:
+                                                                            lightBlue2,
+                                                                      ),
+                                                                      child:
+                                                                          TextButton(
+                                                                        child:
+                                                                            Text(
+                                                                          'cancel'
+                                                                              .tr(),
+                                                                          style: TextStyle(
+                                                                              fontSize:
+                                                                                  5.sp,
+                                                                              color: Colors.red),
+                                                                        ),
+                                                                        onPressed:
+                                                                            () async {
+                                                                          print(
+                                                                              'call api cancel');
+                                                                          print(tripsList[index]
+                                                                              .tourDetail[0]
+                                                                              .id
+                                                                              .toString());
+                                                                          await cancelTour(tripsList[index]
+                                                                              .tourDetail[0]
+                                                                              .id
+                                                                              .toString());
+                                                                        },
+                                                                      ),
+                                                                    )
+                                                                        : Container(
+                                                                      height: 6.h,
+                                                                      width: 35.w,)
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            : tripsList[index]
+                                                                            .status
+                                                                            .toString() ==
+                                                                        'pending' &&
+                                                                    tripsList[index]
+                                                                            .categoryId
+                                                                            .toString() ==
+                                                                        '2' &&
+                                                                    isAddTour ==
+                                                                        false
+                                                                ? Padding(
+                                                                    padding: EdgeInsets.only(
+                                                                        left: 2.w,
+                                                                        right:
+                                                                            2.w,
+                                                                        bottom:
+                                                                            1.h),
+                                                                    child:
+                                                                        Container(
+                                                                      height: 6.h,
+                                                                      // width: getScreenWidth(context),
+                                                                      width: 50.w,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                            color: Colors
+                                                                                .grey
+                                                                                .withOpacity(0.3),
+                                                                            spreadRadius:
+                                                                                2,
+                                                                            blurRadius:
+                                                                                7,
+                                                                            offset: const Offset(
+                                                                                0,
+                                                                                0),
+                                                                          ),
+                                                                        ],
+                                                                        borderRadius: const BorderRadius
+                                                                                .all(
+                                                                            Radius.circular(
+                                                                                20)),
+                                                                        color:
+                                                                            lightBlue2,
+                                                                      ),
+                                                                      child:
+                                                                          InkWell(
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Icon(
+                                                                              Icons.add,
+                                                                              size:
+                                                                                  iconSize,
+                                                                              color:
+                                                                                  primaryBlue,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width:
+                                                                                  2.w,
+                                                                            ),
+                                                                            myText(
+                                                                              text:
+                                                                                  'add a tour'.tr(),
+                                                                              fontSize:
+                                                                                  5.sp,
+                                                                              color:
+                                                                                  primaryBlue,
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                        onTap:
+                                                                            () async {
+                                                                          getDialog(tripsList[index]
+                                                                              .id
+                                                                              .toString());
+                                                                        },
+                                                                      ),
                                                                     ),
                                                                   )
-                                                                      : Container(
-                                                                    height: 6.h,
-                                                                    width: 35.w,)
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : tripsList[index]
-                                                                          .status
-                                                                          .toString() ==
-                                                                      'pending' &&
-                                                                  tripsList[index]
-                                                                          .categoryId
-                                                                          .toString() ==
-                                                                      '2' &&
-                                                                  isAddTour ==
-                                                                      false
-                                                              ? Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                      left: 2.w,
-                                                                      right:
-                                                                          2.w,
-                                                                      bottom:
-                                                                          1.h),
-                                                                  child:
-                                                                      Container(
-                                                                    height: 6.h,
-                                                                    // width: getScreenWidth(context),
-                                                                    width: 50.w,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .withOpacity(0.3),
-                                                                          spreadRadius:
-                                                                              2,
-                                                                          blurRadius:
-                                                                              7,
-                                                                          offset: const Offset(
-                                                                              0,
-                                                                              0),
-                                                                        ),
-                                                                      ],
-                                                                      borderRadius: const BorderRadius
-                                                                              .all(
-                                                                          Radius.circular(
-                                                                              20)),
-                                                                      color:
-                                                                          lightBlue2,
-                                                                    ),
-                                                                    child:
-                                                                        InkWell(
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.center,
-                                                                        children: [
-                                                                          Icon(
-                                                                            Icons.add,
-                                                                            size:
-                                                                                iconSize,
-                                                                            color:
-                                                                                primaryBlue,
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                2.w,
-                                                                          ),
-                                                                          myText(
-                                                                            text:
-                                                                                'add a tour'.tr(),
-                                                                            fontSize:
-                                                                                5.sp,
-                                                                            color:
-                                                                                primaryBlue,
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      onTap:
-                                                                          () async {
-                                                                        getDialog(tripsList[index]
-                                                                            .id
-                                                                            .toString());
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              : Container(),
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      )
-                                                      // ),
-                                                    ],
+                                                                : Container(),
+                                                        SizedBox(
+                                                          height: 2.h,
+                                                        )
+                                                        // ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              width: 3.w,
-                                            )
-                                          ],
-                                        );
-                                      }),
-                                ),
-                              ],
-                            ),
-                          )
-                        : RefreshIndicator(
-                            color: primaryBlue,
-                            key: _refreshIndicatorKey,
-                            onRefresh: init,
-                            child: Center(
-                                child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 20.h,
-                                ),
-                                Image.asset(
-                                  noData,
-                                  fit: BoxFit.fill,
-                                  height: 30.h,
-                                ),
-                                SizedBox(
-                                  height: 2.h,
-                                ),
-                                Text(
-                                  'there are no trips'.tr(),
-                                  style: TextStyle(
-                                      fontFamily: 'cairo',
-                                      color: primaryBlue,
-                                      fontSize: 6.sp),
-                                )
-                              ],
-                            )))),
-              ],
+                                              SizedBox(
+                                                width: 3.w,
+                                              )
+                                            ],
+                                          );
+                                        }),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : RefreshIndicator(
+                              color: primaryBlue,
+                              key: _refreshIndicatorKey,
+                              onRefresh: init,
+                              child: Center(
+                                  child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  Image.asset(
+                                    noData,
+                                    fit: BoxFit.fill,
+                                    height: 30.h,
+                                  ),
+                                  SizedBox(
+                                    height: 2.h,
+                                  ),
+                                  Text(
+                                    'there are no trips'.tr(),
+                                    style: TextStyle(
+                                        fontFamily: 'cairo',
+                                        color: primaryBlue,
+                                        fontSize: 6.sp),
+                                  )
+                                ],
+                              )))),
+                ],
+              ),
             ),
           ),
         ),

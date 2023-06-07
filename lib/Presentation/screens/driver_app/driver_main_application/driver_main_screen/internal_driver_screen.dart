@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:flutter/services.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
@@ -108,7 +109,7 @@ class _InDriverMainScreenState extends State<InDriverMainScreen> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.driverStatus();
       print(creat.data.error);
       print(creat.data.message);
@@ -164,6 +165,9 @@ class _InDriverMainScreenState extends State<InDriverMainScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        if (Loader.isShown == true) {
+          Loader.hide();
+        }
         final differance = DateTime.now().difference(timeback);
         final isExitWarning = differance >= Duration(seconds: 2);
         timeback = DateTime.now();

@@ -1,5 +1,6 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -172,7 +173,7 @@ class _UserLocationScreenState extends State<UserLocationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _kGooglePlex == null
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: LoaderWidget())
           : Container(
               height: getScreenHeight(context),
               width: getScreenWidth(context),

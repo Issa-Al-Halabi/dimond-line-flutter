@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_ended_outcity.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_information_outcity.dart';
@@ -15,6 +16,8 @@ import '../../../../../Buisness_logic/provider/Driver_Provider/driver_trips_prov
 import '../../../../../Data/Models/Driver_Models/driver_trips_model.dart';
 import '../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../Functions/helper.dart';
 
 String? userIdForTripOutcity = '';
 
@@ -84,7 +87,7 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getDriverTrips();
       if (creat.data.error == false) {
         length = creat.data.data!.tripsOutcity!.length;
@@ -169,7 +172,7 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
     print(finalDistance);
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       var data =
           await AppRequests.endTripRequest(trip_id, end_time, finalDistance);
       print(data);
@@ -256,414 +259,417 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 9.h),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: 82.h,
-                  width: getScreenWidth(context),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    color: backgroundColor,
-                  ),
-                  child: RefreshIndicator(
-                    color: primaryBlue,
-                    key: _refreshIndicatorKey,
-                    onRefresh: init,
-                    child: length == 0
-                        ?
-                    Center(child: Column(
-                      children: [
-                        SizedBox(
-                          height:
-                          20.h,
+          child: Padding(
+            padding: EdgeInsets.only(top: 9.h),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 82.h,
+                    width: getScreenWidth(context),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 7,
+                          offset: const Offset(0, 0),
                         ),
-                        Image.asset(
-                          noData,
-                          fit: BoxFit
-                              .fill,
-                          height:
-                          30.h,
-                        ),
-                        SizedBox(
-                          height:
-                          2.h,
-                        ),
-                        Text(
-                          'there are no trips'
-                              .tr(),
-                          style: TextStyle(
-                              fontFamily:
-                              'cairo',
-                              color:
-                              primaryBlue,
-                              fontSize: 6.sp),
-                        )
                       ],
-                    ))
-                    : Column(
-                            children: [
-                              Expanded(
-                                flex: 8,
-                                child: ListView.builder(
-                                    itemCount: tripsList.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 3.w,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 1.h),
-                                            child: Container(
-                                              width: 80.w,
-                                              decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.3),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 7,
-                                                    offset: const Offset(0, 0),
-                                                  ),
-                                                ],
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(20)),
-                                                color: backgroundColor,
-                                              ),
-                                              child: SingleChildScrollView(
-                                                  child: Column(
-                                                children: [
-                                                  ListTile(
-                                                      leading: const Icon(
-                                                        Icons.date_range,
-                                                        color: primaryBlue,
-                                                      ),
-                                                      title: Text(
-                                                        tripsList[index]
-                                                            .date
-                                                            .toString()
-                                                            .split(' ')
-                                                            .first,
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      color: backgroundColor,
+                    ),
+                    child: RefreshIndicator(
+                      color: primaryBlue,
+                      key: _refreshIndicatorKey,
+                      onRefresh: init,
+                      child: length == 0
+                          ?
+                      Center(child: Column(
+                        children: [
+                          SizedBox(
+                            height:
+                            20.h,
+                          ),
+                          Image.asset(
+                            noData,
+                            fit: BoxFit
+                                .fill,
+                            height:
+                            30.h,
+                          ),
+                          SizedBox(
+                            height:
+                            2.h,
+                          ),
+                          Text(
+                            'there are no trips'
+                                .tr(),
+                            style: TextStyle(
+                                fontFamily:
+                                'cairo',
+                                color:
+                                primaryBlue,
+                                fontSize: 6.sp),
+                          )
+                        ],
+                      ))
+                      : Column(
+                              children: [
+                                Expanded(
+                                  flex: 8,
+                                  child: ListView.builder(
+                                      itemCount: tripsList.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 3.w,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 1.h),
+                                              child: Container(
+                                                width: 80.w,
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 7,
+                                                      offset: const Offset(0, 0),
+                                                    ),
+                                                  ],
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(20)),
+                                                  color: backgroundColor,
+                                                ),
+                                                child: SingleChildScrollView(
+                                                    child: Column(
+                                                  children: [
+                                                    ListTile(
+                                                        leading: const Icon(
+                                                          Icons.date_range,
+                                                          color: primaryBlue,
                                                         ),
-                                                      )),
-                                                  ListTile(
-                                                      leading: Image.asset(
-                                                        clock,
-                                                        color: primaryBlue,
-                                                      ),
-                                                      title: Text(
-                                                        tripsList[index]
-                                                            .time
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      )),
-                                                  ListTile(
-                                                      leading: const Icon(
-                                                        Icons.holiday_village,
-                                                        color: primaryBlue,
-                                                      ),
-                                                      title: Text(
-                                                        'from'.tr() +
-                                                            ' ${tripsList[index].from.toString()}' +
-                                                            ' ' +
-                                                            'to'.tr() +
-                                                            ' ${tripsList[index].to.toString()}',
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      )),
-                                                  ListTile(
-                                                      leading: const Icon(
-                                                        Icons.directions,
-                                                        color: primaryBlue,
-                                                      ),
-                                                      title: Text(
-                                                        tripsList[index]
-                                                            .direction
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      )),
-                                                  ListTile(
-                                                      leading: const Icon(
-                                                        Icons.money,
-                                                        color: primaryBlue,
-                                                      ),
-                                                      title: Text(
-                                                        formatter.format(int
-                                                                .parse(tripsList[
-                                                                        index]
-                                                                    .cost
-                                                                    .toString())) +
-                                                            'sp'.tr(),
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
-                                                        ),
-                                                      )),
-                                                  tripsList[index].isTour ==
-                                                          'Yes'
-                                                      ? Column(
-                                                          children: [
-                                                            myText(
-                                                              text: 'tour'.tr(),
-                                                              fontSize: 6.sp,
-                                                              color:
-                                                                  primaryBlue,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                            SizedBox(
-                                                              height: 1.h,
-                                                            ),
-                                                            ListTile(
-                                                                leading:
-                                                                    Image.asset(
-                                                                  clock,
-                                                                  color:
-                                                                      primaryBlue,
-                                                                ),
-                                                                title: Text(
-                                                                  'from'.tr() +
-                                                                      ' ' +
-                                                                      '${tripsList[index].tourDetail[0].startTime.toString()}' +
-                                                                      '\n' +
-                                                                      'to'.tr() +
-                                                                      ' ' +
-                                                                      '${tripsList[index].tourDetail[0].endTime.toString()}',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: grey,
-                                                                    fontSize:
-                                                                        5.sp,
-                                                                  ),
-                                                                )),
-                                                            ListTile(
-                                                                leading:
-                                                                    const Icon(
-                                                                  Icons.money,
-                                                                  color:
-                                                                      primaryBlue,
-                                                                ),
-                                                                title: Text(
-                                                                  formatter.format(int.parse(tripsList[
-                                                                              index]
-                                                                          .tourDetail[
-                                                                              0]
-                                                                          // .cost))+
-                                                                          .cost
-                                                                          .toString())) +
-                                                                      'sp'.tr(),
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: grey,
-                                                                    fontSize:
-                                                                        5.sp,
-                                                                  ),
-                                                                ))
-                                                          ],
-                                                        )
-                                                      : Container(),
-                                                  SizedBox(
-                                                    height: 2.h,
-                                                  ),
-                                                  tripsList[index].hasExpense ==
-                                                          'Yes'
-                                                      ? Column(
-                                                          children: [
-                                                            myText(
-                                                              text:
-                                                                  'expens'.tr(),
-                                                              fontSize: 6.sp,
-                                                              color:
-                                                                  primaryBlue,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                            SizedBox(
-                                                              height: 1.h,
-                                                            ),
-                                                            Padding(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          2.w),
-                                                              child: Column(
-                                                                children: List
-                                                                    .generate(
-                                                                        tripsList[index]
-                                                                            .expenseDetail[
-                                                                                0]
-                                                                            .type
-                                                                            .length,
-                                                                        (index2) =>
-                                                                            Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                              children: [
-                                                                                myText(text: tripsList[index].expenseDetail[0].type[index2] + ' ', fontSize: 5.sp, color: primaryBlue),
-                                                                                myText(text: formatter.format(int.parse(tripsList[index].expenseDetail[0].price[index2])) + 'sp'.tr() + ' ', fontSize: 5.sp, color: primaryBlue)
-                                                                              ],
-                                                                            )),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Container(),
-                                                  SizedBox(
-                                                    height: 1.h,
-                                                  ),
-                                                  Center(
-                                                    child: ContainerWidget(
-                                                      text: 'seeMore'.tr(),
-                                                      h: 5.h,
-                                                      w: 40.w,
-                                                      onTap: () {
-                                                        setState(() {
-                                                          pickupAddTrip =
-                                                              tripsList[index]
-                                                                  .from
-                                                                  .toString();
-                                                          destAddrTrip =
-                                                              tripsList[index]
-                                                                  .to
-                                                                  .toString();
-                                                          fNameTrip =
-                                                              tripsList[index]
-                                                                  .firstName
-                                                                  .toString();
-                                                          lNameTrip =
-                                                              tripsList[index]
-                                                                  .lastName
-                                                                  .toString();
-                                                          phoneTrip =
-                                                              tripsList[index]
-                                                                  .phone
-                                                                  .toString();
-                                                          priceTrip =
-                                                              tripsList[index]
-                                                                  .cost
-                                                                  .toString();
-                                                          minTrip =
-                                                              tripsList[index]
-                                                                  .minutes
-                                                                  .toString();
-                                                          kmTrip =
-                                                              tripsList[index]
-                                                                  .km
-                                                                  .toString();
-                                                          idTrip =
-                                                              tripsList[index]
-                                                                  .id
-                                                                  .toString();
-                                                          userIdForTripOutcity =
-                                                              tripsList[index]
-                                                                  .userId
-                                                                  .toString();
-                                                        });
-                                                        print('trip id ' +
-                                                            tripsList[index]
-                                                                .id
-                                                                .toString());
-                                                        DateTime t =
-                                                            DateTime.now();
-                                                        String start_time =
-                                                            '${t.hour}:${t.minute}:${t.second}';
-                                                        print(start_time);
-                                                        if (tripsList[index]
-                                                            .hasExpense
-                                                            .toString() == 'Yes'){
-                                                          expensesList =
-                                                              tripsList[index]
-                                                                  .expenseDetail;
-                                                        }
-                                                        navigate(
-                                                          tripsList[index]
-                                                              .id
-                                                              .toString(),
-                                                          tripsList[index]
-                                                              .pickupLatitude,
-                                                          tripsList[index]
-                                                              .pickupLongitude,
-                                                          tripsList[index]
-                                                              .dropLatitude,
-                                                          tripsList[index]
-                                                              .dropLongitude,
-                                                          tripsList[index]
-                                                              .profileImage
-                                                              .toString(),
-                                                          tripsList[index]
-                                                              .hasExpense
-                                                              .toString(),
+                                                        title: Text(
                                                           tripsList[index]
                                                               .date
                                                               .toString()
                                                               .split(' ')
                                                               .first,
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        )),
+                                                    ListTile(
+                                                        leading: Image.asset(
+                                                          clock,
+                                                          color: primaryBlue,
+                                                        ),
+                                                        title: Text(
                                                           tripsList[index]
                                                               .time
                                                               .toString(),
-                                                        );
-                                                      },
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        )),
+                                                    ListTile(
+                                                        leading: const Icon(
+                                                          Icons.holiday_village,
+                                                          color: primaryBlue,
+                                                        ),
+                                                        title: Text(
+                                                          'from'.tr() +
+                                                              ' ${tripsList[index].from.toString()}' +
+                                                              ' ' +
+                                                              'to'.tr() +
+                                                              ' ${tripsList[index].to.toString()}',
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        )),
+                                                    ListTile(
+                                                        leading: const Icon(
+                                                          Icons.directions,
+                                                          color: primaryBlue,
+                                                        ),
+                                                        title: Text(
+                                                          tripsList[index]
+                                                              .direction
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        )),
+                                                    ListTile(
+                                                        leading: const Icon(
+                                                          Icons.money,
+                                                          color: primaryBlue,
+                                                        ),
+                                                        title: Text(
+                                                          formatter.format(int
+                                                                  .parse(tripsList[
+                                                                          index]
+                                                                      .cost
+                                                                      .toString())) +
+                                                              'sp'.tr(),
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        )),
+                                                    tripsList[index].isTour ==
+                                                            'Yes'
+                                                        ? Column(
+                                                            children: [
+                                                              myText(
+                                                                text: 'tour'.tr(),
+                                                                fontSize: 6.sp,
+                                                                color:
+                                                                    primaryBlue,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                              SizedBox(
+                                                                height: 1.h,
+                                                              ),
+                                                              ListTile(
+                                                                  leading:
+                                                                      Image.asset(
+                                                                    clock,
+                                                                    color:
+                                                                        primaryBlue,
+                                                                  ),
+                                                                  title: Text(
+                                                                    'from'.tr() +
+                                                                        ' ' +
+                                                                        '${tripsList[index].tourDetail[0].startTime.toString()}' +
+                                                                        '\n' +
+                                                                        'to'.tr() +
+                                                                        ' ' +
+                                                                        '${tripsList[index].tourDetail[0].endTime.toString()}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: grey,
+                                                                      fontSize:
+                                                                          5.sp,
+                                                                    ),
+                                                                  )),
+                                                              ListTile(
+                                                                  leading:
+                                                                      const Icon(
+                                                                    Icons.money,
+                                                                    color:
+                                                                        primaryBlue,
+                                                                  ),
+                                                                  title: Text(
+                                                                    formatter.format(int.parse(tripsList[
+                                                                                index]
+                                                                            .tourDetail[
+                                                                                0]
+                                                                            // .cost))+
+                                                                            .cost
+                                                                            .toString())) +
+                                                                        'sp'.tr(),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: grey,
+                                                                      fontSize:
+                                                                          5.sp,
+                                                                    ),
+                                                                  ))
+                                                            ],
+                                                          )
+                                                        : Container(),
+                                                    SizedBox(
+                                                      height: 2.h,
                                                     ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 2.h,
-                                                  )
-                                                ],
-                                              )),
+                                                    tripsList[index].hasExpense ==
+                                                            'Yes'
+                                                        ? Column(
+                                                            children: [
+                                                              myText(
+                                                                text:
+                                                                    'expens'.tr(),
+                                                                fontSize: 6.sp,
+                                                                color:
+                                                                    primaryBlue,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                              SizedBox(
+                                                                height: 1.h,
+                                                              ),
+                                                              Padding(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            2.w),
+                                                                child: Column(
+                                                                  children: List
+                                                                      .generate(
+                                                                          tripsList[index]
+                                                                              .expenseDetail[
+                                                                                  0]
+                                                                              .type
+                                                                              .length,
+                                                                          (index2) =>
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  myText(text: tripsList[index].expenseDetail[0].type[index2] + ' ', fontSize: 5.sp, color: primaryBlue),
+                                                                                  myText(text: formatter.format(int.parse(tripsList[index].expenseDetail[0].price[index2])) + 'sp'.tr() + ' ', fontSize: 5.sp, color: primaryBlue)
+                                                                                ],
+                                                                              )),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : Container(),
+                                                    SizedBox(
+                                                      height: 1.h,
+                                                    ),
+                                                    Center(
+                                                      child: ContainerWidget(
+                                                        text: 'seeMore'.tr(),
+                                                        h: 5.h,
+                                                        w: 40.w,
+                                                        onTap: () {
+                                                          setState(() {
+                                                            pickupAddTrip =
+                                                                tripsList[index]
+                                                                    .from
+                                                                    .toString();
+                                                            destAddrTrip =
+                                                                tripsList[index]
+                                                                    .to
+                                                                    .toString();
+                                                            fNameTrip =
+                                                                tripsList[index]
+                                                                    .firstName
+                                                                    .toString();
+                                                            lNameTrip =
+                                                                tripsList[index]
+                                                                    .lastName
+                                                                    .toString();
+                                                            phoneTrip =
+                                                                tripsList[index]
+                                                                    .phone
+                                                                    .toString();
+                                                            priceTrip =
+                                                                tripsList[index]
+                                                                    .cost
+                                                                    .toString();
+                                                            minTrip =
+                                                                tripsList[index]
+                                                                    .minutes
+                                                                    .toString();
+                                                            kmTrip =
+                                                                tripsList[index]
+                                                                    .km
+                                                                    .toString();
+                                                            idTrip =
+                                                                tripsList[index]
+                                                                    .id
+                                                                    .toString();
+                                                            userIdForTripOutcity =
+                                                                tripsList[index]
+                                                                    .userId
+                                                                    .toString();
+                                                          });
+                                                          print('trip id ' +
+                                                              tripsList[index]
+                                                                  .id
+                                                                  .toString());
+                                                          DateTime t =
+                                                              DateTime.now();
+                                                          String start_time =
+                                                              '${t.hour}:${t.minute}:${t.second}';
+                                                          print(start_time);
+                                                          if (tripsList[index]
+                                                              .hasExpense
+                                                              .toString() == 'Yes'){
+                                                            expensesList =
+                                                                tripsList[index]
+                                                                    .expenseDetail;
+                                                          }
+                                                          navigate(
+                                                            tripsList[index]
+                                                                .id
+                                                                .toString(),
+                                                            tripsList[index]
+                                                                .pickupLatitude,
+                                                            tripsList[index]
+                                                                .pickupLongitude,
+                                                            tripsList[index]
+                                                                .dropLatitude,
+                                                            tripsList[index]
+                                                                .dropLongitude,
+                                                            tripsList[index]
+                                                                .profileImage
+                                                                .toString(),
+                                                            tripsList[index]
+                                                                .hasExpense
+                                                                .toString(),
+                                                            tripsList[index]
+                                                                .date
+                                                                .toString()
+                                                                .split(' ')
+                                                                .first,
+                                                            tripsList[index]
+                                                                .time
+                                                                .toString(),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 2.h,
+                                                    )
+                                                  ],
+                                                )),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 3.w,
-                                          )
-                                        ],
-                                      );
-                                    }),
-                              ),
-                            ],
-                          ),
+                                            SizedBox(
+                                              width: 3.w,
+                                            )
+                                          ],
+                                        );
+                                      }),
+                                ),
+                              ],
+                            ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

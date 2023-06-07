@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_registration/are_you.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/text.dart';
 import '../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -222,8 +223,11 @@ class _LandingPageState extends State<LandingPage> {
                           h: 7.h,
                           w: 80.w,
                           text: 'discover'.tr(),
-                          onTap: () {
-                              Navigator.of(context).push(
+                          onTap: () async {
+                            SharedPreferences pref = await SharedPreferences.getInstance();
+                            pref.setBool('isFirstTimeUser', false);
+                              // Navigator.of(context).push(
+                              Navigator.of(context).pushReplacement(
                               PageRouteBuilder(
                                 pageBuilder: (BuildContext context,
                                     Animation<double> animation,

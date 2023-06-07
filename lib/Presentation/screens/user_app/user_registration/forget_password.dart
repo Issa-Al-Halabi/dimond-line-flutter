@@ -2,6 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_registration/sign_in_sign_up.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/forget_password_email_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/forget_password_provider.dart';
 import 'package:diamond_line/Presentation/Functions/Validators.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../Buisness_logic/provider/User_Provider/send_otp_provider.dart';
 import '../../../../constants.dart';
+import '../../../Functions/helper.dart';
 import '../../driver_app/driver_registration/driver_login.dart';
 
 class ForgetPassword extends StatefulWidget {
@@ -61,7 +63,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getForgetPassword(phone, pass, pass2, !widget.isDriver);
       if (creat.data.error == false) {
         Loader.hide();
@@ -138,7 +140,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   //   _isNetworkAvail = await isNetworkAvailable();
   //   if (_isNetworkAvail) {
   //     print("There is internet");
-  //     Loader.show(context, progressIndicator: CircularProgressIndicator());
+  //     Loader.show(context, progressIndicator: LoaderWidget());
   //     // var data = await AppRequests.ForgetPasswordEmailRequest(phone, pass, pass2);
   //     // data = json.decode(data);
   //     await creat.getForgetPassword(phone, pass, pass2);
@@ -167,7 +169,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   //   if (_isNetworkAvail) {
   //     print("There is internet");
   //     print(phone);
-  //     Loader.show(context, progressIndicator: CircularProgressIndicator());
+  //     Loader.show(context, progressIndicator: LoaderWidget());
   //     await creat.getSendOtp(phone, 'forget_password');
   //     if (creat.data.error == false) {
   //       Loader.hide();
@@ -236,250 +238,253 @@ class _ForgetPasswordState extends State<ForgetPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 10.h),
-                child: Container(
-                  height: getScreenHeight(context) - 20.h,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25)),
-                    color: backgroundColor,
-                  ),
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 5.h),
-                        Center(
-                          child: Text(
-                            widget.title.tr(),
-                            // 'forget'.tr(),
-                            style: TextStyle(
-                                color: primaryBlue2,
-                                fontSize: 8.sp,
-                                fontWeight: FontWeight.bold),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 10.h),
+                  child: Container(
+                    height: getScreenHeight(context) - 20.h,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25)),
+                      color: backgroundColor,
+                    ),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(height: 5.h),
+                          Center(
+                            child: Text(
+                              widget.title.tr(),
+                              // 'forget'.tr(),
+                              style: TextStyle(
+                                  color: primaryBlue2,
+                                  fontSize: 8.sp,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Stack(
-                          children: [
-                            const Divider(
-                              color: lightBlue2,
-                              thickness: 6,
-                            ),
-                            Divider(
-                              color: primaryBlue,
-                              indent: 20.w,
-                              endIndent: 25.w,
-                              thickness: 5,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15.h),
-                        Container(
-                          height: 6.h,
-                          width: 80.w,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey,
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
+                          SizedBox(height: 1.h),
+                          Stack(
+                            children: [
+                              const Divider(
+                                color: lightBlue2,
+                                thickness: 6,
+                              ),
+                              Divider(
+                                color: primaryBlue,
+                                indent: 20.w,
+                                endIndent: 25.w,
+                                thickness: 5,
                               ),
                             ],
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
                           ),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 5.w),
-                            child: TextFormField(
-                              // keyboardType: TextInputType.number,
-                              controller: passwordController,
-                              obscureText: showPassword == true ? false : true,
-                              decoration: InputDecoration(
-                                errorStyle:
-                                    TextStyle(fontSize: 4.sp, height: 0.01.h),
-                                fillColor: Colors.white,
-                                hintStyle: TextStyle(
+                          SizedBox(height: 15.h),
+                          Container(
+                            height: 6.h,
+                            width: 80.w,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
                                   color: Colors.grey,
-                                  fontSize: 5.sp,
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
                                 ),
-                                suffixIcon: IconButton(
-                                  icon: showPassword == true
-                                      ? Icon(
-                                          Icons.visibility_off,
-                                          color: Colors.grey,
-                                        )
-                                      : Icon(
-                                          Icons.visibility,
-                                          color: Colors.grey,
-                                        ),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (showPassword == false) {
-                                        showPassword = true;
-                                        print(showPassword);
-                                      } else {
-                                        showPassword = false;
-                                        print(showPassword);
-                                      }
-                                    });
-                                  },
+                              ],
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 5.w),
+                              child: TextFormField(
+                                // keyboardType: TextInputType.number,
+                                controller: passwordController,
+                                obscureText: showPassword == true ? false : true,
+                                decoration: InputDecoration(
+                                  errorStyle:
+                                      TextStyle(fontSize: 4.sp, height: 0.01.h),
+                                  fillColor: Colors.white,
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 5.sp,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: showPassword == true
+                                        ? Icon(
+                                            Icons.visibility_off,
+                                            color: Colors.grey,
+                                          )
+                                        : Icon(
+                                            Icons.visibility,
+                                            color: Colors.grey,
+                                          ),
+                                    onPressed: () {
+                                      setState(() {
+                                        if (showPassword == false) {
+                                          showPassword = true;
+                                          print(showPassword);
+                                        } else {
+                                          showPassword = false;
+                                          print(showPassword);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  hintText: 'pass hint'.tr(),
+                                  border: InputBorder.none,
                                 ),
-                                hintText: 'pass hint'.tr(),
-                                border: InputBorder.none,
+                                onChanged: (value) {},
+                                validator: (value) =>
+                                    Validators.validatePassword(value),
                               ),
-                              onChanged: (value) {},
-                              validator: (value) =>
-                                  Validators.validatePassword(value),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 5.h),
-                        Container(
-                          height: 6.h,
-                          width: 80.w,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey,
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 5.w),
-                            child: TextFormField(
-                              controller: confirmPasswordController,
-                              obscureText: showPassword2 == true ? false : true,
-                              decoration: InputDecoration(
-                                errorStyle:
-                                    TextStyle(fontSize: 4.sp, height: 0.01.h),
-                                fillColor: Colors.white,
-                                hintStyle: TextStyle(
+                          SizedBox(height: 5.h),
+                          Container(
+                            height: 6.h,
+                            width: 80.w,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
                                   color: Colors.grey,
-                                  fontSize: 5.sp,
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
                                 ),
-                                suffixIcon: IconButton(
-                                  icon: showPassword2 == true
-                                      ? Icon(
-                                          Icons.visibility_off,
-                                          color: Colors.grey,
-                                        )
-                                      : Icon(
-                                          Icons.visibility,
-                                          color: Colors.grey,
-                                        ),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (showPassword2 == false) {
-                                        showPassword2 = true;
-                                        print(showPassword2);
-                                      } else {
-                                        showPassword2 = false;
-                                        print(showPassword2);
-                                      }
-                                    });
-                                  },
+                              ],
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 5.w),
+                              child: TextFormField(
+                                controller: confirmPasswordController,
+                                obscureText: showPassword2 == true ? false : true,
+                                decoration: InputDecoration(
+                                  errorStyle:
+                                      TextStyle(fontSize: 4.sp, height: 0.01.h),
+                                  fillColor: Colors.white,
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 5.sp,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: showPassword2 == true
+                                        ? Icon(
+                                            Icons.visibility_off,
+                                            color: Colors.grey,
+                                          )
+                                        : Icon(
+                                            Icons.visibility,
+                                            color: Colors.grey,
+                                          ),
+                                    onPressed: () {
+                                      setState(() {
+                                        if (showPassword2 == false) {
+                                          showPassword2 = true;
+                                          print(showPassword2);
+                                        } else {
+                                          showPassword2 = false;
+                                          print(showPassword2);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  hintText: 'confirm hint'.tr(),
+                                  border: InputBorder.none,
                                 ),
-                                hintText: 'confirm hint'.tr(),
-                                border: InputBorder.none,
+                                onChanged: (value) {},
+                                validator: (value) =>
+                                    Validators.validatePassword(value),
                               ),
-                              onChanged: (value) {},
-                              validator: (value) =>
-                                  Validators.validatePassword(value),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 20.h),
-                        ContainerWidget(
-                            text: 'save'.tr(),
-                            h: 7.h,
-                            w: 80.w,
-                            onTap: () async {
-                              if (formKey.currentState?.validate() == true) {
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                print("save");
-                                print(passwordController.text ==
-                                    confirmPasswordController.text);
-                                print(widget.emailOrPhone);
-                                print(widget.isEmail);
-                                if (passwordController.text ==
-                                    confirmPasswordController.text) {
-                                  // if (widget.isEmail == true) {
-                                  //   print(widget.emailOrPhone);
-                                  //   var creat = Provider.of<
-                                  //           ForgetPasswordEmailProvider>(
-                                  //       context,
-                                  //       listen: false);
-                                  //   validateAndSubmitEmail(
-                                  //       widget.emailOrPhone,
-                                  //       passwordController.text,
-                                  //       confirmPasswordController.text,
-                                  //       creat);
-                                  // } else {
-                                    print(widget.emailOrPhone);
-                                    var creat =
-                                        Provider.of<ForgetPasswordProvider>(
-                                            context,
-                                            listen: false);
-                                    validateAndSubmitPhone(
-                                        widget.emailOrPhone,
-                                        passwordController.text,
-                                        confirmPasswordController.text,
-                                        creat);
-                                  // }
+                          SizedBox(height: 20.h),
+                          ContainerWidget(
+                              text: 'save'.tr(),
+                              h: 7.h,
+                              w: 80.w,
+                              onTap: () async {
+                                if (formKey.currentState?.validate() == true) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  print("save");
+                                  print(passwordController.text ==
+                                      confirmPasswordController.text);
+                                  print(widget.emailOrPhone);
+                                  print(widget.isEmail);
+                                  if (passwordController.text ==
+                                      confirmPasswordController.text) {
+                                    // if (widget.isEmail == true) {
+                                    //   print(widget.emailOrPhone);
+                                    //   var creat = Provider.of<
+                                    //           ForgetPasswordEmailProvider>(
+                                    //       context,
+                                    //       listen: false);
+                                    //   validateAndSubmitEmail(
+                                    //       widget.emailOrPhone,
+                                    //       passwordController.text,
+                                    //       confirmPasswordController.text,
+                                    //       creat);
+                                    // } else {
+                                      print(widget.emailOrPhone);
+                                      var creat =
+                                          Provider.of<ForgetPasswordProvider>(
+                                              context,
+                                              listen: false);
+                                      validateAndSubmitPhone(
+                                          widget.emailOrPhone,
+                                          passwordController.text,
+                                          confirmPasswordController.text,
+                                          creat);
+                                    // }
+                                  } else {
+                                    setSnackbar(
+                                        'password not matching'.tr(), context);
+                                  }
                                 } else {
-                                  setSnackbar(
-                                      'password not matching'.tr(), context);
+                                  print("not validate");
                                 }
-                              } else {
-                                print("not validate");
-                              }
-                            })
-                      ],
+                              })
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 2.h),
-              // Row(
-              //   children: [
-              //     SizedBox(width: 8.w),
-              //     IconButton(
-              //       icon: ImageIcon(
-              //         const AssetImage(back),
-              //         color: backgroundColor,
-              //         size: iconSize,
-              //       ),
-              //       onPressed: () {
-              //         Navigator.of(context).pop();
-              //       },
-              //     ),
-              //   ],
-              // ),
-            ],
+                SizedBox(height: 2.h),
+                // Row(
+                //   children: [
+                //     SizedBox(width: 8.w),
+                //     IconButton(
+                //       icon: ImageIcon(
+                //         const AssetImage(back),
+                //         color: backgroundColor,
+                //         size: iconSize,
+                //       ),
+                //       onPressed: () {
+                //         Navigator.of(context).pop();
+                //       },
+                //     ),
+                //   ],
+                // ),
+              ],
+            ),
           ),
         ),
       ),

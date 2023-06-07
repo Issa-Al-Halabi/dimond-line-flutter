@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import '../../../widgets/loader_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:diamond_line/Presentation/Functions/Validators.dart';
@@ -15,6 +16,7 @@ import '../../../../Buisness_logic/provider/Driver_Provider/driver_register_prov
 import '../../../../Data/network/requests.dart';
 import '../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../Functions/helper.dart';
 import '../../../Widgets/text.dart';
 import '../../../widgets/container_with_textfield.dart';
 import 'package:image_picker/image_picker.dart';
@@ -112,7 +114,7 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
         await Provider.of<DriverRegisterProvider>(context, listen: false);
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       if (car_mechanic != null && car_insurance != null) {
         await creat.DriverCreatAcountwithphoto(
           first_name,
@@ -184,7 +186,7 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
         listen: false);
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       if (car_image != null && personal_identity != null) {
         await creat.driverCompleteRegister(
           car_image,
@@ -319,347 +321,366 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 10.h, bottom: 7.h),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-              color: backgroundColor,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
             ),
-            child: SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    ContainerWithTextField(
-                      hintText: 'first name'.tr(),
-                      h: 6.h,
-                      w: 90.w,
-                      onTap: () {},
-                      txtController: firstNameController,
-                      validateFunction: (value) =>
-                          Validators.validateName(value),
-                    ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
-                    ContainerWithTextField(
-                      hintText: 'last name'.tr(),
-                      h: 6.h,
-                      w: 90.w,
-                      onTap: () {},
-                      txtController: lastNameController,
-                      validateFunction: (value) =>
-                          Validators.validateName(value),
-                    ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
-                    ContainerWithTextField(
-                      hintText: 'email'.tr(),
-                      h: 6.h,
-                      w: 90.w,
-                      onTap: () {},
-                      txtController: emailController,
-                    ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
-                    ContainerWithTextField(
-                      hintText: 'password'.tr(),
-                      h: 6.h,
-                      w: 90.w,
-                      onTap: () {},
-                      txtController: passwordController,
-                      validateFunction: (value) =>
-                          Validators.validatePassword(value),
-                    ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
-                    Container(
-                      height: 6.h,
-                      width: 90.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 7,
-                            offset: Offset(0, 0),
-                          ),
-                        ],
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(top: 10.h, bottom: 7.h),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                color: backgroundColor,
+              ),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 2.h,
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 3.w, right: 3.w),
-                        child: TextFormField(
-                          controller: phoneController,
-                          // obscureText: true,
-                          decoration: InputDecoration(
-                            errorStyle:
-                                TextStyle(fontSize: 4.sp, height: 0.01.h),
-                            fillColor: Colors.white,
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 5.sp,
+                      ContainerWithTextField(
+                        hintText: 'first name'.tr(),
+                        h: 6.h,
+                        w: 90.w,
+                        onTap: () {},
+                        txtController: firstNameController,
+                        validateFunction: (value) =>
+                            Validators.validateName(value),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      ContainerWithTextField(
+                        hintText: 'last name'.tr(),
+                        h: 6.h,
+                        w: 90.w,
+                        onTap: () {},
+                        txtController: lastNameController,
+                        validateFunction: (value) =>
+                            Validators.validateName(value),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      ContainerWithTextField(
+                        hintText: 'email'.tr(),
+                        h: 6.h,
+                        w: 90.w,
+                        onTap: () {},
+                        txtController: emailController,
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      ContainerWithTextField(
+                        hintText: 'password'.tr(),
+                        h: 6.h,
+                        w: 90.w,
+                        onTap: () {},
+                        txtController: passwordController,
+                        validateFunction: (value) =>
+                            Validators.validatePassword(value),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      Container(
+                        height: 6.h,
+                        width: 90.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 7,
+                              offset: Offset(0, 0),
                             ),
-                            hintText: 'mobile'.tr(),
-                            border: InputBorder.none,
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 3.w, right: 3.w),
+                          child: TextFormField(
+                            controller: phoneController,
+                            // obscureText: true,
+                            decoration: InputDecoration(
+                              errorStyle:
+                                  TextStyle(fontSize: 4.sp, height: 0.01.h),
+                              fillColor: Colors.white,
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 5.sp,
+                              ),
+                              hintText: '+963'+' '+'mobile'.tr(),
+                              border: InputBorder.none,
+                            ),
+                            // maxLength: 9,
+                            onChanged: (value) {},
+                            validator: (value) =>
+                                Validators.validatePhoneNumber(value),
                           ),
-                          onChanged: (value) {},
-                          validator: (value) =>
-                              Validators.validatePhoneNumber(value),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    ContainerWidget3(
-                      text: idCardStr,
-                      borderRadius: 15,
-                      icon: Icons.add,
-                      onIconPressed: () async {
-                        final imageFile = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-                        if (imageFile == null) return;
-                        final imageTemp = File(imageFile.path);
-                        setState(() {
-                          this.idCardImage = imageTemp;
-                          idCardStr = idCardImage!.path
-                              .split('/')
-                              .last
-                              .substring(0, 15);
-                        });
-                      },
-                      textColor: grey,
-                      color: white,
-                      w: 90.w,
-                      h: 6.h,
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    ContainerWidget3(
-                      text: carImgStr,
-                      borderRadius: 15,
-                      icon: Icons.add,
-                      onIconPressed: () async {
-                        final imageFile = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-                        if (imageFile == null) return;
-                        final imageTemp = File(imageFile.path);
-                        setState(() {
-                          this.CarImage = imageTemp;
-                          carImgStr =
-                              CarImage!.path.split('/').last.substring(0, 15);
-                        });
-                      },
-                      textColor: grey,
-                      color: white,
-                      w: 90.w,
-                      h: 6.h,
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    ContainerWidget3(
-                      text: driCertiStr,
-                      borderRadius: 15,
-                      icon: Icons.add,
-                      onIconPressed: () async {
-                        final imageFile = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-                        if (imageFile == null) return;
-                        final imageTemp = File(imageFile.path);
-                        setState(() {
-                          this.drivingCertiImage = imageTemp;
-                          driCertiStr = drivingCertiImage!.path
-                              .split('/')
-                              .last
-                              .substring(0, 15);
-                        });
-                      },
-                      textColor: grey,
-                      color: white,
-                      w: 90.w,
-                      h: 6.h,
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    ContainerWidget3(
-                      text: carMechaStr,
-                      borderRadius: 15,
-                      icon: Icons.add,
-                      onIconPressed: () async {
-                        final imageFile = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-                        if (imageFile == null) return;
-                        final imageTemp = File(imageFile.path);
-                        setState(() {
-                          this.carMechaImage = imageTemp;
-                          carMechaStr = carMechaImage!.path
-                              .split('/')
-                              .last
-                              .substring(0, 15);
-                        });
-                      },
-                      textColor: grey,
-                      color: white,
-                      w: 90.w,
-                      h: 6.h,
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    ContainerWidget3(
-                      text: carInsuStr,
-                      borderRadius: 15,
-                      icon: Icons.add,
-                      onIconPressed: () async {
-                        final imageFile = await ImagePicker()
-                            .pickImage(source: ImageSource.gallery);
-                        if (imageFile == null) return;
-                        final imageTemp = File(imageFile.path);
-                        setState(() {
-                          this.carInsuImage = imageTemp;
-                          carInsuStr = carInsuImage!.path
-                              .split('/')
-                              .last
-                              .substring(0, 15);
-                        });
-                      },
-                      textColor: grey,
-                      color: white,
-                      w: 90.w,
-                      h: 6.h,
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Builder(builder: (context) {
-                            return Checkbox(
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              value: newValue,
-                              activeColor: primaryBlue,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  newValue = value!;
-                                  isAgree = value;
-                                  print(isAgree);
-                                  if (isAgree == true) {
-                                    totalAgree = true;
-                                    showAlertDialog(context);
-                                  } else {
-                                    totalAgree = false;
-                                    isAgree = false;
-                                  }
-                                });
-                              },
-                            );
-                          }),
-                          getAgreeText(),
-                        ]),
-                    // SizedBox(
-                    //   height: 3.h,
-                    // ),
-                    Center(
-                      child: ContainerWidget(
-                        text: 'send'.tr(),
-                        onTap: () async {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          if (formKey.currentState?.validate() == true) {
-                            if (totalAgree == true) {
-                              if (drivingCertiImage == null) {
-                                setSnackbar(
-                                    'please the driving certificate is required'
-                                        .tr(),
-                                    context);
-                              } else {
-                                print('send tap');
-                                print(firstNameController.text);
-                                print(lastNameController.text);
-                                print(emailController.text);
-                                print(passwordController.text);
-                                print(phoneController.text);
-                                print(carMechaImage);
-                                print(carInsuImage);
-                                print(CarImage);
-                                print(idCardImage);
-                                print(drivingCertiImage);
-                                if (carMechaImage != null &&
-                                    carInsuImage != null) {
-                                  await driverRegisterApi(
-                                    firstNameController.text,
-                                    lastNameController.text,
-                                    emailController.text,
-                                    passwordController.text,
-                                    phoneController.text,
-                                    carMechaImage!,
-                                    carInsuImage!,
-                                    // creat
-                                  );
-                                } else if (carMechaImage != null) {
-                                  await driverRegisterApi(
-                                    firstNameController.text,
-                                    lastNameController.text,
-                                    emailController.text,
-                                    passwordController.text,
-                                    phoneController.text,
-                                    carMechaImage!,
-                                  );
-                                } else if (carInsuImage != null) {
-                                  await driverRegisterApi(
-                                    firstNameController.text,
-                                    lastNameController.text,
-                                    emailController.text,
-                                    passwordController.text,
-                                    phoneController.text,
-                                    carInsuImage!,
-                                  );
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      ContainerWidget3(
+                        text: idCardStr,
+                        borderRadius: 15,
+                        icon: Icons.add,
+                        onIconPressed: () async {
+                          final imageFile = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (imageFile == null) return;
+                          final imageTemp = File(imageFile.path);
+                          setState(() {
+                            this.idCardImage = imageTemp;
+                            idCardStr = idCardImage!.path
+                                .split('/')
+                                .last
+                                .substring(0, 15);
+                          });
+                        },
+                        textColor: grey,
+                        color: white,
+                        w: 90.w,
+                        h: 6.h,
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      ContainerWidget3(
+                        text: carImgStr,
+                        borderRadius: 15,
+                        icon: Icons.add,
+                        onIconPressed: () async {
+                          final imageFile = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (imageFile == null) return;
+                          final imageTemp = File(imageFile.path);
+                          setState(() {
+                            this.CarImage = imageTemp;
+                            carImgStr =
+                                CarImage!.path.split('/').last.substring(0, 15);
+                          });
+                        },
+                        textColor: grey,
+                        color: white,
+                        w: 90.w,
+                        h: 6.h,
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      ContainerWidget3(
+                        text: driCertiStr,
+                        borderRadius: 15,
+                        icon: Icons.add,
+                        onIconPressed: () async {
+                          final imageFile = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (imageFile == null) return;
+                          final imageTemp = File(imageFile.path);
+                          setState(() {
+                            this.drivingCertiImage = imageTemp;
+                            driCertiStr = drivingCertiImage!.path
+                                .split('/')
+                                .last
+                                .substring(0, 15);
+                          });
+                        },
+                        textColor: grey,
+                        color: white,
+                        w: 90.w,
+                        h: 6.h,
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      ContainerWidget3(
+                        text: carMechaStr,
+                        borderRadius: 15,
+                        icon: Icons.add,
+                        onIconPressed: () async {
+                          final imageFile = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (imageFile == null) return;
+                          final imageTemp = File(imageFile.path);
+                          setState(() {
+                            this.carMechaImage = imageTemp;
+                            carMechaStr = carMechaImage!.path
+                                .split('/')
+                                .last
+                                .substring(0, 15);
+                          });
+                        },
+                        textColor: grey,
+                        color: white,
+                        w: 90.w,
+                        h: 6.h,
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      ContainerWidget3(
+                        text: carInsuStr,
+                        borderRadius: 15,
+                        icon: Icons.add,
+                        onIconPressed: () async {
+                          final imageFile = await ImagePicker()
+                              .pickImage(source: ImageSource.gallery);
+                          if (imageFile == null) return;
+                          final imageTemp = File(imageFile.path);
+                          setState(() {
+                            this.carInsuImage = imageTemp;
+                            carInsuStr = carInsuImage!.path
+                                .split('/')
+                                .last
+                                .substring(0, 15);
+                          });
+                        },
+                        textColor: grey,
+                        color: white,
+                        w: 90.w,
+                        h: 6.h,
+                      ),
+
+                      SizedBox(height: 1.h,),
+                      InkWell(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              // Builder(builder: (context) {
+                              //   return Checkbox(
+                              //     materialTapTargetSize:
+                              //         MaterialTapTargetSize.shrinkWrap,
+                              //     value: newValue,
+                              //     activeColor: primaryBlue,
+                              //     onChanged: (bool? value) {
+                              //       setState(() {
+                              //         newValue = value!;
+                              //         isAgree = value;
+                              //         print(isAgree);
+                              //         if (isAgree == true) {
+                              //           totalAgree = true;
+                              //           showAlertDialog(context);
+                              //         } else {
+                              //           totalAgree = false;
+                              //           isAgree = false;
+                              //         }
+                              //       });
+                              //     },
+                              //   );
+                              // }),
+                              getAgreeText(),
+                            ]),
+                        onTap: (){
+                          showAlertDialog(context);
+                        },
+                      ),
+                      SizedBox(height: 1.h,),
+                      // SizedBox(
+                      //   height: 3.h,
+                      // ),
+                      Center(
+                        child: ContainerWidget(
+                          text: 'send'.tr(),
+                          onTap: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            if (formKey.currentState?.validate() == true) {
+                              if (totalAgree == true) {
+                                if (drivingCertiImage == null) {
+                                  setSnackbar(
+                                      'please the driving certificate is required'
+                                          .tr(),
+                                      context);
                                 } else {
-                                  await driverRegisterApi(
-                                    firstNameController.text,
-                                    lastNameController.text,
-                                    emailController.text,
-                                    passwordController.text,
-                                    phoneController.text,
-                                  );
+                                  print('send tap');
+                                  print(firstNameController.text);
+                                  print(lastNameController.text);
+                                  print(emailController.text);
+                                  print(passwordController.text);
+                                  print(phoneController.text);
+                                  print(carMechaImage);
+                                  print(carInsuImage);
+                                  print(CarImage);
+                                  print(idCardImage);
+                                  print(drivingCertiImage);
+                                  if (carMechaImage != null &&
+                                      carInsuImage != null) {
+                                    await driverRegisterApi(
+                                      firstNameController.text,
+                                      lastNameController.text,
+                                      emailController.text,
+                                      passwordController.text,
+                                      phoneController.text,
+                                      carMechaImage!,
+                                      carInsuImage!,
+                                      // creat
+                                    );
+                                  } else if (carMechaImage != null) {
+                                    await driverRegisterApi(
+                                      firstNameController.text,
+                                      lastNameController.text,
+                                      emailController.text,
+                                      passwordController.text,
+                                      phoneController.text,
+                                      carMechaImage!,
+                                    );
+                                  } else if (carInsuImage != null) {
+                                    await driverRegisterApi(
+                                      firstNameController.text,
+                                      lastNameController.text,
+                                      emailController.text,
+                                      passwordController.text,
+                                      phoneController.text,
+                                      carInsuImage!,
+                                    );
+                                  } else {
+                                    await driverRegisterApi(
+                                      firstNameController.text,
+                                      lastNameController.text,
+                                      emailController.text,
+                                      passwordController.text,
+                                      phoneController.text,
+                                    );
+                                  }
                                 }
+                              } else {
+                                // setSnackbar("agreePolicy".tr(), context);
+                                showAlertDialog(context);
+
+                                // Future.delayed(
+                                //     const Duration(seconds: 2))
+                                //     .then((_) async {
+                                //   showAlertDialog(context);
+                                // });
                               }
                             } else {
-                              setSnackbar("agreePolicy".tr(), context);
+                              print('not validate');
                             }
-                          } else {
-                            print('not validate');
-                          }
-                        },
-                        h: 7.h,
-                        w: 80.w,
+                          },
+                          h: 7.h,
+                          w: 80.w,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
-                  ],
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -687,8 +708,9 @@ class _MyDialogState extends State<alert> {
     return AlertDialog(
       title: Center(
           child: myText(
-        text: 'TERM'.tr(),
-        fontSize: 4.sp,
+        // text: 'TERM'.tr(),
+            text: 'TERM'.tr() + '\n\n' + "agreePolicy".tr(),
+            fontSize: 4.sp,
         color: primaryBlue,
       )),
       content: Scrollbar(

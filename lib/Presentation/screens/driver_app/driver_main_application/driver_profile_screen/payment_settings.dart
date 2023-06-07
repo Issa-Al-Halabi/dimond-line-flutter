@@ -1,6 +1,7 @@
 // import 'package:connectivity/connectivity.dart';
 // import 'package:easy_localization/easy_localization.dart';
 // import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 // import 'package:diamond_line/Presentation/widgets/bottom_icons_driver.dart';
 // import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 // import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
@@ -45,7 +46,7 @@
 //     _isNetworkAvail = await isNetworkAvailable();
 //     if (_isNetworkAvail) {
 //       print("There is internet");
-//       Loader.show(context, progressIndicator: CircularProgressIndicator());
+//       Loader.show(context, progressIndicator: LoaderWidget());
 //       await creat.payment();
 //       print(creat.data.error);
 //       print(creat.data.message);

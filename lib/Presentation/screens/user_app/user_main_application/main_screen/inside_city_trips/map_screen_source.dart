@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../../../../constants.dart';
@@ -96,7 +97,7 @@ class _MapScreenSourceState extends State<MapScreenSource> {
     bool isRTL = currentLanguage == 'en' ? false : true;
     return Scaffold(
       body: _kGooglePlex == null
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: LoaderWidget())
           : Container(
               height: getScreenHeight(context),
               width: getScreenWidth(context),

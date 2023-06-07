@@ -3,6 +3,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/user_register_provider.dart';
 import 'package:diamond_line/Presentation/Functions/Validators.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../Functions/helper.dart';
 import '../../../widgets/container_widget.dart';
 import '../../../widgets/container_with_textfield.dart';
 import 'package:image_picker/image_picker.dart';
@@ -270,7 +272,7 @@ class _RegistrationState extends State<Registration> {
                 if (_isNetworkAvail) {
                   print("There is internet");
                   Loader.show(context,
-                      progressIndicator: CircularProgressIndicator());
+                      progressIndicator: LoaderWidget());
                   var creat = await Provider.of<UserRegisterProvider>(context,
                       listen: false);
                   print(creat);
@@ -346,102 +348,105 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 10.h, bottom: 7.h),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-              color: backgroundColor,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IndexedStack(
-                    index: _index,
-                    children: [
-                      // //first index
-                      // Padding(
-                      //   padding:
-                      //       EdgeInsets.only(top: 25.h, left: 10.w, right: 10.w),
-                      //   child: Container(
-                      //     height: 25.h,
-                      //     width: 80.w,
-                      //     decoration: BoxDecoration(
-                      //       boxShadow: [
-                      //         BoxShadow(
-                      //           color: Colors.grey.withOpacity(0.3),
-                      //           spreadRadius: 2,
-                      //           blurRadius: 7,
-                      //           offset: Offset(0, 0),
-                      //         ),
-                      //       ],
-                      //       borderRadius:
-                      //           const BorderRadius.all(Radius.circular(20)),
-                      //       color: backgroundColor,
-                      //     ),
-                      //     child: Column(
-                      //       children: [
-                      //         SizedBox(
-                      //           height: 2.h,
-                      //         ),
-                      //         Text(
-                      //           'register'.tr(),
-                      //           style:
-                      //               TextStyle(color: lightBlue, fontSize: 5.sp),
-                      //         ),
-                      //         SizedBox(
-                      //           height: 2.h,
-                      //         ),
-                      //         ContainerWidget(
-                      //           text: 'id card'.tr(),
-                      //           h: 7.h,
-                      //           w: 50.w,
-                      //           onTap: () {
-                      //             setState(() {
-                      //               type = 'id card'.tr();
-                      //               print('save type');
-                      //               save();
-                      //               _index++;
-                      //             });
-                      //           },
-                      //           color: primaryBlue,
-                      //         ),
-                      //         SizedBox(
-                      //           height: 2.h,
-                      //         ),
-                      //         ContainerWidget(
-                      //           text: 'passport'.tr(),
-                      //           h: 7.h,
-                      //           w: 50.w,
-                      //           onTap: () {
-                      //             setState(() {
-                      //               type = 'passport'.tr();
-                      //               save();
-                      //               _index++;
-                      //             });
-                      //           },
-                      //           color: primaryBlue,
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      getSecondIndex(),
-                    ],
-                  ),
-                ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(top: 10.h, bottom: 7.h),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                color: backgroundColor,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IndexedStack(
+                      index: _index,
+                      children: [
+                        // //first index
+                        // Padding(
+                        //   padding:
+                        //       EdgeInsets.only(top: 25.h, left: 10.w, right: 10.w),
+                        //   child: Container(
+                        //     height: 25.h,
+                        //     width: 80.w,
+                        //     decoration: BoxDecoration(
+                        //       boxShadow: [
+                        //         BoxShadow(
+                        //           color: Colors.grey.withOpacity(0.3),
+                        //           spreadRadius: 2,
+                        //           blurRadius: 7,
+                        //           offset: Offset(0, 0),
+                        //         ),
+                        //       ],
+                        //       borderRadius:
+                        //           const BorderRadius.all(Radius.circular(20)),
+                        //       color: backgroundColor,
+                        //     ),
+                        //     child: Column(
+                        //       children: [
+                        //         SizedBox(
+                        //           height: 2.h,
+                        //         ),
+                        //         Text(
+                        //           'register'.tr(),
+                        //           style:
+                        //               TextStyle(color: lightBlue, fontSize: 5.sp),
+                        //         ),
+                        //         SizedBox(
+                        //           height: 2.h,
+                        //         ),
+                        //         ContainerWidget(
+                        //           text: 'id card'.tr(),
+                        //           h: 7.h,
+                        //           w: 50.w,
+                        //           onTap: () {
+                        //             setState(() {
+                        //               type = 'id card'.tr();
+                        //               print('save type');
+                        //               save();
+                        //               _index++;
+                        //             });
+                        //           },
+                        //           color: primaryBlue,
+                        //         ),
+                        //         SizedBox(
+                        //           height: 2.h,
+                        //         ),
+                        //         ContainerWidget(
+                        //           text: 'passport'.tr(),
+                        //           h: 7.h,
+                        //           w: 50.w,
+                        //           onTap: () {
+                        //             setState(() {
+                        //               type = 'passport'.tr();
+                        //               save();
+                        //               _index++;
+                        //             });
+                        //           },
+                        //           color: primaryBlue,
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        getSecondIndex(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/order_trip_outside_provider.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../Functions/helper.dart';
 
 class SelectCar extends StatefulWidget {
   SelectCar(
@@ -59,7 +62,7 @@ class _SelectCarState extends State<SelectCar> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: CircularProgressIndicator());
+      Loader.show(context, progressIndicator: LoaderWidget());
       await creat.getOrderTrip(
           vehicle_id, category_id, subcategory_id, person, bags, time, date, direction);
       if (creat.data.error == false) {
@@ -338,165 +341,168 @@ class _SelectCarState extends State<SelectCar> {
     print(widget.vechileId);
     print('***************************');
 
-    return Scaffold(
-      body: Container(
-        height: getScreenHeight(context),
-        width: getScreenWidth(context),
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(background),
-            fit: BoxFit.fill,
+    return WillPopScope(
+      onWillPop: willPopLoader,
+      child: Scaffold(
+        body: Container(
+          height: getScreenHeight(context),
+          width: getScreenWidth(context),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(background),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(top: 9.h),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: 82.h,
-                  width: getScreenWidth(context),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 7,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    color: backgroundColor,
-                  ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 8,
-                        child: ListView.builder(
-                            itemCount: widget.filteredLength,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 1.h),
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          isSelect = true;
-                                          oneVechileId =
-                                              widget.vechileId[index];
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 20.h,
-                                        width: 90.w,
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.3),
-                                              spreadRadius: 2,
-                                              blurRadius: 7,
-                                              offset: const Offset(0, 0),
-                                            ),
-                                          ],
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20)),
-                                          color: isSelect == true
-                                              ? primaryBlue
-                                              : backgroundColor,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 2.w, right: 2.w),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        widget
-                                                            .vechileType[index],
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
+          child: Padding(
+            padding: EdgeInsets.only(top: 9.h),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    height: 82.h,
+                    width: getScreenWidth(context),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 7,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                      color: backgroundColor,
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 8,
+                          child: ListView.builder(
+                              itemCount: widget.filteredLength,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 1.h),
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            isSelect = true;
+                                            oneVechileId =
+                                                widget.vechileId[index];
+                                          });
+                                        },
+                                        child: Container(
+                                          height: 20.h,
+                                          width: 90.w,
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color:
+                                                    Colors.grey.withOpacity(0.3),
+                                                spreadRadius: 2,
+                                                blurRadius: 7,
+                                                offset: const Offset(0, 0),
+                                              ),
+                                            ],
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(20)),
+                                            color: isSelect == true
+                                                ? primaryBlue
+                                                : backgroundColor,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: 2.w, right: 2.w),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 2.h,
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        // "4 persons",
-                                                        widget.seats,
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
+                                                        Text(
+                                                          widget
+                                                              .vechileType[index],
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 2.h,
-                                                      ),
-                                                      Text(
-                                                        '${widget.bags} bags',
-                                                        style: TextStyle(
-                                                          color: grey,
-                                                          fontSize: 5.sp,
+                                                        SizedBox(
+                                                          height: 2.h,
                                                         ),
-                                                      ),
-                                                    ],
+                                                        Text(
+                                                          // "4 persons",
+                                                          widget.seats,
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 2.h,
+                                                        ),
+                                                        Text(
+                                                          '${widget.bags} bags',
+                                                          style: TextStyle(
+                                                            color: grey,
+                                                            fontSize: 5.sp,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                                Image.network(
-                                                  widget.vechileImage[index],
-                                                  height: 20.h,
-                                                  width: 20.w,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                                  Image.network(
+                                                    widget.vechileImage[index],
+                                                    height: 20.h,
+                                                    width: 20.w,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            }),
-                      ),
-                      Expanded(
-                          child: Column(
-                        children: [
-                          ContainerWidget(
-                              text: 'done'.tr(),
-                              h: 7.h,
-                              w: 80.w,
-                              onTap: () {
-                                getDialog();
+                                  ],
+                                );
                               }),
-                          SizedBox(
-                            height: 1.h,
-                          ),
-                        ],
-                      )),
-                    ],
+                        ),
+                        Expanded(
+                            child: Column(
+                          children: [
+                            ContainerWidget(
+                                text: 'done'.tr(),
+                                h: 7.h,
+                                w: 80.w,
+                                onTap: () {
+                                  getDialog();
+                                }),
+                            SizedBox(
+                              height: 1.h,
+                            ),
+                          ],
+                        )),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

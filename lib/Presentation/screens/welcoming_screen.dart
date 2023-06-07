@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:diamond_line/Presentation/screens/user_app/user_registration/are_you.dart';
 import 'package:flutter/material.dart';
 import 'package:diamond_line/Presentation/Screens/landing_page.dart';
 import 'package:geolocator/geolocator.dart';
@@ -71,57 +72,118 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
     getVersion();
     getPer();
     super.initState();
+
+    startTimer();
+
+    // Timer(
+    //     Duration(seconds: 3),
+    //     () =>
+    //     Navigator.of(context).push(
+    //             PageRouteBuilder(
+    //               pageBuilder: (BuildContext context, Animation<double> animation,
+    //                   Animation<double> secondaryAnimation) {
+    //                 return  //  MapScreen()
+    //         token != '' && type == 'user' ? UserDashboard()
+    //         : token != '' && type == 'foreign user' ? UserDashboard()
+    //         : token != '' && type == 'organisations' ? UserDashboard()
+    //          : token != '' && type == 'external_driver' ?
+    //         tripId !='' ?
+    //         TrackingScreen(
+    //           pickupLatitude: pickupLatitude,
+    //           pickupLongitude: pickupLongitude,
+    //           dropLongitude: dropLongitude,
+    //           dropLatitude: dropLatitude,
+    //           tripId: tripId,
+    //         )
+    //         :
+    //         DriverDashboard(driverType: 'external_driver',)
+    //          : token != '' && type == 'driver' ?
+    //         tripId !='' ?
+    //         TrackingScreen(
+    //           pickupLatitude: pickupLatitude,
+    //           pickupLongitude: pickupLongitude,
+    //           dropLongitude: dropLongitude,
+    //           dropLatitude: dropLatitude,
+    //           tripId: tripId,
+    //         )
+    //             :
+    //         DriverDashboard(driverType: 'driver')
+    //           :
+    //         LandingPage();
+    //               },
+    //               transitionsBuilder: (BuildContext context,
+    //                   Animation<double> animation,
+    //                   Animation<double> secondaryAnimation,
+    //                   Widget child) {
+    //                 return Align(
+    //                   child: SizeTransition(
+    //                     sizeFactor: animation,
+    //                     child: child,
+    //                   ),
+    //                 );
+    //               },
+    //               transitionDuration: Duration(milliseconds: 500),
+    //             ),
+    //           )
+    //         );
+  }
+
+  void startTimer() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
     Timer(
         Duration(seconds: 3),
-        () => 
-        Navigator.of(context).push(
-                PageRouteBuilder(
-                  pageBuilder: (BuildContext context, Animation<double> animation,
-                      Animation<double> secondaryAnimation) {
-                    return  //  MapScreen()
-            token != '' && type == 'user' ? UserDashboard()
-            : token != '' && type == 'foreign user' ? UserDashboard()
-            : token != '' && type == 'organisations' ? UserDashboard()
-             : token != '' && type == 'external_driver' ?
-            tripId !='' ?
-            TrackingScreen(
-              pickupLatitude: pickupLatitude,
-              pickupLongitude: pickupLongitude,
-              dropLongitude: dropLongitude,
-              dropLatitude: dropLatitude,
-              tripId: tripId,
+            () =>
+            // Navigator.of(context).push(
+            Navigator.of(context).pushReplacement(
+              PageRouteBuilder(
+                pageBuilder: (BuildContext context, Animation<double> animation,
+                    Animation<double> secondaryAnimation) {
+                  return  //  MapScreen()
+                    token != '' && type == 'user' ? UserDashboard()
+                        : token != '' && type == 'foreign user' ? UserDashboard()
+                        : token != '' && type == 'organisations' ? UserDashboard()
+                        : token != '' && type == 'external_driver' ?
+                    tripId !='' ?
+                    TrackingScreen(
+                      pickupLatitude: pickupLatitude,
+                      pickupLongitude: pickupLongitude,
+                      dropLongitude: dropLongitude,
+                      dropLatitude: dropLatitude,
+                      tripId: tripId,
+                    )
+                        :
+                    DriverDashboard(driverType: 'external_driver',)
+                        : token != '' && type == 'driver' ?
+                    tripId !='' ?
+                    TrackingScreen(
+                      pickupLatitude: pickupLatitude,
+                      pickupLongitude: pickupLongitude,
+                      dropLongitude: dropLongitude,
+                      dropLatitude: dropLatitude,
+                      tripId: tripId,
+                    )
+                        :
+                    DriverDashboard(driverType: 'driver')
+                        :
+                    pref.getBool('isFirstTimeUser') ?? true ?
+                    LandingPage()
+                        : AreYou();
+                },
+                transitionsBuilder: (BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    Widget child) {
+                  return Align(
+                    child: SizeTransition(
+                      sizeFactor: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                transitionDuration: Duration(milliseconds: 500),
+              ),
             )
-            :
-            DriverDashboard(driverType: 'external_driver',)
-             : token != '' && type == 'driver' ?
-            tripId !='' ?
-            TrackingScreen(
-              pickupLatitude: pickupLatitude,
-              pickupLongitude: pickupLongitude,
-              dropLongitude: dropLongitude,
-              dropLatitude: dropLatitude,
-              tripId: tripId,
-            )
-                :
-            DriverDashboard(driverType: 'driver')
-              :
-            LandingPage();
-                  },
-                  transitionsBuilder: (BuildContext context,
-                      Animation<double> animation,
-                      Animation<double> secondaryAnimation,
-                      Widget child) {
-                    return Align(
-                      child: SizeTransition(
-                        sizeFactor: animation,
-                        child: child,
-                      ),
-                    );
-                  },
-                  transitionDuration: Duration(milliseconds: 500),
-                ),
-              )
-            );
+    );
   }
 
   void getVersion() async {
