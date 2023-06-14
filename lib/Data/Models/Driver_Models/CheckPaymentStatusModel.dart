@@ -1,6 +1,6 @@
 /// error : false
 /// message : "Success"
-/// data : {"id":1,"driver_id":"242","is_success":null,"message":null,"amount":30,"token":null,"transaction_number":null,"created_at":"2023-05-09T11:26:30.000000Z","updated_at":"2023-05-09T11:26:30.000000Z","deleted_at":null}
+/// data : {"id":81,"driver_id":"242","is_success":1,"message":null,"amount":"3666.00","token":"0960C0514BF0576063D815924C2A30B8","transaction_number":"1604235696","created_at":"2023-06-12T08:42:10.000000Z","updated_at":"2023-06-12T08:43:08.000000Z","deleted_at":null}
 
 class CheckPaymentStatusModel {
   CheckPaymentStatusModel({
@@ -43,26 +43,26 @@ CheckPaymentStatusModel copyWith({  bool? error,
 
 }
 
-/// id : 1
+/// id : 81
 /// driver_id : "242"
-/// is_success : null
+/// is_success : 1
 /// message : null
-/// amount : 30
-/// token : null
-/// transaction_number : null
-/// created_at : "2023-05-09T11:26:30.000000Z"
-/// updated_at : "2023-05-09T11:26:30.000000Z"
+/// amount : "3666.00"
+/// token : "0960C0514BF0576063D815924C2A30B8"
+/// transaction_number : "1604235696"
+/// created_at : "2023-06-12T08:42:10.000000Z"
+/// updated_at : "2023-06-12T08:43:08.000000Z"
 /// deleted_at : null
 
 class Data {
   Data({
       int? id, 
       String? driverId, 
-      dynamic isSuccess, 
+      int? isSuccess, 
       dynamic message, 
-      int? amount, 
-      dynamic token, 
-      dynamic transactionNumber, 
+      String? amount, 
+      String? token, 
+      String? transactionNumber, 
       String? createdAt, 
       String? updatedAt, 
       dynamic deletedAt,}){
@@ -92,21 +92,21 @@ class Data {
   }
   int? _id;
   String? _driverId;
-  dynamic _isSuccess;
+  int? _isSuccess;
   dynamic _message;
-  int? _amount;
-  dynamic _token;
-  dynamic _transactionNumber;
+  String? _amount;
+  String? _token;
+  String? _transactionNumber;
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
 Data copyWith({  int? id,
   String? driverId,
-  dynamic isSuccess,
+  int? isSuccess,
   dynamic message,
-  int? amount,
-  dynamic token,
-  dynamic transactionNumber,
+  String? amount,
+  String? token,
+  String? transactionNumber,
   String? createdAt,
   String? updatedAt,
   dynamic deletedAt,
@@ -123,11 +123,11 @@ Data copyWith({  int? id,
 );
   int? get id => _id;
   String? get driverId => _driverId;
-  dynamic get isSuccess => _isSuccess;
+  int? get isSuccess => _isSuccess;
   dynamic get message => _message;
-  int? get amount => _amount;
-  dynamic get token => _token;
-  dynamic get transactionNumber => _transactionNumber;
+  String? get amount => _amount;
+  String? get token => _token;
+  String? get transactionNumber => _transactionNumber;
   String? get createdAt => _createdAt;
   String? get updatedAt => _updatedAt;
   dynamic get deletedAt => _deletedAt;

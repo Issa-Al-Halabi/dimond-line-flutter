@@ -468,6 +468,9 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                 if (snapshot.hasData == true) {
                                   var data =
                                       json.decode(snapshot.data.toString());
+                                  print('=========================');
+                                  print(data);
+                                  print('=========================');
                                   if (data['positions'] != null) {
                                     // if (data['positions'][0]['deviceId'] == 248) {
                                       if (data['positions'][0]['deviceId'] == deviceNumb) {

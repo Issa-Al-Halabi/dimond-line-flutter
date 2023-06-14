@@ -258,6 +258,12 @@
   "weak pass" : "كلمة السر يجب أن تحتوي على الأقل على حرف واحد كبير, حرف واحد صغير, رمز واحد, رقم واحد",
   "nonNumeric" : "أرقام فقط",
   "nonAlphabetic" : "أحرف فقط",
-  "start 9" : "ابدأ ب 9"
+  "start 9" : "ابدأ ب 9",
+  "looking car" : "جاري البحث عن سائق, \nرجاء انتظر",
+  "your trip accepted" : "تم قبول رحلتك",
+  "your trip started" : "تم بدء رحلتك",
+  "driver arrive" : "وصل السائق",
+  "dont let him wait" : "لا تدعه ينتظر"
+
 
 }

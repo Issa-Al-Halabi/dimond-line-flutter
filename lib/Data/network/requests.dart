@@ -2667,7 +2667,7 @@ class AppRequests {
 //     } else {
 
 //    //   return NearTaxiModel.fromJson(json.decode(response.body));
-//       throw Exception('Failed to load post');
+//       throw Exception('Failed to loads post');
 //       //return
 //       // TripsList.fromJson(json.decode(response.body));
 //     }

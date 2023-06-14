@@ -11,7 +11,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 import '../../../../../Buisness_logic/provider/Driver_Provider/check_payment_status_provider.dart';
 import '../../../../../Data/network/requests.dart';
 import '../../../../Functions/helper.dart';
@@ -208,64 +207,6 @@ class _EcashWebViewState extends State<EcashWebView> {
     }
   }
 
-  // // Future<void> AddTransaction(String tranId, String orderID, String status, String? msg, bool redirect) async {
-  // //   print("total"+widget.total.toString());
-  // //   print('add transaction');
-  // //   print(orderID);
-  // //   try {
-  // //     var parameter = {
-  // //       USER_ID: CUR_USERID,
-  // //       ORDER_ID: orderID,
-  // //       TYPE: payMethod,
-  // //       TXNID: tranId,
-  // //       AMOUNT: widget.total.toString(),
-  // //       STATUS: status,
-  // //       MSG: msg
-  // //     };
-  // //
-  // //     Response response =
-  // //     await post(addTransactionApi, body: parameter, headers: headers)
-  // //         .timeout(Duration(seconds: timeOut));
-  // //
-  // //     DateTime now = DateTime.now();
-  // //     currentBackPressTime = now;
-  // //     var getdata = json.decode(response.body);
-  // //
-  // //     bool error = getdata["error"];
-  // //     String? msg1 = getdata["message"];
-  // //     print("message"+msg1.toString());
-  // //     if (error == false) {
-  // //       if (redirect) {
-  // //         userProvider.setCartCount("0");
-  // //         //CUR_CART_COUNT = "0";
-  // //         promoAmt = 0;
-  // //         remWalBal = 0;
-  // //         usedBal = 0;
-  // //         payMethod = '';
-  // //         isPromoValid = false;
-  // //         isUseWallet = false;
-  // //         isPayLayShow = true;
-  // //         selectedMethod = null;
-  // //         totalPrice = 0;
-  // //         oriPrice = 0;
-  // //
-  // //         taxPer = 0;
-  // //         delCharge = 0;
-  // //
-  // //         Navigator.pushAndRemoveUntil(
-  // //             context,
-  // //             MaterialPageRoute(
-  // //                 builder: (BuildContext context) => OrderSuccess()),
-  // //             ModalRoute.withName('/home'));
-  // //       }
-  // //     } else {
-  // //       setSnackbar(msg1!, context);
-  // //     }
-  // //   } on TimeoutException catch (_) {
-  // //     setSnackbar(getTranslated(context, 'somethingMSg')!, context);
-  // //   }
-  // // }
-
   Future<bool> isNetworkAvailable() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
@@ -288,7 +229,6 @@ class _EcashWebViewState extends State<EcashWebView> {
       elevation: 1.0,
     ));
   }
-
 
   Future<bool> onWillPop() async {
     final differance = DateTime.now().difference(currentBackPressTime);

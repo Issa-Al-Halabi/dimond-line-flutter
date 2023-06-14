@@ -363,23 +363,23 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
 
 
 
-                                      // // TODO
-                                      // RadioListTile(
-                                      //   title: myText(
-                                      //     text: "ecash".tr(),
-                                      //     fontSize: 5.sp,
-                                      //     color: primaryBlue,
-                                      //   ),
-                                      //   value: "ecash",
-                                      //   groupValue: type,
-                                      //   activeColor: primaryBlue,
-                                      //   onChanged: (value) {
-                                      //     setState(() {
-                                      //       // type = "ecash".tr();
-                                      //       type = "ecash";
-                                      //     });
-                                      //   },
-                                      // ),
+                                      // TODO
+                                      RadioListTile(
+                                        title: myText(
+                                          text: "ecash".tr(),
+                                          fontSize: 5.sp,
+                                          color: primaryBlue,
+                                        ),
+                                        value: "ecash",
+                                        groupValue: type,
+                                        activeColor: primaryBlue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            // type = "ecash".tr();
+                                            type = "ecash";
+                                          });
+                                        },
+                                      ),
                                       RadioListTile(
                                         title: myText(
                                           text: "transfer".tr(),

@@ -232,7 +232,6 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
       init();
     } else {
       setSnackbar("nointernet".tr(), context);
-      print("nointernet");
     }
   }
 

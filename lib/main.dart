@@ -44,6 +44,8 @@ import 'Buisness_logic/provider/User_Provider/verify_otp_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'Presentation/Functions/notifications.dart';
+import 'Presentation/screens/test_pusher.dart';
+import 'Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_socket_screen.dart';
 import 'Presentation/screens/welcoming_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -311,6 +313,8 @@ class _MyAppState extends State<MyApp> // with WidgetsBindingObserver
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
                 home: WelcomingScreen(),
+                // home: TestPusher(),
+                // home: TripSocketScreen(tripId: '167', pickupLatitude: '12.15', dropLatitude: '598.2', dropLongitude: '10', pickupLongitude: '264.5',),
                 debugShowCheckedModeBanner: false,
                 routes: routes,
               ),

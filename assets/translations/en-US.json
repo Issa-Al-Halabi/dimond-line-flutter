@@ -125,7 +125,7 @@
     "choose file" : "Choose a file",
     "tapEmail" : "Tap your email please",
     "or sign up with" : "or Login with",
-    "Press back agin to Exit" : "Press back agin to Exit",
+    "Press back agin to Exit" : "Press back again to Exit",
     "sign out" : "Sign out",
     "Damascus" : "Damascus",
     "Aleppo" : "Aleppo",
@@ -258,5 +258,10 @@
     "weak pass" : "password should be at least 1 capital letter, 1 small letter, 1 character, and 1 digit",
     "nonNumeric" : "only numeric",
     "nonAlphabetic" : "only alphabet",
-    "start 9" : "start with 9"
+    "start 9" : "start with 9",
+    "looking car" : "Looking for a nearby car, \nPlease wait",
+    "your trip accepted" : "Your trip accepted",
+    "your trip started" : "Your trip started",
+    "driver arrive" : "driver arrived",
+    "dont let him wait" : "don't let him wait"
 }

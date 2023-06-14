@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_socket_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../../../widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
@@ -118,14 +119,22 @@ class _SelectFeaturesState extends State<SelectFeatures> {
           order_time);
       data = json.decode(data);
       if (data["error"] == false) {
+        if(mounted)
         setState(() {
           msg = data["message"];
-          setSnackbar(msg, context);
+          String tripId = data["data"]["id"].toString();
+          // setSnackbar(msg, context);
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(
               pageBuilder: (BuildContext context, Animation<double> animation,
                   Animation<double> secondaryAnimation) {
-                return UserDashboard(index: 1);
+                // return UserDashboard(index: 1);
+                return TripSocketScreen(
+                    tripId: tripId,
+                    pickupLatitude: latitude,
+                    pickupLongitude: longitude,
+                    dropLatitude: tolat,
+                    dropLongitude: tolng);
               },
               transitionsBuilder: (BuildContext context,
                   Animation<double> animation,

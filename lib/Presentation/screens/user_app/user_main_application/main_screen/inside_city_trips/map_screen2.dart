@@ -294,7 +294,7 @@ class _MapScreen2State extends State<MapScreen2> {
                                           child: Center(
                                               child: myText(
                                             text: 'request now'.tr(),
-                                            fontSize: 5.sp,
+                                            fontSize: 4.sp,
                                             color: white,
                                           ))),
                                       onTap: () async {
@@ -342,7 +342,7 @@ class _MapScreen2State extends State<MapScreen2> {
                                           child: Center(
                                               child: myText(
                                             text: 'request later'.tr(),
-                                            fontSize: 5.sp,
+                                            fontSize: 4.sp,
                                             color: white,
                                           ))),
                                       onTap: () async {
