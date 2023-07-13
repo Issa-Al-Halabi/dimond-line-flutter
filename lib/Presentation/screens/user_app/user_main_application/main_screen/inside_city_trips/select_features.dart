@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
-import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_socket_screen.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/in_trip_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../../../widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
@@ -102,6 +102,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
       List optionsId,
       String order_time) async {
     _isNetworkAvail = await isNetworkAvailable();
+    Loader.show(context, progressIndicator: LoaderWidget());
     if (_isNetworkAvail) {
       print("There is internet");
       var data = await AppRequests.bookNowRequest(
@@ -119,17 +120,20 @@ class _SelectFeaturesState extends State<SelectFeatures> {
           order_time);
       data = json.decode(data);
       if (data["error"] == false) {
+        Loader.hide();
         if(mounted)
         setState(() {
           msg = data["message"];
           String tripId = data["data"]["id"].toString();
+          print('tripId');
+          print(tripId);
           // setSnackbar(msg, context);
           Navigator.of(context).pushReplacement(
             PageRouteBuilder(
               pageBuilder: (BuildContext context, Animation<double> animation,
                   Animation<double> secondaryAnimation) {
                 // return UserDashboard(index: 1);
-                return TripSocketScreen(
+                return InTripScreen(
                     tripId: tripId,
                     pickupLatitude: latitude,
                     pickupLongitude: longitude,
@@ -152,9 +156,11 @@ class _SelectFeaturesState extends State<SelectFeatures> {
           );
         });
       } else {
+        Loader.hide();
         setSnackbar(data["message"].toString(), context);
       }
     } else {
+      Loader.hide();
       setSnackbar("nointernet".tr(), context);
     }
   }
@@ -175,6 +181,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
       String time,
       List optionsId) async {
     _isNetworkAvail = await isNetworkAvailable();
+    Loader.show(context, progressIndicator: LoaderWidget());
     if (_isNetworkAvail) {
       print("There is internet");
       var data = await AppRequests.bookNowDelayedRequest(
@@ -192,31 +199,43 @@ class _SelectFeaturesState extends State<SelectFeatures> {
           time,
           optionsId);
       data = json.decode(data);
-      setState(() {
-        msg = data["message"];
-        setSnackbar(msg, context);
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (BuildContext context, Animation<double> animation,
-                Animation<double> secondaryAnimation) {
-              return UserDashboard(index: 1);
-            },
-            transitionsBuilder: (BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-                Widget child) {
-              return Align(
-                child: SizeTransition(
-                  sizeFactor: animation,
-                  child: child,
-                ),
-              );
-            },
-            transitionDuration: Duration(milliseconds: 500),
-          ),
-        );
-      });
+      if (data["error"] == false) {
+        Loader.hide();
+        setState(() {
+          msg = data["message"];
+          // TODO
+          String tripId = data["data"]["id"].toString();
+          print('tripId');
+          print(tripId);
+          setSnackbar(msg, context);
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (BuildContext context, Animation<double> animation,
+                  Animation<double> secondaryAnimation) {
+                return UserDashboard(index: 1);
+              },
+              transitionsBuilder: (BuildContext context,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                  Widget child) {
+                return Align(
+                  child: SizeTransition(
+                    sizeFactor: animation,
+                    child: child,
+                  ),
+                );
+              },
+              transitionDuration: Duration(milliseconds: 500),
+            ),
+          );
+        });
+      }
+      else{
+        Loader.hide();
+        setSnackbar(data["message"].toString(), context);
+      }
     } else {
+      Loader.hide();
       setSnackbar("nointernet".tr(), context);
     }
   }

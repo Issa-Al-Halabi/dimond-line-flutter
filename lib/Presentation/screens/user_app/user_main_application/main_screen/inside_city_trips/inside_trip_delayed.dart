@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' as lt;
 import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
@@ -18,6 +17,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/io.dart';
+import '../../../../../../Data/Models/User_Models/SocketResponse.dart';
 import '../../../../../../Data/network/requests.dart';
 import '../../../../../Functions/helper.dart';
 import '../../../../../widgets/container_widget.dart';
@@ -25,60 +25,42 @@ import '../../../../../widgets/loader_widget.dart';
 import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart';
-
 import '../user_dashboard.dart';
 
-class TripSocketScreen extends StatefulWidget {
-  TripSocketScreen(
-      {required this.tripId,
-      required this.pickupLatitude,
-      required this.pickupLongitude,
-      required this.dropLatitude,
-      required this.dropLongitude,
-      Key? key})
+class InsideTripDelayedScreen extends StatefulWidget {
+  InsideTripDelayedScreen(
+      {required this.delayTripModel, required this.isAcceptTrip, Key? key})
       : super(key: key);
-
-  String tripId;
-  String pickupLatitude, pickupLongitude, dropLatitude, dropLongitude;
+  SocketResponse delayTripModel = SocketResponse();
+  bool isAcceptTrip;
 
   @override
-  State<TripSocketScreen> createState() => _TripSocketScreenState();
+  State<InsideTripDelayedScreen> createState() =>
+      _InsideTripDelayedScreenState();
 }
 
-class _TripSocketScreenState extends State<TripSocketScreen> {
+class _InsideTripDelayedScreenState extends State<InsideTripDelayedScreen> {
   CameraPosition? _kGooglePlex;
   double latRoute = 0.0;
   double lngRoute = 0.0;
-  // double latToRoute = 0.0;
-  // double lngToRoute = 0.0;
   double course = 0.0;
   GoogleMapController? gmc;
-
-  // Set<Marker> myMarker = {};
   bool _isNetworkAvail = true;
   String CUR_USERID = '';
   DateTime timeback = DateTime.now();
-  String status = '';
   String id = '';
   List<LatLng> polylineCoordinates = [];
+  List<LatLng> polylineCoordinates2 = [];
+  List<LatLng> polylineCoordinates3 = [];
   Marker marker = Marker(markerId: MarkerId("home"));
   Marker marker2 = Marker(markerId: MarkerId("from"));
   Marker marker3 = Marker(markerId: MarkerId("to"));
   Circle circle = Circle(
     circleId: CircleId("car"),
   );
-  int deviceNumb = 0;
-  String driverFname = '',
-      driverLname = '',
-      driverImage = '',
-      driverPhone = '',
-      carModel = '',
-      carColor = '',
-      finalCost = '',
-      vehicelImage = '';
 
-  bool isAcceptTrip = false;
   bool isStartTrip = false;
+  String finalCost = '';
 
   var _channel = IOWebSocketChannel.connect(
     Uri.parse(
@@ -92,10 +74,6 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
 
   @override
   void initState() {
-    print(widget.pickupLatitude);
-    print(widget.pickupLongitude);
-    print(widget.dropLatitude);
-    print(widget.dropLongitude);
     getUserId();
     getCookie();
     connectSocket();
@@ -105,18 +83,10 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    eventStreamController.close();
-    _channel.sink.close();
-    pusher.disconnect();
-    super.dispose();
-  }
-
   Future<void> getLatAndLong() async {
     _kGooglePlex = CameraPosition(
-      target: LatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
+      target: LatLng(double.parse(widget.delayTripModel.pickupLatitude!),
+          double.parse(widget.delayTripModel.pickupLongitude!)),
       zoom: 10,
     );
     setState(() {});
@@ -140,8 +110,14 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
     return byteData.buffer.asUint8List();
   }
 
-  void updateMainPolyline(double pickupLatitude, double pickupLongitude,
+  void tripPolyline(double pickupLatitude, double pickupLongitude,
       double dropLatitude, double dropLongitude) async {
+    /// clear main route
+    polylineCoordinates.clear();
+
+    // /// clear car route
+    // polylineCoordinates3.clear();
+
     Uint8List imageData = await getMarker();
     marker = Marker(
         markerId: MarkerId("home"),
@@ -158,12 +134,9 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
         radius: 10,
         zIndex: 1,
         strokeColor: Colors.grey,
-        // center: latLngList.last,
         center: LatLng(pickupLatitude, pickupLongitude),
         fillColor: Colors.grey.withAlpha(70));
-    setState(() {});
-
-    polylineCoordinates.clear();
+    polylineCoordinates2.clear();
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       APIKEY,
@@ -172,7 +145,7 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
     );
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        polylineCoordinates2.add(LatLng(point.latitude, point.longitude));
       });
     }
     if (mounted) {
@@ -183,16 +156,55 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
     marker2 = Marker(markerId: MarkerId("from"));
   }
 
+  void carPolyline(double pickupLatitude, double pickupLongitude,
+      double dropLatitude, double dropLongitude) async {
+    /// clear main route
+    // polylineCoordinates.clear();
+
+    Uint8List imageData = await getMarker();
+    marker = Marker(
+        markerId: MarkerId("home"),
+        position: LatLng(pickupLatitude, pickupLongitude),
+        rotation: course,
+        draggable: false,
+        zIndex: 2,
+        flat: true,
+        anchor: Offset(0.5, 0.5),
+        icon: BitmapDescriptor.fromBytes(imageData));
+    circle = Circle(
+        circleId: CircleId("car"),
+        radius: 10,
+        zIndex: 1,
+        strokeColor: Colors.grey,
+        center: LatLng(pickupLatitude, pickupLongitude),
+        fillColor: Colors.grey.withAlpha(70));
+    polylineCoordinates3.clear();
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      APIKEY,
+      PointLatLng(pickupLatitude, pickupLongitude),
+      PointLatLng(dropLatitude, dropLongitude),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates3.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   /// رسم المسار الاساسي
   void getPolyPoints() async {
     polylineCoordinates.clear();
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       APIKEY,
-      PointLatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
-      PointLatLng(double.parse(widget.dropLatitude),
-          double.parse(widget.dropLongitude)),
+      PointLatLng(double.parse(widget.delayTripModel.pickupLatitude!),
+          double.parse(widget.delayTripModel.pickupLongitude!)),
+      PointLatLng(double.parse(widget.delayTripModel.dropLatitude!),
+          double.parse(widget.delayTripModel.dropLongitude!)),
     );
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
@@ -207,8 +219,8 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
   void markerOfMainWay() {
     marker2 = Marker(
       markerId: MarkerId("from"),
-      position: LatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
+      position: LatLng(double.parse(widget.delayTripModel.pickupLatitude!),
+          double.parse(widget.delayTripModel.pickupLongitude!)),
       rotation: 2,
       draggable: false,
       zIndex: 2,
@@ -222,8 +234,8 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
 
     marker3 = Marker(
       markerId: MarkerId("to"),
-      position: LatLng(double.parse(widget.dropLatitude),
-          double.parse(widget.dropLongitude)),
+      position: LatLng(double.parse(widget.delayTripModel.dropLatitude!),
+          double.parse(widget.delayTripModel.dropLongitude!)),
       rotation: 2,
       draggable: false,
       zIndex: 2,
@@ -245,6 +257,7 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
       data = json.decode(data);
       if (data["error"] == false) {
         Loader.hide();
+        navigatePop();
       } else {
         Loader.hide();
         setSnackbar(data["message"].toString(), context);
@@ -255,21 +268,33 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
     }
   }
 
+  void navigateToDashboard() {
+    eventStreamController.close();
+    _channel.sink.close();
+    pusher.disconnect();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => UserDashboard()),
+    );
+  }
+
+  void navigatePop() {
+    eventStreamController.close();
+    _channel.sink.close();
+    pusher.disconnect();
+    Navigator.of(context).pop();
+  }
+
   void getUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CUR_USERID = prefs.getString('user_id') ?? '';
   }
 
-  // ******************************************* //
   void connectSocket() async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.setString("apiKey", _apiKey.text);
-    // prefs.setString("cluster", _cluster.text);
-    // prefs.setString("channelName", _channelName.text);
     try {
       await pusher.init(
-        apiKey: 'fa7ffa0cd3688f71ab11',
-        cluster: 'mt1',
+        apiKey: APIKEY_PUSHER,
+        cluster: CLUSTER_PUSHER,
         onConnectionStateChange: onConnectionStateChange,
         onError: onError,
         onSubscriptionSucceeded: onSubscriptionSucceeded,
@@ -279,11 +304,8 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
         onMemberAdded: onMemberAdded,
         onMemberRemoved: onMemberRemoved,
         onSubscriptionCount: onSubscriptionCount,
-        // authEndpoint: "<Your Authendpoint Url>",
-        // onAuthorizer: onAuthorizer
       );
-      // await pusher.subscribe(channelName: 'trip-status-$CUR_USERID');
-      await pusher.subscribe(channelName: 'trip-status-246');
+      await pusher.subscribe(channelName: 'trip-status-$CUR_USERID');
       await pusher.connect();
     } catch (e) {
       log("ERROR: $e");
@@ -299,33 +321,10 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
   }
 
   void onEvent(PusherEvent event) {
-    print('on event');
+    log("onEvent: $event");
     Map<String, dynamic> data = jsonDecode(event.data);
     eventStreamController.sink.add(data);
   }
-
-  // void onEvent(PusherEvent event) {
-  //   setState(() {
-  //     print('on event');
-  //     Map<String, dynamic> data = jsonDecode(event.data);
-  //     status = data['data']['status'];
-  //     print('------------------status');
-  //     print(status);
-  //
-  //     id = data['data']['id'];
-  //     print('------------------id');
-  //     print(id);
-  //
-  //     // if(status == 'accepted'){
-  //     //   promoSheet();
-  //     // }
-  //     // log("onEvent: $event");
-  //   });
-  //
-  //   setState(() {
-  //
-  //   });
-  // }
 
   void onSubscriptionSucceeded(String channelName, dynamic data) {
     log("onSubscriptionSucceeded: $channelName data: $data");
@@ -365,23 +364,38 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
     eventStreamController.close();
     _channel.sink.close();
     pusher.disconnect();
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => TripEndedUserScreen(
-    //             finalCost: finalCost,
-    //             tripId: widget.tripId,
-    //           )),
-    // );
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => TripEndedUserScreen(
                   finalCost: finalCost,
-                  tripId: widget.tripId,
+                  tripId: widget.delayTripModel.id.toString(),
                 )),
       );
+    });
+    return true;
+  }
+
+  bool navigateDash() {
+    eventStreamController.close();
+    _channel.sink.close();
+    pusher.disconnect();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setSnackbar('your trip didnt accept'.tr(), context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => UserDashboard()),
+      );
+    });
+    return true;
+  }
+
+  bool convertAccept() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        widget.isAcceptTrip = true;
+      });
     });
     return true;
   }
@@ -389,30 +403,7 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        if (Loader.isShown == true) {
-          Loader.hide();
-        }
-        final differance = DateTime.now().difference(timeback);
-        final isExitWarning = differance >= Duration(seconds: 2);
-        timeback = DateTime.now();
-        if (isExitWarning) {
-          final Message = "Press back agin to Exit".tr();
-          Fluttertoast.showToast(
-              msg: Message,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: white,
-              textColor: primaryBlue,
-              fontSize: 5.sp);
-          return false;
-        } else {
-          Fluttertoast.cancel();
-          SystemNavigator.pop();
-          return true;
-        }
-      },
+      onWillPop: willPopLoader,
       child: Scaffold(
         body: _kGooglePlex == null
             ? Center(child: LoaderWidget())
@@ -430,7 +421,7 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                     children: [
                       Stack(
                         children: [
-                          isAcceptTrip == true
+                          widget.isAcceptTrip == true
                               ? StreamBuilder(
                                   stream: _channel.stream,
                                   builder: (context, snapshot) {
@@ -442,7 +433,9 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                                       print('--------------------------------');
                                       if (data['positions'] != null) {
                                         if (data['positions'][0]['deviceId'] ==
-                                            deviceNumb) {
+                                            // TODO
+                                            widget.delayTripModel.vehicelDeviceNumber) {
+                                            // 204) {
                                           print('course me');
                                           print(data['positions'][0]['course']);
                                           latRoute =
@@ -452,14 +445,22 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                                           course =
                                               data['positions'][0]['course'];
                                           isStartTrip == true
-                                              ? updateMainPolyline(
+                                              ? tripPolyline(
                                                   latRoute,
                                                   lngRoute,
-                                                  // latToRoute,
-                                                  // lngToRoute
-                                              double.parse(widget.dropLatitude),
-                                            double.parse(widget.dropLongitude)
-                                          )
+                                                  double.parse(widget
+                                                      .delayTripModel
+                                                      .dropLatitude!),
+                                                  double.parse(widget
+                                                      .delayTripModel
+                                                      .dropLongitude!))
+                                              // : isAcceptTrip == true ?
+                                              // carPolyline(
+                                              //     latRoute,
+                                              //     lngRoute,
+                                              //     double.parse(widget.pickupLatitude),
+                                              //     double.parse(widget.pickupLongitude)
+                                              // )
                                               : null;
                                         }
                                       }
@@ -486,7 +487,6 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                               color: backgroundColor,
                             ),
                             child: GoogleMap(
-                              // markers: myMarker,
                               markers: Set.of((marker3 != null)
                                   ? [marker, marker2, marker3]
                                   : []),
@@ -495,6 +495,19 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                                   polylineId: PolylineId('route'),
                                   points: polylineCoordinates,
                                   color: primaryBlue,
+                                  width: 5,
+                                ),
+                                Polyline(
+                                  polylineId: PolylineId('track'),
+                                  points: polylineCoordinates2,
+                                  color: primaryBlue,
+                                  // color: Colors.red,
+                                  width: 5,
+                                ),
+                                Polyline(
+                                  polylineId: PolylineId('car'),
+                                  points: polylineCoordinates3,
+                                  color: Colors.orange,
                                   width: 5,
                                 ),
                               },
@@ -514,105 +527,89 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                                   if (snapshot.hasData) {
                                     Map<String, dynamic> data = snapshot.data!;
                                     print(data);
-                                    String status = data['data']['status'];
-                                    print(status);
+                                    widget.delayTripModel.status =
+                                        data['data']['status'];
+                                    print(widget.delayTripModel.status);
                                     int id = data['data']['id'];
+                                    print(
+                                        '-------------------------------------------------');
                                     print(id);
-                                    if(id.toString() == int.parse(widget.tripId)){
-                                    //   setState(() {
-
-                                    if (status == 'accepted') {
-                                      isAcceptTrip = true;
-                                      // TODO
-                                      deviceNumb =
-                                          data['data']['vehicel_device_number'];
-                                      driverFname =
-                                          data['data']['driver_first_name'];
-                                      driverLname =
-                                          data['data']['driver_last_name'];
-                                      driverImage =
-                                          data['data']['driver_profile_image'];
-                                      driverPhone =
-                                          data['data']['driver_phone'];
-                                      carModel =
-                                          data['data']['vehicel_car_model'];
-                                      carColor = data['data']['vehicel_color'];
-                                      vehicelImage =
-                                          data['data']['vehicel_image'];
-
-                                      // pickup_latitude =
-                                      // data['data']['pickup_latitude'];
-                                      // pickup_longitude =
-                                      // data['data']['pickup_longitude'];
-                                      // drop_latitude =
-                                      // data['data']['drop_latitude'];
-                                      // drop_longitude =
-                                      // data['data']['drop_longitude'];
-
-                                      // latToRoute = double.parse(
-                                      //     data['data']['drop_latitude']);
-                                      // lngToRoute = double.parse(
-                                      //     data['data']['drop_longitude']);
-                                      print('[[[[[[[[[[[[[[[[[[[[[');
-                                      print(status);
-                                      print(deviceNumb);
-                                      print(driverFname);
-                                      print(driverLname);
-                                      print(driverPhone);
-                                      print(driverImage);
-                                      print(carModel);
-                                      print(carColor);
-                                      print(vehicelImage);
-                                      // print(latToRoute);
-                                      // print(lngToRoute);
-                                    }
-                                    if (status == 'started') {
-                                      isStartTrip = true;
-                                    }
-                                    if (status == 'ended') {
-                                      finalCost = data['data']['cost'];
-                                      print(finalCost);
-                                      navigate();
-                                    }
-                                    if(status == 'canceld'){
-                                      setSnackbar('the trip has cancel', context);
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => UserDashboard()),
+                                    print(widget.delayTripModel.id);
+                                    if (id.toString() ==
+                                        widget.delayTripModel.id.toString()) {
+                                      if (widget.delayTripModel.status ==
+                                          'accepted') {
+                                        convertAccept();
+                                        widget.delayTripModel
+                                                .vehicelDeviceNumber =
+                                            data['data']
+                                                ['vehicel_device_number'];
+                                        widget.delayTripModel.driverFirstName =
+                                            data['data']['driver_first_name'];
+                                        widget.delayTripModel.driverLastName =
+                                            data['data']['driver_last_name'];
+                                        widget.delayTripModel
+                                                .driverProfileImage =
+                                            data['data']
+                                                ['driver_profile_image'];
+                                        widget.delayTripModel.driverPhone =
+                                            data['data']['driver_phone'];
+                                        widget.delayTripModel.vehicelCarModel =
+                                            data['data']['vehicel_car_model'];
+                                        widget.delayTripModel.vehicelColor =
+                                            data['data']['vehicel_color'];
+                                        widget.delayTripModel.vehicelImage =
+                                            data['data']['vehicel_image'];
+                                      }
+                                      if (widget.delayTripModel.status ==
+                                          'started') {
+                                        isStartTrip = true;
+                                      }
+                                      if (widget.delayTripModel.status ==
+                                          'ended') {
+                                        finalCost = data['data']['cost'];
+                                        print(finalCost);
+                                        navigate();
+                                      }
+                                      if (widget.delayTripModel.status ==
+                                          'canceld') {
+                                        print('your trip didnt accept');
+                                        navigateDash();
+                                      }
+                                      return Row(
+                                        children: [
+                                          widget.delayTripModel.status ==
+                                                  'accepted'
+                                              ? AcceptedWidget()
+                                              : widget.delayTripModel.status ==
+                                                      'arrived'
+                                                  ? ArrivedWidget()
+                                                  : widget.delayTripModel
+                                                              .status ==
+                                                          'started'
+                                                      ? StartedWidget()
+                                                      : Text('')
+                                        ],
                                       );
-
-                                    }
-                                    // });
-                                    return Row(
-                                      children: [
-                                        status == 'accepted'
-                                            ? AcceptedWidget()
-                                            : status == 'arrived'
-                                                ? ArrivedWidget()
-                                                : status == 'started'
-                                                    ? StartedWidget()
-                                                    // : status == 'ended'
-                                                    //     ? navigate()
-                                                        // : Text('the trip has cancel')
-                                                        // : TextButton(
-                                                        //     onPressed: () {
-                                                        //       print(status);
-                                                        //     },
-                                                        //     child: Text(
-                                                        //         'the trip has cancel'))
-
-                                        : Text('')
-                                      ],
-                                    );
-                                    }
-                                    else{
-                                      setSnackbar('this trip $id is $status', context);
+                                    } else {
                                       return Text('');
-                                      // return CircularProgressIndicator();
                                     }
                                   } else {
-                                    return PendingWidget();
+                                    return Row(
+                                      children: [
+                                        widget.delayTripModel.status ==
+                                                'accepted'
+                                            ? AcceptedWidget()
+                                            : widget.delayTripModel.status ==
+                                                    'arrived'
+                                                ? ArrivedWidget()
+                                                : widget.delayTripModel
+                                                            .status ==
+                                                        'started'
+                                                    ? StartedWidget()
+                                                    : PendingWidget()
+                                      ],
+                                    );
                                   }
                                 },
                               ))
@@ -687,11 +684,6 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
               ),
             ],
           ),
-          // myText(
-          //     text: 'looking car'.tr(),
-          //     fontSize: 6.sp,
-          //     color: primaryBlue,
-          //     fontWeight: FontWeight.w600),
           Container(
             height: 6.h,
             width: 30.w,
@@ -705,8 +697,6 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                 ),
               ],
               borderRadius: const BorderRadius.all(Radius.circular(20)),
-              // color: primaryBlue,
-              // color: Colors.black
               color: Colors.red,
             ),
             child: TextButton(
@@ -716,51 +706,13 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                   color: Colors.black,
                   fontWeight: FontWeight.w600),
               onPressed: () {
-                cancelTrip(widget.tripId);
+                cancelTrip(widget.delayTripModel.id.toString());
               },
             ),
           ),
           SizedBox(
             height: 1.h,
           ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //   children: [
-          //     myText(
-          //         text: 'looking car'.tr(),
-          //         fontSize: 6.sp,
-          //         color: primaryBlue,
-          //         fontWeight: FontWeight.w600),
-          //     Container(
-          //       height: 6.h,
-          //       width: 30.w,
-          //       decoration: BoxDecoration(
-          //         boxShadow: [
-          //           BoxShadow(
-          //             color: Colors.grey.withOpacity(0.3),
-          //             spreadRadius: 2,
-          //             blurRadius: 7,
-          //             offset: const Offset(0, 0),
-          //           ),
-          //         ],
-          //         borderRadius: const BorderRadius.all(Radius.circular(20)),
-          //         // color: primaryBlue,
-          //         // color: Colors.black
-          //         color: Colors.red,
-          //       ),
-          //       child: TextButton(
-          //         child: myText(
-          //             text: 'cancel'.tr(),
-          //             fontSize: 4.sp,
-          //             color: Colors.black,
-          //             fontWeight: FontWeight.w600),
-          //         onPressed: () {
-          //           cancelTrip(widget.tripId);
-          //         },
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -803,13 +755,15 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               myText(
-                  text: driverFname + ' ' + driverLname,
+                  text: widget.delayTripModel.driverFirstName! +
+                      ' ' +
+                      widget.delayTripModel.driverLastName!,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: Text(
-                  '${driverPhone}',
+                  '${widget.delayTripModel.driverPhone}',
                   style: TextStyle(
                     color: primaryBlue,
                     fontSize: 5.sp,
@@ -817,12 +771,14 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                   ),
                 ),
                 onTap: () {
-                  launchUrl(Uri.parse("tel://+963 ${driverPhone}"));
+                  launchUrl(Uri.parse(
+                      "tel://+963 ${widget.delayTripModel.driverPhone}"));
                 },
               ),
               InkWell(
                   child: FadeInImage(
-                    image: NetworkImage(driverImage.toString()),
+                    image: NetworkImage(
+                        widget.delayTripModel.driverProfileImage.toString()),
                     height: 10.h,
                     width: 10.w,
                     fit: BoxFit.contain,
@@ -831,7 +787,8 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                     placeholder: placeHolder(100),
                   ),
                   onTap: () {
-                    getDialog(driverImage.toString());
+                    getDialog(
+                        widget.delayTripModel.driverProfileImage.toString());
                   }),
             ],
           ),
@@ -839,19 +796,19 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               myText(
-                  // text: 'car color'.tr(),
-                  text: carModel,
+                  text: widget.delayTripModel.vehicelCarModel,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               myText(
-                  text: carColor,
+                  text: widget.delayTripModel.vehicelColor,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: FadeInImage(
-                  image: NetworkImage(vehicelImage.toString()),
+                  image: NetworkImage(
+                      widget.delayTripModel.vehicelImage.toString()),
                   height: 10.h,
                   width: 10.w,
                   fit: BoxFit.contain,
@@ -860,7 +817,7 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                   placeholder: placeHolder(20),
                 ),
                 onTap: () {
-                  getDialog(vehicelImage.toString());
+                  getDialog(widget.delayTripModel.vehicelImage.toString());
                 },
               ),
             ],
@@ -874,12 +831,12 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                     "\n\n" +
                     "I with".tr() +
                     "\n"
-                        "${driverFname}"
+                        "${widget.delayTripModel.driverFirstName}"
                         "\t"
-                        "${driverLname}\n"
-                        "${driverPhone}\n"
-                        "${carModel}\n"
-                        "${carColor}";
+                        "${widget.delayTripModel.driverLastName}\n"
+                        "${widget.delayTripModel.driverPhone}\n"
+                        "${widget.delayTripModel.vehicelCarModel}\n"
+                        "${widget.delayTripModel.vehicelColor}";
                 Share.share(str);
                 print(str);
               }),
@@ -919,120 +876,119 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
           SizedBox(
             height: 3.h,
           ),
-          myText(
-              text: 'driver arrive'.tr(),
-              fontSize: 6.sp,
-              color: primaryBlue,
-              fontWeight: FontWeight.w600),
-          myText(
-              text: 'dont let him wait'.tr(),
-              fontSize: 6.sp,
-              color: primaryBlue,
-              fontWeight: FontWeight.w600),
-          Text('dont let him wait'),
-          SizedBox(
-            height: 2.h,
-          ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              myText(
+                text: 'driver arrive'.tr() + '\n' + 'dont let him wait'.tr(),
+                fontSize: 6.sp,
+                color: primaryBlue,
+                fontWeight: FontWeight.w600,
+              ),
               lt.Lottie.asset(
                 arrive,
                 // height: 30.h,
                 width: 30.w,
               ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      myText(
-                          text: driverFname + ' ' + driverLname,
-                          fontSize: 5.sp,
-                          color: primaryBlue,
-                          fontWeight: FontWeight.w600),
-                      InkWell(
-                        child: Text(
-                          '${driverPhone}',
-                          style: TextStyle(
-                            color: primaryBlue,
-                            fontSize: 5.sp,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        onTap: () {
-                          launchUrl(Uri.parse("tel://+963 ${driverPhone}"));
-                        },
-                      ),
-                      InkWell(
-                          child: FadeInImage(
-                            image: NetworkImage(driverImage.toString()),
-                            height: 10.h,
-                            width: 10.w,
-                            fit: BoxFit.contain,
-                            imageErrorBuilder: (context, error, stackTrace) =>
-                                erroWidget(100),
-                            placeholder: placeHolder(100),
-                          ),
-                          onTap: () {
-                            getDialog(driverImage.toString());
-                          }),
-                    ],
+            ],
+          ),
+          SizedBox(
+            height: 2.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              myText(
+                  text: widget.delayTripModel.driverFirstName! +
+                      ' ' +
+                      widget.delayTripModel.driverLastName!,
+                  fontSize: 5.sp,
+                  color: primaryBlue,
+                  fontWeight: FontWeight.w600),
+              SizedBox(
+                width: 1.w,
+              ),
+              InkWell(
+                child: Text(
+                  '${widget.delayTripModel.driverPhone}',
+                  style: TextStyle(
+                    color: primaryBlue,
+                    fontSize: 5.sp,
+                    decoration: TextDecoration.underline,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      myText(
-                          // text: 'car color'.tr(),
-                          text: carModel,
-                          fontSize: 5.sp,
-                          color: primaryBlue,
-                          fontWeight: FontWeight.w600),
-                      myText(
-                          text: carColor,
-                          fontSize: 5.sp,
-                          color: primaryBlue,
-                          fontWeight: FontWeight.w600),
-                      InkWell(
-                        child: FadeInImage(
-                          image: NetworkImage(vehicelImage.toString()),
-                          height: 10.h,
-                          width: 10.w,
-                          fit: BoxFit.contain,
-                          imageErrorBuilder: (context, error, stackTrace) =>
-                              erroWidget(20),
-                          placeholder: placeHolder(20),
-                        ),
-                        onTap: () {
-                          getDialog(vehicelImage.toString());
-                        },
-                      ),
-                    ],
+                ),
+                onTap: () {
+                  launchUrl(Uri.parse(
+                      "tel://+963 ${widget.delayTripModel.driverPhone}"));
+                },
+              ),
+              InkWell(
+                  child: FadeInImage(
+                    image: NetworkImage(
+                        widget.delayTripModel.driverProfileImage.toString()),
+                    height: 10.h,
+                    width: 10.w,
+                    fit: BoxFit.contain,
+                    imageErrorBuilder: (context, error, stackTrace) =>
+                        erroWidget(100),
+                    placeholder: placeHolder(100),
                   ),
-                  ContainerWidget(
-                      text: 'share'.tr(),
-                      h: 6.h,
-                      w: 30.w,
-                      onTap: () {
-                        var str = "AppName".tr() +
-                            "\n\n" +
-                            "I with".tr() +
-                            "\n"
-                                "${driverFname}"
-                                "\t"
-                                "${driverLname}\n"
-                                "${driverPhone}\n"
-                                "${carModel}\n"
-                                "${carColor}";
-                        Share.share(str);
-                        print(str);
-                      }),
-                  SizedBox(
-                    height: 1.h,
-                  ),
-                ],
+                  onTap: () {
+                    getDialog(
+                        widget.delayTripModel.driverProfileImage.toString());
+                  }),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              myText(
+                  text: widget.delayTripModel.vehicelCarModel,
+                  fontSize: 5.sp,
+                  color: primaryBlue,
+                  fontWeight: FontWeight.w600),
+              myText(
+                  text: widget.delayTripModel.vehicelColor,
+                  fontSize: 5.sp,
+                  color: primaryBlue,
+                  fontWeight: FontWeight.w600),
+              InkWell(
+                child: FadeInImage(
+                  image: NetworkImage(
+                      widget.delayTripModel.vehicelImage.toString()),
+                  height: 10.h,
+                  width: 10.w,
+                  fit: BoxFit.contain,
+                  imageErrorBuilder: (context, error, stackTrace) =>
+                      erroWidget(20),
+                  placeholder: placeHolder(20),
+                ),
+                onTap: () {
+                  getDialog(widget.delayTripModel.vehicelImage.toString());
+                },
               ),
             ],
+          ),
+          ContainerWidget(
+              text: 'share'.tr(),
+              h: 6.h,
+              w: 30.w,
+              onTap: () {
+                var str = "AppName".tr() +
+                    "\n\n" +
+                    "I with".tr() +
+                    "\n"
+                        "${widget.delayTripModel.driverFirstName}"
+                        "\t"
+                        "${widget.delayTripModel.driverLastName}\n"
+                        "${widget.delayTripModel.driverPhone}\n"
+                        "${widget.delayTripModel.vehicelCarModel}\n"
+                        "${widget.delayTripModel.vehicelColor}";
+                Share.share(str);
+                print(str);
+              }),
+          SizedBox(
+            height: 1.h,
           ),
         ],
       ),
@@ -1076,13 +1032,15 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               myText(
-                  text: driverFname + ' ' + driverLname,
+                  text: widget.delayTripModel.driverFirstName! +
+                      ' ' +
+                      widget.delayTripModel.driverLastName!,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: Text(
-                  '${driverPhone}',
+                  '${widget.delayTripModel.driverPhone}',
                   style: TextStyle(
                     color: primaryBlue,
                     fontSize: 5.sp,
@@ -1090,12 +1048,14 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                   ),
                 ),
                 onTap: () {
-                  launchUrl(Uri.parse("tel://+963 ${driverPhone}"));
+                  launchUrl(Uri.parse(
+                      "tel://+963 ${widget.delayTripModel.driverPhone}"));
                 },
               ),
               InkWell(
                   child: FadeInImage(
-                    image: NetworkImage(driverImage.toString()),
+                    image: NetworkImage(
+                        widget.delayTripModel.driverProfileImage.toString()),
                     height: 10.h,
                     width: 10.w,
                     fit: BoxFit.contain,
@@ -1104,7 +1064,8 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                     placeholder: placeHolder(100),
                   ),
                   onTap: () {
-                    getDialog(driverImage.toString());
+                    getDialog(
+                        widget.delayTripModel.driverProfileImage.toString());
                   }),
             ],
           ),
@@ -1112,19 +1073,19 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               myText(
-                  // text: 'car color'.tr(),
-                  text: carModel,
+                  text: widget.delayTripModel.vehicelCarModel,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               myText(
-                  text: carColor,
+                  text: widget.delayTripModel.vehicelColor,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: FadeInImage(
-                  image: NetworkImage(vehicelImage.toString()),
+                  image: NetworkImage(
+                      widget.delayTripModel.vehicelImage.toString()),
                   height: 10.h,
                   width: 10.w,
                   fit: BoxFit.contain,
@@ -1133,7 +1094,7 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                   placeholder: placeHolder(20),
                 ),
                 onTap: () {
-                  getDialog(vehicelImage.toString());
+                  getDialog(widget.delayTripModel.vehicelImage.toString());
                 },
               ),
             ],
@@ -1147,12 +1108,12 @@ class _TripSocketScreenState extends State<TripSocketScreen> {
                     "\n\n" +
                     "I with".tr() +
                     "\n"
-                        "${driverFname}"
+                        "${widget.delayTripModel.driverFirstName}"
                         "\t"
-                        "${driverLname}\n"
-                        "${driverPhone}\n"
-                        "${carModel}\n"
-                        "${carColor}";
+                        "${widget.delayTripModel.driverLastName}\n"
+                        "${widget.delayTripModel.driverPhone}\n"
+                        "${widget.delayTripModel.vehicelCarModel}\n"
+                        "${widget.delayTripModel.vehicelColor}";
                 Share.share(str);
                 print(str);
               }),

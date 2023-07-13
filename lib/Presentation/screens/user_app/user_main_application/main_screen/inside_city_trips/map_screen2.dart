@@ -111,7 +111,7 @@ class _MapScreen2State extends State<MapScreen2> {
               data["results"][0]["address_components"][1]
                   ["long_name"]; // f there is atleast one address
           print("address" + address);
-          setState(() {
+          if(mounted) setState(() {
             print(address);
           });
         }
@@ -307,7 +307,7 @@ class _MapScreen2State extends State<MapScreen2> {
                                         Loader.hide();
                                         Future.delayed(const Duration(seconds: 1))
                                             .then((_) async {
-                                          Navigator.push(
+                                          Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) => OrderNow(
@@ -355,7 +355,7 @@ class _MapScreen2State extends State<MapScreen2> {
                                         Loader.hide();
                                         Future.delayed(const Duration(seconds: 1))
                                             .then((_) async {
-                                          Navigator.push(
+                                          Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) => OrderNow(

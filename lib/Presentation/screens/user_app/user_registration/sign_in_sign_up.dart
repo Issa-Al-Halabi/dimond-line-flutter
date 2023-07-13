@@ -95,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Loader.hide();
         token = creat.data.data!.apiToken;
         // setSnackbar("logsuccess".tr(), context);
+        // if(mounted)
         setState(() {
           Future.delayed(const Duration(seconds: 1)).then((_) async {
             Navigator.of(context).push(

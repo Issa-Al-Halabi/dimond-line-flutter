@@ -76,6 +76,7 @@ class _MapScreenDestinationState extends State<MapScreenDestination> {
               data["results"][0]["address_components"][1]
                   ["long_name"]; // f there is atleast one address
           print("address" + widget.destinationAddress);
+          if(mounted)
           setState(() {
             print(widget.destinationAddress);
           });
@@ -241,7 +242,7 @@ class _MapScreenDestinationState extends State<MapScreenDestination> {
                                       convertToAddress(
                                           widget.toLat, widget.toLon);
                                       print(widget.destinationAddress);
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => OrderNow(

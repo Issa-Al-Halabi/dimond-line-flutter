@@ -163,17 +163,17 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
     );
     latLngList.add(LatLng(lat, lng));
     print(latLngList);
-    pathPolyline.add(
-      Polyline(
-          polylineId: PolylineId('track'),
-          color: Colors.red,
-          width: 5,
-          points: latLngList,
-          patterns: [
-            PatternItem.dash(20),
-            PatternItem.gap(10),
-          ]),
-    );
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 5,
+    //       points: latLngList,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
     if (mounted) {
       setState(() {});
     }
@@ -221,17 +221,17 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
         center: latLngList.last,
         fillColor: Colors.grey.withAlpha(70));
     setState(() {});
-    pathPolyline.add(
-      Polyline(
-          polylineId: PolylineId('track'),
-          color: Colors.red,
-          width: 4,
-          points: latLngList,
-          patterns: [
-            PatternItem.dash(20),
-            PatternItem.gap(10),
-          ]),
-    );
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 4,
+    //       points: latLngList,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
   }
 
   getDistance(double latcurrent, double lancurrent, double lat, double lng) {
@@ -337,7 +337,9 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
                                     print('--------------------------------');
                                     if (data['positions'] != null) {
                                       if (data['positions'][0]['deviceId'] ==
+                                          // TODO
                                           deviceNumb) {
+                                          // 204) {
                                         print('course me');
                                         print(data['positions'][0]['course']);
                                         lat = data['positions'][0]['latitude'];
@@ -398,16 +400,16 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
                                       color: primaryBlue,
                                       width: 5,
                                     ),
-                                    Polyline(
-                                        points: latLngList,
-                                        polylineId: PolylineId('track'),
-                                        color: Colors.red,
-                                        width: 4,
-                                        // points: latLngList,
-                                        patterns: [
-                                          PatternItem.dash(20),
-                                          PatternItem.gap(10),
-                                        ]),
+                                    // Polyline(
+                                    //     points: latLngList,
+                                    //     polylineId: PolylineId('track'),
+                                    //     color: Colors.red,
+                                    //     width: 4,
+                                    //     // points: latLngList,
+                                    //     patterns: [
+                                    //       PatternItem.dash(20),
+                                    //       PatternItem.gap(10),
+                                    //     ]),
                                   },
 
                                   /// بدون المسار الاساسي

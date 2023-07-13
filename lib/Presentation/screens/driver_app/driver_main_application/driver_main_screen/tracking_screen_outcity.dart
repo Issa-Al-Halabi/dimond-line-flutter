@@ -177,17 +177,17 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     ;
     print('points');
     print(points);
-    pathPolyline.add(
-      Polyline(
-          polylineId: PolylineId('track'),
-          color: Colors.red,
-          width: 4,
-          points: points,
-          patterns: [
-            PatternItem.dash(20),
-            PatternItem.gap(10),
-          ]),
-    );
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 4,
+    //       points: points,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
     if (mounted) {
       setState(() {});
     }
@@ -238,17 +238,17 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
         center: points.last,
         fillColor: Colors.grey.withAlpha(70));
     setState(() {});
-    pathPolyline.add(
-      Polyline(
-          polylineId: PolylineId('track'),
-          color: Colors.red,
-          width: 5,
-          points: points,
-          patterns: [
-            PatternItem.dash(20),
-            PatternItem.gap(10),
-          ]),
-    );
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 5,
+    //       points: points,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
   }
 
   void updateMainPolyline(double pickupLatitude, double pickupLongitude) async {

@@ -31,6 +31,7 @@ import 'Buisness_logic/provider/User_Provider/get_goverment_provider.dart';
 import 'Buisness_logic/provider/User_Provider/get_sub_category_provider.dart';
 import 'Buisness_logic/provider/User_Provider/get_type_option_provider.dart';
 import 'Buisness_logic/provider/User_Provider/get_user_trips_provider.dart';
+import 'Buisness_logic/provider/User_Provider/init_user_trips_provider.dart';
 import 'Buisness_logic/provider/User_Provider/nearest_cars_map_provider.dart';
 import 'Buisness_logic/provider/User_Provider/order_tour_provider.dart';
 import 'Buisness_logic/provider/User_Provider/source_destination_delayed_provider.dart';
@@ -45,7 +46,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'Presentation/Functions/notifications.dart';
 import 'Presentation/screens/test_pusher.dart';
-import 'Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_socket_screen.dart';
+import 'Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/in_trip_screen.dart';
 import 'Presentation/screens/welcoming_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -307,6 +308,8 @@ class _MyAppState extends State<MyApp> // with WidgetsBindingObserver
                     create: (context) => CheckPaymentStatusProvider()),
                 ChangeNotifierProvider<NearestCarsMapProvider>(
                     create: (context) => NearestCarsMapProvider()),
+                ChangeNotifierProvider<InitUserTripsProvider>(
+                    create: (context) => InitUserTripsProvider()),
               ],
               child: MaterialApp(
                 localizationsDelegates: context.localizationDelegates,

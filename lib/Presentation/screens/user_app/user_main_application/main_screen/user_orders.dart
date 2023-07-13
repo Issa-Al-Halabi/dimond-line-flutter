@@ -50,25 +50,22 @@ class _UserOrdersState extends State<UserOrders> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator:
-          LoaderWidget(),
-      // LoaderWidget()
-      );
+      Loader.show(context, progressIndicator: LoaderWidget(),);
       await creat.getUserOrders();
       if (creat.data.error == false) {
         Loader.hide();
-        for (int i = 0; i < creat.data.data!.pendingTrip!.length; i++) {
+        for (int i = 0; i < creat.data.data!.insidTrips!.length; i++) {
           setState(() {
-            ordersList.add(creat.data.data!.pendingTrip![i]);
+            ordersList.add(creat.data.data!.insidTrips![i]);
           });
         }
-        for (int i = 0; i < creat.data.data!.trips!.length; i++) {
+        for (int i = 0; i < creat.data.data!.outsideTrips!.length; i++) {
           setState(() {
-            ordersList.add(creat.data.data!.trips![i]);
+            ordersList.add(creat.data.data!.outsideTrips![i]);
           });
         }
         for (int i = 0; i < ordersList.length; i++) {
-          print(ordersList[i].status);
+          print(ordersList[i].id);
         }
         print('length');
         print(ordersList.length);
@@ -466,11 +463,13 @@ class _UserOrdersState extends State<UserOrders> {
                                                                   children: [
                                                                     Text(
                                                                       ' ${ordersList[index]
-                                                                          .firstName
+                                                                          // .firstName
+                                                                      .driver.firstName
                                                                           .toString()}' +
                                                                           ' ' +
                                                                           '${ordersList[index]
-                                                                              .lastName
+                                                                              // .lastName
+                                                                              .driver.lastName
                                                                               .toString()}',
                                                                       style:
                                                                       TextStyle(
@@ -482,7 +481,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                     InkWell(
                                                                       child: Text(
                                                                         ' ${ordersList[index]
-                                                                            .phone
+                                                                            .driver.phone
                                                                             .toString()}',
                                                                         style:
                                                                         TextStyle(
@@ -500,7 +499,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                             Uri
                                                                                 .parse(
                                                                                 "tel://+963 ${ordersList[index]
-                                                                                    .phone
+                                                                                    .driver.phone
                                                                                     .toString()}"));
                                                                       },
                                                                     ),
@@ -512,7 +511,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                       image: NetworkImage(
                                                                           ordersList[
                                                                           index]
-                                                                              .profileImage
+                                                                              .driver.profileImage
                                                                               .toString()),
                                                                       height: 10
                                                                           .h,
@@ -533,7 +532,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                       getDialog(
                                                                           ordersList[
                                                                           index]
-                                                                              .profileImage
+                                                                              .driver.profileImage
                                                                               .toString());
                                                                     }),
                                                               ],
@@ -556,7 +555,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                   children: [
                                                                     Text(
                                                                       ' ${ordersList[index]
-                                                                          .carModel
+                                              .vehicle.carModel
                                                                           .toString()}',
                                                                       style:
                                                                       TextStyle(
@@ -567,7 +566,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                     ),
                                                                     Text(
                                                                       ' ${ordersList[index]
-                                                                          .carModel
+                                                                          .vehicle.color
                                                                           .toString()}',
                                                                       style:
                                                                       TextStyle(
@@ -584,7 +583,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                     image: NetworkImage(
                                                                         ordersList[
                                                                         index]
-                                                                            .vehicleImage
+                                                                            .vehicle.vehicleImage
                                                                             .toString()),
                                                                     height: 10.h,
                                                                     width: 10.w,
@@ -604,7 +603,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                     getDialog(
                                                                         ordersList[
                                                                         index]
-                                                                            .vehicleImage
+                                                                            .vehicle.vehicleImage
                                                                             .toString());
                                                                   },
                                                                 ),
@@ -626,20 +625,20 @@ class _UserOrdersState extends State<UserOrders> {
                                                                         .tr() +
                                                                     "\n"
                                                                         "${ordersList[index]
-                                                                        .firstName
+                                                                        .driver.firstName
                                                                         .toString()}"
                                                                         "\t"
                                                                         "${ordersList[index]
-                                                                        .lastName
+                                                                        .driver.lastName
                                                                         .toString()}\n"
                                                                         "${ordersList[index]
-                                                                        .phone
+                                                                        .driver.phone
                                                                         .toString()}\n"
                                                                         "${ordersList[index]
-                                                                        .carModel
+                                                                        .vehicle.carModel
                                                                         .toString()}\n"
                                                                         "${ordersList[index]
-                                                                        .color
+                                                                        .vehicle.color
                                                                         .toString()}";
                                                                 Share.share(str);
 
@@ -660,10 +659,6 @@ class _UserOrdersState extends State<UserOrders> {
                                                                     .toString());
                                                                 print(ordersList[
                                                                 index]
-                                                                    .deviceNumber
-                                                                    .toString());
-                                                                print(ordersList[
-                                                                index]
                                                                     .pickupLatitude
                                                                     .toString());
                                                                 print(ordersList[
@@ -672,7 +667,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                     .toString());
                                                                 print(ordersList[
                                                                 index]
-                                                                    .deviceNumber
+                                                                    .vehicle.deviceNumber
                                                                     .toString());
                                                                 print(ordersList[
                                                                 index]
@@ -701,7 +696,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                                               .toString(),
                                                                           driverDeviceNumb: ordersList[
                                                                           index]
-                                                                              .deviceNumber
+                                                                              .vehicle.deviceNumber
                                                                               .toString(),
                                                                           pickupLatitude:
                                                                           ordersList[index]
@@ -782,6 +777,15 @@ class _UserOrdersState extends State<UserOrders> {
                               //   30.h,
                               // ),
 
+                              msg == 'There are no requests yet' ?
+                              Image.asset(
+                                noData,
+                                fit: BoxFit
+                                    .fill,
+                                height:
+                                30.h,
+                              )
+                              :
                               Lottie.asset(
                                 lookingDriver,
                                 height: 30.h,
@@ -803,6 +807,9 @@ class _UserOrdersState extends State<UserOrders> {
                                     fontSize: 6.sp),
                                 textAlign: TextAlign.center,
                               ),
+                              msg == 'There are no requests yet' ?
+                                  Text('')
+                              :
                               TextButton(
                                 onPressed: init,
                                 child: myText(

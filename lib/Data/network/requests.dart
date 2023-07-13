@@ -38,8 +38,9 @@ import '../Models/Driver_Models/driver_register_model.dart';
 import '../Models/Driver_Models/driver_status_model.dart';
 import '../Models/Driver_Models/payment_model.dart';
 import '../Models/Driver_Models/trip_payment_model.dart';
+import '../Models/User_Models/InitUserTripsModel.dart';
 import '../Models/User_Models/NearestCarsMapModel.dart';
-import '../Models/User_Models/user_orders_model.dart';
+import '../Models/User_Models/UserOrdersModel.dart';
 import '../Models/User_Models/user_register_model.dart';
 import '../util/request_type.dart';
 import 'network_client.dart';
@@ -69,6 +70,7 @@ class AppRequests {
     }
     print('*********************************');
     print(user_type);
+    print(fcm_token);
 
     final response = await client.request(
         requestType: RequestType.POST,
@@ -1126,7 +1128,7 @@ class AppRequests {
         });
     print(response.body);
     if (response.statusCode == 200) {
-      print(response.statusCode.toString() + response.body);
+      // print(response.statusCode.toString() + response.body);
       print("fetchServices status 200");
       return UserOrdersModel.fromJson(json.decode(response.body));
     } else {
@@ -2249,6 +2251,29 @@ class AppRequests {
       return NearestCarsMapModel.fromJson(json.decode(response.body));
     } else {
       return NearestCarsMapModel.fromJson(json.decode(response.body));
+    }
+  }
+
+
+  /// getInitUserTripsRequest
+  static Future<InitUserTripsModel> getInitUserTripsRequest() async {
+    print("getInitUserTripsRequest");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? '';
+    // user_id = prefs.getString('user_id') ?? '';
+    // print(user_id);
+    print(token);
+    final response = await client.requesttoken(
+      requestType: RequestType.GET,
+      path: "api/user-trips",
+      token: token,
+    );
+    if (response.statusCode == 200) {
+      print(response.statusCode.toString() + response.body);
+      print("fetchServices status 200");
+      return InitUserTripsModel.fromJson(json.decode(response.body));
+    } else {
+      return InitUserTripsModel.fromJson(json.decode(response.body));
     }
   }
 

@@ -283,7 +283,7 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                         Loader.hide();
                                         Future.delayed(const Duration(seconds: 0))
                                             .then((_) async {
-                                          Navigator.push(
+                                          Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>

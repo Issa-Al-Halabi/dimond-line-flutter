@@ -5,6 +5,8 @@ import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
 
 String APIKEY = 'AIzaSyCPsxZeXKcSYK1XXw0O0RbrZiI_Ekou5DY';
+String APIKEY_PUSHER = 'fa7ffa0cd3688f71ab11';
+String CLUSTER_PUSHER = 'mt1';
 
 // String BaseUrl = "http://dimond-line.peaklinkdemo.com";
 String BaseUrl = "http://diamond-line.com.sy";
@@ -19,6 +21,7 @@ const Color lightBlue2 = Color(0xffBECDE2);
 const Color lightBlue3 = Color(0xff57A0F0);
 const Color lightBlue4 = Color(0xff6694BE);
 const Color green = Colors.green;
+const Color yellow = Colors.yellow;
 
 const Color backgroundColor = Color(0xffF2F3F7);
 const Color white = Colors.white;
@@ -52,6 +55,7 @@ const String arrive = 'assets/lottie/arrive.json';
 const String selectRoute = 'assets/lottie/selectRoute.json';
 const String lookingDriver = 'assets/lottie/lookingDriver.json';
 const String lookingDriver2 = 'assets/lottie/lookingDriver2.json';
+const String iconNoInternet = 'assets/lottie/noInternet.json';
 
 //icon image
 // const String add = 'assets/images/add.png';

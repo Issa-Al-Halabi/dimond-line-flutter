@@ -241,7 +241,7 @@ class _MapScreenSourceState extends State<MapScreenSource> {
                                       convertToAddress(
                                           widget.fromLat, widget.fromLon);
                                       print(widget.sourceAddress);
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => OrderNow(

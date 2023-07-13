@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:diamond_line/Data/network/requests.dart';
-import '../../../Data/Models/User_Models/UserOrdersModel.dart';
+import '../../../Data/Models/User_Models/InitUserTripsModel.dart';
 
-class UserOrderProvider extends ChangeNotifier {
-  UserOrdersModel data = UserOrdersModel();
+class InitUserTripsProvider extends ChangeNotifier {
+  InitUserTripsModel data = InitUserTripsModel();
   late bool isLoading = true;
   late bool hasError = false;
   static late String token;
@@ -18,11 +18,9 @@ class UserOrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getUserOrders() async {
-    print("layan Test");
+  getInitTrips() async {
     isLoading = true;
-    data = await AppRequests.getUserOrdersRequest();
-    print("loaddding");
+    data = await AppRequests.getInitUserTripsRequest();
     isLoading = false;
     notifyListeners();
   }

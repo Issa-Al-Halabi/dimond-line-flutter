@@ -259,9 +259,11 @@
   "nonNumeric" : "only numeric",
   "nonAlphabetic" : "only alphabet",
   "start 9" : "start with 9",
-  "looking car" : "Looking for a nearby car, \nPlease wait",
+  "looking car" : "Looking for a nearby car,\nPlease wait",
   "your trip accepted" : "Your trip accepted",
   "your trip started" : "Your trip started",
   "driver arrive" : "driver arrived",
-  "dont let him wait" : "don't let him wait"
+  "dont let him wait" : "don't let him wait",
+  "your trip didnt accept" : "Your trip didn't accept,\nPlease try later",
+  "There are no requests yet" : "There are no requests yet"
 }

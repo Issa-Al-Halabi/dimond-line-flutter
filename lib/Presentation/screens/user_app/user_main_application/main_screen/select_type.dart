@@ -83,6 +83,7 @@ class _SelectTypeState extends State<SelectType> {
             child: Padding(
               padding: EdgeInsets.only(top: 9.h),
               child: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
                     Container(

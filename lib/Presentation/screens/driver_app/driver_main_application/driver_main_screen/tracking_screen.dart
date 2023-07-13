@@ -146,17 +146,17 @@ class _TrackingScreenState extends State<TrackingScreen> {
     for (int i = 0; i < latListIn.length; i++) {
       latLngList.add(LatLng(latListIn[i], lngListIn[i]));
     };
-    pathPolyline.add(
-      Polyline(
-          polylineId: PolylineId('track'),
-          color: Colors.red,
-          width: 5,
-          points: latLngList,
-          patterns: [
-            PatternItem.dash(20),
-            PatternItem.gap(10),
-          ]),
-    );
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 5,
+    //       points: latLngList,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
     if (mounted) {
       setState(() {});
     }
@@ -234,17 +234,17 @@ class _TrackingScreenState extends State<TrackingScreen> {
         center: latLngList.last,
         fillColor: Colors.grey.withAlpha(70));
     setState(() {});
-    pathPolyline.add(
-      Polyline(
-          polylineId: PolylineId('track'),
-          color: Colors.red,
-          width: 5,
-          points: latLngList,
-          patterns: [
-            PatternItem.dash(20),
-            PatternItem.gap(10),
-          ]),
-    );
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 5,
+    //       points: latLngList,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
   }
 
   /// رسم المسار الاساسي

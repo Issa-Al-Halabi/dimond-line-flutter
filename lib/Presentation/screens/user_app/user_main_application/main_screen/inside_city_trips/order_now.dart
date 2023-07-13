@@ -239,7 +239,7 @@ class _OrderNowState extends State<OrderNow> {
             if (widget.toLat == 0.0 || widget.fromLat == 0.0) {
               setSnackbar("select fields".tr(), context);
             } else {
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => MapScreenPolyline(
@@ -312,7 +312,7 @@ class _OrderNowState extends State<OrderNow> {
             if (widget.toLat == 0.0 || widget.fromLat == 0.0) {
               setSnackbar("select fields".tr(), context);
             } else {
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => MapScreenPolyline(
