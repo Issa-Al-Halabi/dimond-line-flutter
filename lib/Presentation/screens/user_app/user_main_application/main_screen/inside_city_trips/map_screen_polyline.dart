@@ -140,6 +140,12 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
   }
 
   @override
+  void dispose() {
+    Loader.hide();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: willPopLoader,

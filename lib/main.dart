@@ -21,6 +21,7 @@ import 'Buisness_logic/provider/Driver_Provider/driver_register_provider.dart';
 import 'Buisness_logic/provider/Driver_Provider/driver_status_provider.dart';
 import 'Buisness_logic/provider/Driver_Provider/driver_trips_provider.dart';
 import 'Buisness_logic/provider/Driver_Provider/payment_provider.dart';
+import 'Buisness_logic/provider/Driver_Provider/started_inside_trips_provider.dart';
 import 'Buisness_logic/provider/Driver_Provider/trip_payment_provider.dart';
 import 'Buisness_logic/provider/User_Provider/email_login_provider.dart';
 import 'Buisness_logic/provider/User_Provider/email_register_provider.dart';
@@ -310,6 +311,8 @@ class _MyAppState extends State<MyApp> // with WidgetsBindingObserver
                     create: (context) => NearestCarsMapProvider()),
                 ChangeNotifierProvider<InitUserTripsProvider>(
                     create: (context) => InitUserTripsProvider()),
+                ChangeNotifierProvider<StartedInsideTripsProvider>(
+                    create: (context) => StartedInsideTripsProvider()),
               ],
               child: MaterialApp(
                 localizationsDelegates: context.localizationDelegates,

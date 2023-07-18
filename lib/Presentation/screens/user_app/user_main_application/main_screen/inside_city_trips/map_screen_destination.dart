@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import '../../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:geolocator/geolocator.dart';
@@ -42,6 +43,12 @@ class _MapScreenDestinationState extends State<MapScreenDestination> {
   void initState() {
     getLatAndLong();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    Loader.hide();
+    super.dispose();
   }
 
   Future<void> getLatAndLong() async {

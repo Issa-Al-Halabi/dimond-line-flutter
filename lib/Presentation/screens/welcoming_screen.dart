@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Buisness_logic/provider/User_Provider/init_user_trips_provider.dart';
+
 // import '../../Data/Models/User_Models/InitUserTripsModel.dart';
 import '../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,8 +32,9 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
   late String uid;
   late String type;
   late String device;
-  late String tripId;
-  late String pickupLatitude, pickupLongitude, dropLatitude, dropLongitude;
+  // late String tripId;
+  // late String pickupLatitude, pickupLongitude, dropLatitude, dropLongitude;
+
   // // late bool isTrip;
   // bool isTrip= false;
   // // late String typeOfTrip;
@@ -42,7 +44,6 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
   // Data delayTripModel = Data();
   // bool isSecondTrip = false;
   // bool goToMapDelay = true;
-
 
   Future initShared() async {
     prefs = await SharedPreferences.getInstance();
@@ -54,7 +55,7 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
     print('uid in main');
     print(uid);
 
-     type = prefs.getString('type_of_customer') ?? '';
+    type = prefs.getString('type_of_customer') ?? '';
     print('type_of_customer in main');
     print(type);
 
@@ -62,25 +63,25 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
     print('device in main');
     print(device);
 
-    tripId = prefs.getString('tripId') ?? '';
-    print('tripId in main');
-    print(tripId);
-
-    pickupLatitude = prefs.getString('pickupLatitude') ?? '';
-    print('pickupLatitude in main');
-    print(pickupLatitude);
-
-    pickupLongitude = prefs.getString('pickupLongitude') ?? '';
-    print('pickupLongitude in main');
-    print(pickupLongitude);
-
-    dropLatitude = prefs.getString('dropLatitude') ?? '';
-    print('dropLatitude in main');
-    print(dropLatitude);
-
-    dropLongitude = prefs.getString('dropLongitude') ?? '';
-    print('dropLongitude in main');
-    print(dropLongitude);
+    // tripId = prefs.getString('tripId') ?? '';
+    // print('tripId in main');
+    // print(tripId);
+    //
+    // pickupLatitude = prefs.getString('pickupLatitude') ?? '';
+    // print('pickupLatitude in main');
+    // print(pickupLatitude);
+    //
+    // pickupLongitude = prefs.getString('pickupLongitude') ?? '';
+    // print('pickupLongitude in main');
+    // print(pickupLongitude);
+    //
+    // dropLatitude = prefs.getString('dropLatitude') ?? '';
+    // print('dropLatitude in main');
+    // print(dropLatitude);
+    //
+    // dropLongitude = prefs.getString('dropLongitude') ?? '';
+    // print('dropLongitude in main');
+    // print(dropLongitude);
   }
 
   @override
@@ -94,7 +95,8 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
     startTimer();
   }
 
-  late PermissionStatus status ;
+  late PermissionStatus status;
+
   Future<void> requestLocationPermission(BuildContext context) async {
     print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
     // final PermissionStatus status = await Permission.location.request();
@@ -112,16 +114,18 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Location Permission'),
-            content: Text('The app requires location permission to function properly.'),
+            content: Text(
+                'The app requires location permission to function properly.'),
             actions: [
               FlatButton(
                 child: Text('Yes'),
-                onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+                onPressed: () =>
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
               ),
               FlatButton(
                 child: Text('No'),
                 // onPressed: () => requestLocationPermission(context),
-                onPressed: (){
+                onPressed: () {
                   // Set the permission status to granted
                   // Permission.location.request().then((newStatus) {
                   //   if (newStatus.isGranted) {
@@ -205,7 +209,6 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
   //   }
   // }
 
-
   Future getPer() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -227,80 +230,53 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
     }
   }
 
-
   void startTimer() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     Timer(
         Duration(seconds: 2),
-            () =>
-            Navigator.of(context).pushReplacement(
+        () => Navigator.of(context).pushReplacement(
               PageRouteBuilder(
                 pageBuilder: (BuildContext context, Animation<double> animation,
                     Animation<double> secondaryAnimation) {
-                  return
-                    token != '' && type == 'user' ? UserDashboard()
-                       // : token != '' && type == 'foreign user' ? UserDashboard()
-                        : token != '' && type == 'organisations' ? UserDashboard()
-                    // token != '' && type == 'user' ?
-                    //     isTrip && typeOfTrip == 'moment' ?
-                    //     InsideTripMomentScreen(
-                    //       // driverImage: '', pickupLatitude: '', driverLname: '',
-                    //       // carModel: '', carColor: '',
-                    //       // pickupLongitude: '', driverPhone: '', vehicelImage: '',
-                    //       // status: '', dropLatitude: '', dropLongitude: '',
-                    //       // driverFname: '',
-                    //       // finalCost: '', deviceNumb: 14, tripId: '',
-                    //
-                    //
-                    //       isSecondTrip: isSecondTrip,
-                    //       momentTripModel: momentTripModel,
-                    //       delayTripModel: delayTripModel,
-                    //     )
-                    //     : isTrip && typeOfTrip == '' && goToMapDelay == true ?
-                    //     InsideTripDelayedScreen(
-                    //       delayTripModel: delayTripModel,
-                    //     )
-                    //     :
-                    // UserDashboard()
-                    //
-                    //     : token != '' && type == 'organisations' ?
-                    // isTrip && typeOfTrip == 'moment' ?
-                    // InsideTripDelayedScreen(delayTripModel: delayTripModel,
-                    // )
-                    //     : isTrip && typeOfTrip == '' && goToMapDelay == true ?
-                    // InsideTripDelayedScreen(
-                    //   delayTripModel: delayTripModel,
-                    // )
-                    // :
-                    // UserDashboard()
+                  return token != '' && type == 'user'
+                      ? UserDashboard()
+                      // : token != '' && type == 'foreign user' ? UserDashboard()
+                      : token != '' && type == 'organisations'
+                          ? UserDashboard()
+                          ////////////////////////////////////////////////////////
+                          : token != '' && type == 'external_driver'
+                              ? DriverDashboard(
+                                  driverType: 'external_driver',
+                                )
+                              : token != '' && type == 'driver'
+                                  ? DriverDashboard(driverType: 'driver')
+                                  // : token != '' && type == 'external_driver' ?
+                                  //              tripId !='' ?
+                                  //              TrackingScreen(
+                                  //                pickupLatitude: pickupLatitude,
+                                  //                pickupLongitude: pickupLongitude,
+                                  //                dropLongitude: dropLongitude,
+                                  //                dropLatitude: dropLatitude,
+                                  //                tripId: tripId,
+                                  //              )
+                                  //                  :
+                                  //              DriverDashboard(driverType: 'external_driver',)
+                                  //                  : token != '' && type == 'driver' ?
+                                  //              tripId !='' ?
+                                  //              TrackingScreen(
+                                  //                pickupLatitude: pickupLatitude,
+                                  //                pickupLongitude: pickupLongitude,
+                                  //                dropLongitude: dropLongitude,
+                                  //                dropLatitude: dropLatitude,
+                                  //                tripId: tripId,
+                                  //              )
+                                  //                  :
+                                  //              DriverDashboard(driverType: 'driver')
+
 //////////////////////////////////////////////////////////////////////////////////////////////
-                        : token != '' && type == 'external_driver' ?
-                    tripId !='' ?
-                    TrackingScreen(
-                      pickupLatitude: pickupLatitude,
-                      pickupLongitude: pickupLongitude,
-                      dropLongitude: dropLongitude,
-                      dropLatitude: dropLatitude,
-                      tripId: tripId,
-                    )
-                        :
-                    DriverDashboard(driverType: 'external_driver',)
-                        : token != '' && type == 'driver' ?
-                    tripId !='' ?
-                    TrackingScreen(
-                      pickupLatitude: pickupLatitude,
-                      pickupLongitude: pickupLongitude,
-                      dropLongitude: dropLongitude,
-                      dropLatitude: dropLatitude,
-                      tripId: tripId,
-                    )
-                        :
-                    DriverDashboard(driverType: 'driver')
-//////////////////////////////////////////////////////////////////////////////////////////////
-                        :
-                    pref.getBool('isFirstTimeUser') ?? true ?
-                    LandingPage()
-                        : AreYou();
+                                  : pref.getBool('isFirstTimeUser') ?? true
+                                      ? LandingPage()
+                                      : AreYou();
                 },
                 transitionsBuilder: (BuildContext context,
                     Animation<double> animation,
@@ -315,8 +291,7 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
                 },
                 transitionDuration: Duration(milliseconds: 500),
               ),
-            )
-    );
+            ));
   }
 
   // void getTrips() async {
@@ -374,7 +349,6 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
     version = packageInfo.version;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -407,7 +381,7 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
               SizedBox(
                 height: 40.h,
               ),
-               Center(
+              Center(
                   child: Text(
                 'POWERED BY PEAK LINK\nVERSION $version',
                 style: TextStyle(

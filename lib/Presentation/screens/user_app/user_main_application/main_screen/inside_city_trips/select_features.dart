@@ -84,6 +84,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
 
   @override
   void dispose() {
+    Loader.hide();
     super.dispose();
   }
 

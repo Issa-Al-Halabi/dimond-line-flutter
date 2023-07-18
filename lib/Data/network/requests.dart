@@ -37,6 +37,7 @@ import '../Models/Driver_Models/driver_complete_register_model.dart';
 import '../Models/Driver_Models/driver_register_model.dart';
 import '../Models/Driver_Models/driver_status_model.dart';
 import '../Models/Driver_Models/payment_model.dart';
+import '../Models/Driver_Models/started_inside_trips_model.dart';
 import '../Models/Driver_Models/trip_payment_model.dart';
 import '../Models/User_Models/InitUserTripsModel.dart';
 import '../Models/User_Models/NearestCarsMapModel.dart';
@@ -2274,6 +2275,26 @@ class AppRequests {
       return InitUserTripsModel.fromJson(json.decode(response.body));
     } else {
       return InitUserTripsModel.fromJson(json.decode(response.body));
+    }
+  }
+
+  /// getInitDriverTripsRequest getStartedTripsRequest
+  static Future<StartedInsideTripsModel> getStartedTripsRequest() async {
+    print("getStartedTripsRequest");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? '';
+    print(token);
+    final response = await client.requesttoken(
+      requestType: RequestType.GET,
+      path: "api/started-inside-trips",
+      token: token,
+    );
+    if (response.statusCode == 200) {
+      print(response.statusCode.toString() + response.body);
+      print("fetchServices status 200");
+      return StartedInsideTripsModel.fromJson(json.decode(response.body));
+    } else {
+      return StartedInsideTripsModel.fromJson(json.decode(response.body));
     }
   }
 

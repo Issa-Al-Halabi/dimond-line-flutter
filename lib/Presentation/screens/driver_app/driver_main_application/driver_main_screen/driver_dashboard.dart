@@ -1,11 +1,14 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/tracking_screen.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import '../../../../../Buisness_logic/provider/Driver_Provider/started_inside_trips_provider.dart';
 import '../driver_profile_screen/driver_settings.dart';
 import 'driver_efficient_trips.dart';
 import 'external_driver_screen.dart';
@@ -32,6 +35,11 @@ class _DriverDashboardState extends State<DriverDashboard> {
     trips,
   ];
   List<Widget> screens = <Widget>[];
+  bool _isNetworkAvail = true;
+  bool isTrip = false;
+  String tripId = '';
+  String status = '';
+  String pickupLatitude = '', pickupLongitude= '', dropLatitude= '', dropLongitude= '';
 
   buildScreens() {
     screens.add(DriverSettings());
@@ -45,6 +53,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
   @override
   void initState() {
     buildScreens();
+    getTrips();
     SystemChrome.setEnabledSystemUIOverlays(
         [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -52,6 +61,74 @@ class _DriverDashboardState extends State<DriverDashboard> {
       statusBarIconBrightness: Brightness.light,
     ));
     super.initState();
+  }
+
+
+  ////////////////////////////////////////////////////////
+  void getTrips() async {
+    print('ssssssssssssssssssssssss');
+    var getTrips = await Provider.of<StartedInsideTripsProvider>(context, listen: false);
+    getTripsApi(getTrips);
+  }
+
+  /////////////////////////getTrips api //////////////////////////////////
+  Future<void> getTripsApi(StartedInsideTripsProvider creat) async {
+    _isNetworkAvail = await isNetworkAvailable();
+    if (_isNetworkAvail) {
+      var data = await creat.startedTrips();
+      print('data');
+      print(data);
+      if (creat.data.error == false) {
+        int length = creat.data.data!.length;
+        print('length');
+        print(length);
+        if(length != 0){
+          isTrip = true;
+          for(int i =0; i< creat.data.data!.length; i++){
+            tripId = creat.data.data![i].id.toString();
+            status = creat.data.data![i].status!;
+            pickupLatitude = creat.data.data![i].pickupLatitude!;
+            pickupLongitude = creat.data.data![i].pickupLongitude!;
+            dropLatitude = creat.data.data![i].dropLatitude!;
+            dropLongitude = creat.data.data![i].dropLongitude!;
+          }
+        }
+      }
+      startNavigate();
+    } else {
+      setSnackbar("nointernet".tr(), context);
+    }
+  }
+
+  void startNavigate() async {
+        if(isTrip == true){
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (BuildContext context, Animation<double> animation,
+                  Animation<double> secondaryAnimation) {
+                return TrackingScreen(
+                    pickupLatitude: pickupLatitude,
+                    pickupLongitude: pickupLongitude,
+                    dropLongitude: dropLongitude,
+                    dropLatitude: dropLatitude,
+                    tripId: tripId,
+                  );
+              },
+              transitionsBuilder: (BuildContext context,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                  Widget child) {
+                return Align(
+                  child: SizeTransition(
+                    sizeFactor: animation,
+                    child: child,
+                  ),
+                );
+              },
+              transitionDuration: Duration(milliseconds: 500),
+            ),
+          );
+        }
   }
 
   Future<bool> isNetworkAvailable() async {
@@ -63,6 +140,20 @@ class _DriverDashboardState extends State<DriverDashboard> {
     }
     return false;
   }
+
+  setSnackbar(String msg, BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: Duration(seconds: 3),
+      content: new Text(
+        msg,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: primaryBlue),
+      ),
+      backgroundColor: white,
+      elevation: 1.0,
+    ));
+  }
+
 
   @override
   Widget build(BuildContext context) {

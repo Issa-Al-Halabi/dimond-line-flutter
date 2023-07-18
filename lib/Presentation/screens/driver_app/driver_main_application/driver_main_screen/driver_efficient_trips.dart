@@ -1,5 +1,6 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../widgets/loader_widget.dart';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
@@ -62,7 +63,7 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
     getDriverEfficientTripsApi(creat);
   }
 
-  /////////////////////////// get driver trips inside city api ///////////////////////////
+  /////////////////////////// get driver trips Efficient api ///////////////////////////
   Future<void> getDriverEfficientTripsApi(
       DriverOutcityTripsProvider creat) async {
     _isNetworkAvail = await isNetworkAvailable();
@@ -659,6 +660,56 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
                                                               ),
                                                             ],
                                                           ),
+
+                                                    // todo
+                                                    Row(
+                                                      children: [
+                                                        Image.asset(
+                                                            name,
+                                                            height: 6.h,
+                                                            width: 6.w),
+                                                        SizedBox(
+                                                          width: 5.w,
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            '${tripsList[index].firstName.toString()}' + '\t' +  '${tripsList[index].lastName.toString()}',
+                                                            style:
+                                                            TextStyle(
+                                                              color:
+                                                              primaryBlue,
+                                                              fontSize:
+                                                              5.sp,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5.w,
+                                                        ),
+                                                        Expanded(
+                                                          child: InkWell(
+                                                            child: Text(
+                                                              '${tripsList[index].phone.toString()}',
+                                                              style:
+                                                              TextStyle(
+                                                                color:
+                                                                lightBlue4,
+                                                                fontSize:
+                                                                5.sp,
+                                                                decoration:
+                                                                TextDecoration
+                                                                    .underline,
+                                                              ),
+                                                            ),
+                                                            onTap: () {
+                                                              launchUrl(Uri.parse(
+                                                                  "tel://+963 ${tripsList[index].phone.toString()}"));
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    /////////////////////
                                                     SizedBox(
                                                       height: 3.h,
                                                     ),

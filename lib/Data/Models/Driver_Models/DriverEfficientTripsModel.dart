@@ -1,6 +1,6 @@
 /// error : false
 /// message : "Listed Successfully"
-/// data : {"trips_outcity":[{"id":363,"customer_id":null,"user_id":294,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":"Al Qanawat,G77G+GJC","to":"Tartus District,Tartus","direction":"one way trip","date":"2023-04-30","bags":3,"time":"6:59 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":3,"status":"accepted","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"34.8959276","drop_longitude":"35.8866517","km":"157.9878979447665","minutes":"178.13333333333333","cost":872273,"start_time":null,"end_time":null,"created_at":"2023-04-05 08:59:48","updated_at":"2023-04-05 08:59:48","deleted_at":null},{"id":324,"customer_id":null,"user_id":294,"vehicle_id":72,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":"Al Qanawat,G77G+GJC","to":"Tartus District,Tartus","direction":"one way trip","date":"0000-00-00","bags":3,"time":"17:47 pm","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":3,"status":"started","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"34.8959276","drop_longitude":"35.8866517","km":"0.00043414601442140423","minutes":"178.28333333333333","cost":3991,"start_time":"10:58:42","end_time":"14:36:17","created_at":"2023-03-27 09:49:16","updated_at":"2023-03-27 11:36:32","deleted_at":null},{"id":319,"customer_id":null,"user_id":294,"vehicle_id":70,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":"Damascus,Old Damascus","to":"Tartus District,Tartus","direction":"one way trip","date":"0000-00-00","bags":3,"time":"5:49 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":3,"status":"started","payment":0,"pickup_latitude":"33.5103235","pickup_longitude":"36.3105246","drop_latitude":"34.8959276","drop_longitude":"35.8866517","km":"5.040663694029767","minutes":"180.03333333333333","cost":25281,"start_time":"14:44:55","end_time":"12:26:48","created_at":"2023-03-27 08:52:06","updated_at":"2023-03-27 09:26:49","deleted_at":null},{"id":168,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"18","from":null,"to":null,"direction":null,"date":"2023-01-17","bags":1,"time":"18:30 pm","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"36.2021047","drop_longitude":"37.1342603","km":"0.0","minutes":"250.23333333333332","cost":103740,"start_time":"10:34:48","end_time":"13:36:23","created_at":"2023-01-17 16:50:05","updated_at":"2023-02-05 12:19:49","deleted_at":"2023-02-05 12:19:49"},{"id":167,"customer_id":null,"user_id":246,"vehicle_id":69,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"18","from":null,"to":null,"direction":"round trip","date":"2022-07-15","bags":3,"time":"4:15:00 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":2,"status":"started","payment":0,"pickup_latitude":"12.15","pickup_longitude":"264.5","drop_latitude":"598.2","drop_longitude":"10","km":"0.0","minutes":"0","cost":-32400,"start_time":"11:27:24","end_time":"10:44:02","created_at":"2023-01-17 15:53:10","updated_at":"2023-02-05 12:21:09","deleted_at":"2023-02-05 12:21:09"}],"trip_inside":[{"id":364,"customer_id":null,"user_id":294,"vehicle_id":65,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"Los Altos Hills,Snell Court","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.3863883558195","drop_longitude":"-122.13710725307465","km":"6.145597623052712","minutes":"18.016666666666666","cost":18655,"start_time":null,"end_time":null,"created_at":"2023-04-05 09:13:01","updated_at":"2023-04-05 09:13:01","deleted_at":null},{"id":361,"customer_id":null,"user_id":294,"vehicle_id":68,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"2023-04-27","bags":0,"time":"5:34 AM","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"Sunnyvale,Macara Avenue","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.39510780954094","drop_longitude":"-122.04190224409105","km":"4.7767376507845105","minutes":"11.733333333333333","cost":13852,"start_time":null,"end_time":null,"created_at":"2023-04-05 08:34:26","updated_at":"2023-04-05 08:34:26","deleted_at":null},{"id":360,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"2023-04-28","bags":0,"time":"5:18 AM","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"North Los Altos,South Avalon Drive","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.3805628344705","drop_longitude":"-122.10506826639175","km":"4.974640389329497","minutes":"15.266666666666667","cost":15295,"start_time":null,"end_time":null,"created_at":"2023-04-05 08:19:03","updated_at":"2023-04-05 08:19:03","deleted_at":null},{"id":357,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"Lindenwood,Manzanita Road","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.469262703829315","drop_longitude":"-122.17648208141327","km":"9.720594328454656","minutes":"13.383333333333333","cost":25199,"start_time":null,"end_time":null,"created_at":"2023-04-03 09:54:51","updated_at":"2023-04-03 09:54:51","deleted_at":null},{"id":349,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[\"AC\"]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Jaramana, Syria","dest_addr":"Al Mazzeh, Damascus, Syria","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"0.0","drop_longitude":"0.0","km":"9.182960384153132","minutes":"25.75","cost":27541,"start_time":null,"end_time":null,"created_at":"2023-03-28 11:29:00","updated_at":"2023-03-28 11:29:00","deleted_at":null},{"id":329,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[\"9\"]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"٦:٢٤ م","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Damas,Jaramana","dest_addr":"Markaz Rif Dimashq District,Sahnaya","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.4850618","pickup_longitude":"36.340895","drop_latitude":"","drop_longitude":"","km":"14.57351944066204","minutes":"33.7","cost":46666,"start_time":"11:44:58","end_time":null,"created_at":"2023-03-27 12:26:28","updated_at":"2023-03-27 12:26:28","deleted_at":null},{"id":184,"customer_id":null,"user_id":246,"vehicle_id":null,"type_id":13,"option_id":"[\"7\",\"9\"]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"2023-01-31","bags":0,"time":"6:25 PM","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Markaz Rif Dimashq District,Al Kiswah","dest_addr":"Damascus,Jobar","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.40446075408452","pickup_longitude":"36.26078199595213","drop_latitude":"","drop_longitude":"","km":"13.83815335525581","minutes":"30.216666666666665","cost":34292,"start_time":null,"end_time":null,"created_at":"2023-01-22 13:05:31","updated_at":"2023-02-05 12:36:35","deleted_at":"2023-02-05 12:36:35"},{"id":183,"customer_id":null,"user_id":246,"vehicle_id":null,"type_id":13,"option_id":"[9,7]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Damas,Jaramana","dest_addr":"Darayya District,Ashrafiyat Sahnaya","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.485","pickup_longitude":"36.3408244","drop_latitude":"","drop_longitude":"","km":"11.719165581183747","minutes":"26.083333333333332","cost":22266,"start_time":null,"end_time":null,"created_at":"2023-01-22 12:50:04","updated_at":"2023-01-22 12:50:04","deleted_at":null}]}
+/// data : {"trips_outcity":[{"id":168,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"18","from":null,"to":null,"direction":null,"date":"2023-01-17","bags":1,"time":"18:30 pm","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":1,"status":"started","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"36.2021047","drop_longitude":"37.1342603","km":"0.0","minutes":"250.23333333333332","cost":103740,"start_time":"13:12:22","end_time":"13:36:23","created_at":"2023-01-17 16:50:05","order_time":null,"updated_at":"2023-02-05 12:19:49","deleted_at":"2023-02-05 12:19:49","first_name":"Isabella","last_name":"Britt","phone":"968531420"},{"id":167,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":null,"to":null,"direction":"round trip","date":"2022-07-15","bags":3,"time":"4:15:00 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":2,"status":"accepted","payment":0,"pickup_latitude":"12.15","pickup_longitude":"264.5","drop_latitude":"598.2","drop_longitude":"10","km":"9","minutes":"0","cost":712500,"start_time":"06:30:00","end_time":"18:00:00","created_at":"2023-01-17 15:53:10","order_time":null,"updated_at":"2023-06-15 10:49:00","deleted_at":null,"first_name":"Isabella","last_name":"Britt","phone":"968531420"}],"trip_inside":[{"id":169,"customer_id":null,"user_id":246,"vehicle_id":null,"type_id":13,"option_id":null,"driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"باب توما","dest_addr":"دمشق","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.50142151266264","pickup_longitude":"36.32597210216678","drop_latitude":"","drop_longitude":"","km":"26.734238146181962","minutes":"0","cost":10000,"start_time":"10:56:16","end_time":"10:59:49","created_at":"2023-01-18 09:37:39","order_time":null,"updated_at":"2023-03-27 07:59:50","deleted_at":null,"first_name":"Isabella","last_name":"Britt","phone":"968531420"}]}
 
 class DriverEfficientTripsModel {
   DriverEfficientTripsModel({
@@ -43,8 +43,8 @@ DriverEfficientTripsModel copyWith({  bool? error,
 
 }
 
-/// trips_outcity : [{"id":363,"customer_id":null,"user_id":294,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":"Al Qanawat,G77G+GJC","to":"Tartus District,Tartus","direction":"one way trip","date":"2023-04-30","bags":3,"time":"6:59 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":3,"status":"accepted","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"34.8959276","drop_longitude":"35.8866517","km":"157.9878979447665","minutes":"178.13333333333333","cost":872273,"start_time":null,"end_time":null,"created_at":"2023-04-05 08:59:48","updated_at":"2023-04-05 08:59:48","deleted_at":null},{"id":324,"customer_id":null,"user_id":294,"vehicle_id":72,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":"Al Qanawat,G77G+GJC","to":"Tartus District,Tartus","direction":"one way trip","date":"0000-00-00","bags":3,"time":"17:47 pm","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":3,"status":"started","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"34.8959276","drop_longitude":"35.8866517","km":"0.00043414601442140423","minutes":"178.28333333333333","cost":3991,"start_time":"10:58:42","end_time":"14:36:17","created_at":"2023-03-27 09:49:16","updated_at":"2023-03-27 11:36:32","deleted_at":null},{"id":319,"customer_id":null,"user_id":294,"vehicle_id":70,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":"Damascus,Old Damascus","to":"Tartus District,Tartus","direction":"one way trip","date":"0000-00-00","bags":3,"time":"5:49 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":3,"status":"started","payment":0,"pickup_latitude":"33.5103235","pickup_longitude":"36.3105246","drop_latitude":"34.8959276","drop_longitude":"35.8866517","km":"5.040663694029767","minutes":"180.03333333333333","cost":25281,"start_time":"14:44:55","end_time":"12:26:48","created_at":"2023-03-27 08:52:06","updated_at":"2023-03-27 09:26:49","deleted_at":null},{"id":168,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"18","from":null,"to":null,"direction":null,"date":"2023-01-17","bags":1,"time":"18:30 pm","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"36.2021047","drop_longitude":"37.1342603","km":"0.0","minutes":"250.23333333333332","cost":103740,"start_time":"10:34:48","end_time":"13:36:23","created_at":"2023-01-17 16:50:05","updated_at":"2023-02-05 12:19:49","deleted_at":"2023-02-05 12:19:49"},{"id":167,"customer_id":null,"user_id":246,"vehicle_id":69,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"18","from":null,"to":null,"direction":"round trip","date":"2022-07-15","bags":3,"time":"4:15:00 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":2,"status":"started","payment":0,"pickup_latitude":"12.15","pickup_longitude":"264.5","drop_latitude":"598.2","drop_longitude":"10","km":"0.0","minutes":"0","cost":-32400,"start_time":"11:27:24","end_time":"10:44:02","created_at":"2023-01-17 15:53:10","updated_at":"2023-02-05 12:21:09","deleted_at":"2023-02-05 12:21:09"}]
-/// trip_inside : [{"id":364,"customer_id":null,"user_id":294,"vehicle_id":65,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"Los Altos Hills,Snell Court","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.3863883558195","drop_longitude":"-122.13710725307465","km":"6.145597623052712","minutes":"18.016666666666666","cost":18655,"start_time":null,"end_time":null,"created_at":"2023-04-05 09:13:01","updated_at":"2023-04-05 09:13:01","deleted_at":null},{"id":361,"customer_id":null,"user_id":294,"vehicle_id":68,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"2023-04-27","bags":0,"time":"5:34 AM","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"Sunnyvale,Macara Avenue","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.39510780954094","drop_longitude":"-122.04190224409105","km":"4.7767376507845105","minutes":"11.733333333333333","cost":13852,"start_time":null,"end_time":null,"created_at":"2023-04-05 08:34:26","updated_at":"2023-04-05 08:34:26","deleted_at":null},{"id":360,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"2023-04-28","bags":0,"time":"5:18 AM","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"North Los Altos,South Avalon Drive","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.3805628344705","drop_longitude":"-122.10506826639175","km":"4.974640389329497","minutes":"15.266666666666667","cost":15295,"start_time":null,"end_time":null,"created_at":"2023-04-05 08:19:03","updated_at":"2023-04-05 08:19:03","deleted_at":null},{"id":357,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"Lindenwood,Manzanita Road","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.469262703829315","drop_longitude":"-122.17648208141327","km":"9.720594328454656","minutes":"13.383333333333333","cost":25199,"start_time":null,"end_time":null,"created_at":"2023-04-03 09:54:51","updated_at":"2023-04-03 09:54:51","deleted_at":null},{"id":349,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[\"AC\"]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Jaramana, Syria","dest_addr":"Al Mazzeh, Damascus, Syria","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"0.0","drop_longitude":"0.0","km":"9.182960384153132","minutes":"25.75","cost":27541,"start_time":null,"end_time":null,"created_at":"2023-03-28 11:29:00","updated_at":"2023-03-28 11:29:00","deleted_at":null},{"id":329,"customer_id":null,"user_id":294,"vehicle_id":null,"type_id":13,"option_id":"[\"9\"]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"٦:٢٤ م","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Damas,Jaramana","dest_addr":"Markaz Rif Dimashq District,Sahnaya","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.4850618","pickup_longitude":"36.340895","drop_latitude":"","drop_longitude":"","km":"14.57351944066204","minutes":"33.7","cost":46666,"start_time":"11:44:58","end_time":null,"created_at":"2023-03-27 12:26:28","updated_at":"2023-03-27 12:26:28","deleted_at":null},{"id":184,"customer_id":null,"user_id":246,"vehicle_id":null,"type_id":13,"option_id":"[\"7\",\"9\"]","driver_id":242,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"2023-01-31","bags":0,"time":"6:25 PM","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Markaz Rif Dimashq District,Al Kiswah","dest_addr":"Damascus,Jobar","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.40446075408452","pickup_longitude":"36.26078199595213","drop_latitude":"","drop_longitude":"","km":"13.83815335525581","minutes":"30.216666666666665","cost":34292,"start_time":null,"end_time":null,"created_at":"2023-01-22 13:05:31","updated_at":"2023-02-05 12:36:35","deleted_at":"2023-02-05 12:36:35"},{"id":183,"customer_id":null,"user_id":246,"vehicle_id":null,"type_id":13,"option_id":"[9,7]","driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Damas,Jaramana","dest_addr":"Darayya District,Ashrafiyat Sahnaya","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.485","pickup_longitude":"36.3408244","drop_latitude":"","drop_longitude":"","km":"11.719165581183747","minutes":"26.083333333333332","cost":22266,"start_time":null,"end_time":null,"created_at":"2023-01-22 12:50:04","updated_at":"2023-01-22 12:50:04","deleted_at":null}]
+/// trips_outcity : [{"id":168,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"18","from":null,"to":null,"direction":null,"date":"2023-01-17","bags":1,"time":"18:30 pm","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":1,"status":"started","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"36.2021047","drop_longitude":"37.1342603","km":"0.0","minutes":"250.23333333333332","cost":103740,"start_time":"13:12:22","end_time":"13:36:23","created_at":"2023-01-17 16:50:05","order_time":null,"updated_at":"2023-02-05 12:19:49","deleted_at":"2023-02-05 12:19:49","first_name":"Isabella","last_name":"Britt","phone":"968531420"},{"id":167,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":null,"to":null,"direction":"round trip","date":"2022-07-15","bags":3,"time":"4:15:00 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":2,"status":"accepted","payment":0,"pickup_latitude":"12.15","pickup_longitude":"264.5","drop_latitude":"598.2","drop_longitude":"10","km":"9","minutes":"0","cost":712500,"start_time":"06:30:00","end_time":"18:00:00","created_at":"2023-01-17 15:53:10","order_time":null,"updated_at":"2023-06-15 10:49:00","deleted_at":null,"first_name":"Isabella","last_name":"Britt","phone":"968531420"}]
+/// trip_inside : [{"id":169,"customer_id":null,"user_id":246,"vehicle_id":null,"type_id":13,"option_id":null,"driver_id":242,"category_id":"1","request_type":"moment","subcategory_id":"","from":null,"to":null,"direction":null,"date":"0000-00-00","bags":0,"time":"","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"باب توما","dest_addr":"دمشق","note":null,"travellers":1,"status":"accepted","payment":0,"pickup_latitude":"33.50142151266264","pickup_longitude":"36.32597210216678","drop_latitude":"","drop_longitude":"","km":"26.734238146181962","minutes":"0","cost":10000,"start_time":"10:56:16","end_time":"10:59:49","created_at":"2023-01-18 09:37:39","order_time":null,"updated_at":"2023-03-27 07:59:50","deleted_at":null,"first_name":"Isabella","last_name":"Britt","phone":"968531420"}]
 
 class Data {
   Data({
@@ -91,12 +91,12 @@ Data copyWith({  List<TripsOutcity>? tripsOutcity,
 
 }
 
-/// id : 364
+/// id : 169
 /// customer_id : null
-/// user_id : 294
-/// vehicle_id : 65
+/// user_id : 246
+/// vehicle_id : null
 /// type_id : 13
-/// option_id : "[]"
+/// option_id : null
 /// driver_id : 242
 /// category_id : "1"
 /// request_type : "moment"
@@ -110,33 +110,37 @@ Data copyWith({  List<TripsOutcity>? tripsOutcity,
 /// pickup : null
 /// dropoff : null
 /// duration : null
-/// pickup_addr : "Mountain View,Amphitheatre Parkway"
-/// dest_addr : "Los Altos Hills,Snell Court"
+/// pickup_addr : "باب توما"
+/// dest_addr : "دمشق"
 /// note : null
 /// travellers : 1
 /// status : "accepted"
 /// payment : 0
-/// pickup_latitude : "37.4219983"
-/// pickup_longitude : "-122.084"
-/// drop_latitude : "37.3863883558195"
-/// drop_longitude : "-122.13710725307465"
-/// km : "6.145597623052712"
-/// minutes : "18.016666666666666"
-/// cost : 18655
-/// start_time : null
-/// end_time : null
-/// created_at : "2023-04-05 09:13:01"
-/// updated_at : "2023-04-05 09:13:01"
+/// pickup_latitude : "33.50142151266264"
+/// pickup_longitude : "36.32597210216678"
+/// drop_latitude : ""
+/// drop_longitude : ""
+/// km : "26.734238146181962"
+/// minutes : "0"
+/// cost : 10000
+/// start_time : "10:56:16"
+/// end_time : "10:59:49"
+/// created_at : "2023-01-18 09:37:39"
+/// order_time : null
+/// updated_at : "2023-03-27 07:59:50"
 /// deleted_at : null
+/// first_name : "Isabella"
+/// last_name : "Britt"
+/// phone : "968531420"
 
 class TripInside {
   TripInside({
       int? id, 
       dynamic customerId, 
       int? userId, 
-      int? vehicleId, 
+      dynamic vehicleId, 
       int? typeId, 
-      String? optionId, 
+      dynamic optionId, 
       int? driverId, 
       String? categoryId, 
       String? requestType, 
@@ -163,11 +167,15 @@ class TripInside {
       String? km, 
       String? minutes, 
       int? cost, 
-      dynamic startTime, 
-      dynamic endTime, 
+      String? startTime, 
+      String? endTime, 
       String? createdAt, 
+      dynamic orderTime, 
       String? updatedAt, 
-      dynamic deletedAt,}){
+      dynamic deletedAt, 
+      String? firstName, 
+      String? lastName, 
+      String? phone,}){
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -203,8 +211,12 @@ class TripInside {
     _startTime = startTime;
     _endTime = endTime;
     _createdAt = createdAt;
+    _orderTime = orderTime;
     _updatedAt = updatedAt;
     _deletedAt = deletedAt;
+    _firstName = firstName;
+    _lastName = lastName;
+    _phone = phone;
 }
 
   TripInside.fromJson(dynamic json) {
@@ -243,15 +255,19 @@ class TripInside {
     _startTime = json['start_time'];
     _endTime = json['end_time'];
     _createdAt = json['created_at'];
+    _orderTime = json['order_time'];
     _updatedAt = json['updated_at'];
     _deletedAt = json['deleted_at'];
+    _firstName = json['first_name'];
+    _lastName = json['last_name'];
+    _phone = json['phone'];
   }
   int? _id;
   dynamic _customerId;
   int? _userId;
-  int? _vehicleId;
+  dynamic _vehicleId;
   int? _typeId;
-  String? _optionId;
+  dynamic _optionId;
   int? _driverId;
   String? _categoryId;
   String? _requestType;
@@ -278,17 +294,21 @@ class TripInside {
   String? _km;
   String? _minutes;
   int? _cost;
-  dynamic _startTime;
-  dynamic _endTime;
+  String? _startTime;
+  String? _endTime;
   String? _createdAt;
+  dynamic _orderTime;
   String? _updatedAt;
   dynamic _deletedAt;
+  String? _firstName;
+  String? _lastName;
+  String? _phone;
 TripInside copyWith({  int? id,
   dynamic customerId,
   int? userId,
-  int? vehicleId,
+  dynamic vehicleId,
   int? typeId,
-  String? optionId,
+  dynamic optionId,
   int? driverId,
   String? categoryId,
   String? requestType,
@@ -315,11 +335,15 @@ TripInside copyWith({  int? id,
   String? km,
   String? minutes,
   int? cost,
-  dynamic startTime,
-  dynamic endTime,
+  String? startTime,
+  String? endTime,
   String? createdAt,
+  dynamic orderTime,
   String? updatedAt,
   dynamic deletedAt,
+  String? firstName,
+  String? lastName,
+  String? phone,
 }) => TripInside(  id: id ?? _id,
   customerId: customerId ?? _customerId,
   userId: userId ?? _userId,
@@ -355,15 +379,19 @@ TripInside copyWith({  int? id,
   startTime: startTime ?? _startTime,
   endTime: endTime ?? _endTime,
   createdAt: createdAt ?? _createdAt,
+  orderTime: orderTime ?? _orderTime,
   updatedAt: updatedAt ?? _updatedAt,
   deletedAt: deletedAt ?? _deletedAt,
+  firstName: firstName ?? _firstName,
+  lastName: lastName ?? _lastName,
+  phone: phone ?? _phone,
 );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
-  int? get vehicleId => _vehicleId;
+  dynamic get vehicleId => _vehicleId;
   int? get typeId => _typeId;
-  String? get optionId => _optionId;
+  dynamic get optionId => _optionId;
   int? get driverId => _driverId;
   String? get categoryId => _categoryId;
   String? get requestType => _requestType;
@@ -390,11 +418,15 @@ TripInside copyWith({  int? id,
   String? get km => _km;
   String? get minutes => _minutes;
   int? get cost => _cost;
-  dynamic get startTime => _startTime;
-  dynamic get endTime => _endTime;
+  String? get startTime => _startTime;
+  String? get endTime => _endTime;
   String? get createdAt => _createdAt;
+  dynamic get orderTime => _orderTime;
   String? get updatedAt => _updatedAt;
   dynamic get deletedAt => _deletedAt;
+  String? get firstName => _firstName;
+  String? get lastName => _lastName;
+  String? get phone => _phone;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -433,50 +465,58 @@ TripInside copyWith({  int? id,
     map['start_time'] = _startTime;
     map['end_time'] = _endTime;
     map['created_at'] = _createdAt;
+    map['order_time'] = _orderTime;
     map['updated_at'] = _updatedAt;
     map['deleted_at'] = _deletedAt;
+    map['first_name'] = _firstName;
+    map['last_name'] = _lastName;
+    map['phone'] = _phone;
     return map;
   }
 
 }
 
-/// id : 363
+/// id : 168
 /// customer_id : null
-/// user_id : 294
+/// user_id : 246
 /// vehicle_id : 65
 /// type_id : null
 /// option_id : null
 /// driver_id : 242
 /// category_id : "2"
 /// request_type : null
-/// subcategory_id : "19"
-/// from : "Al Qanawat,G77G+GJC"
-/// to : "Tartus District,Tartus"
-/// direction : "one way trip"
-/// date : "2023-04-30"
-/// bags : 3
-/// time : "6:59 am"
+/// subcategory_id : "18"
+/// from : null
+/// to : null
+/// direction : null
+/// date : "2023-01-17"
+/// bags : 1
+/// time : "18:30 pm"
 /// pickup : null
 /// dropoff : null
 /// duration : null
 /// pickup_addr : null
 /// dest_addr : null
 /// note : null
-/// travellers : 3
-/// status : "accepted"
+/// travellers : 1
+/// status : "started"
 /// payment : 0
 /// pickup_latitude : "33.5138073"
 /// pickup_longitude : "36.2765279"
-/// drop_latitude : "34.8959276"
-/// drop_longitude : "35.8866517"
-/// km : "157.9878979447665"
-/// minutes : "178.13333333333333"
-/// cost : 872273
-/// start_time : null
-/// end_time : null
-/// created_at : "2023-04-05 08:59:48"
-/// updated_at : "2023-04-05 08:59:48"
-/// deleted_at : null
+/// drop_latitude : "36.2021047"
+/// drop_longitude : "37.1342603"
+/// km : "0.0"
+/// minutes : "250.23333333333332"
+/// cost : 103740
+/// start_time : "13:12:22"
+/// end_time : "13:36:23"
+/// created_at : "2023-01-17 16:50:05"
+/// order_time : null
+/// updated_at : "2023-02-05 12:19:49"
+/// deleted_at : "2023-02-05 12:19:49"
+/// first_name : "Isabella"
+/// last_name : "Britt"
+/// phone : "968531420"
 
 class TripsOutcity {
   TripsOutcity({
@@ -490,9 +530,9 @@ class TripsOutcity {
       String? categoryId, 
       dynamic requestType, 
       String? subcategoryId, 
-      String? from, 
-      String? to, 
-      String? direction, 
+      dynamic from, 
+      dynamic to, 
+      dynamic direction, 
       String? date, 
       int? bags, 
       String? time, 
@@ -512,11 +552,15 @@ class TripsOutcity {
       String? km, 
       String? minutes, 
       int? cost, 
-      dynamic startTime, 
-      dynamic endTime, 
+      String? startTime, 
+      String? endTime, 
       String? createdAt, 
+      dynamic orderTime, 
       String? updatedAt, 
-      dynamic deletedAt,}){
+      String? deletedAt, 
+      String? firstName, 
+      String? lastName, 
+      String? phone,}){
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -552,8 +596,12 @@ class TripsOutcity {
     _startTime = startTime;
     _endTime = endTime;
     _createdAt = createdAt;
+    _orderTime = orderTime;
     _updatedAt = updatedAt;
     _deletedAt = deletedAt;
+    _firstName = firstName;
+    _lastName = lastName;
+    _phone = phone;
 }
 
   TripsOutcity.fromJson(dynamic json) {
@@ -592,8 +640,12 @@ class TripsOutcity {
     _startTime = json['start_time'];
     _endTime = json['end_time'];
     _createdAt = json['created_at'];
+    _orderTime = json['order_time'];
     _updatedAt = json['updated_at'];
     _deletedAt = json['deleted_at'];
+    _firstName = json['first_name'];
+    _lastName = json['last_name'];
+    _phone = json['phone'];
   }
   int? _id;
   dynamic _customerId;
@@ -605,9 +657,9 @@ class TripsOutcity {
   String? _categoryId;
   dynamic _requestType;
   String? _subcategoryId;
-  String? _from;
-  String? _to;
-  String? _direction;
+  dynamic _from;
+  dynamic _to;
+  dynamic _direction;
   String? _date;
   int? _bags;
   String? _time;
@@ -627,11 +679,15 @@ class TripsOutcity {
   String? _km;
   String? _minutes;
   int? _cost;
-  dynamic _startTime;
-  dynamic _endTime;
+  String? _startTime;
+  String? _endTime;
   String? _createdAt;
+  dynamic _orderTime;
   String? _updatedAt;
-  dynamic _deletedAt;
+  String? _deletedAt;
+  String? _firstName;
+  String? _lastName;
+  String? _phone;
 TripsOutcity copyWith({  int? id,
   dynamic customerId,
   int? userId,
@@ -642,9 +698,9 @@ TripsOutcity copyWith({  int? id,
   String? categoryId,
   dynamic requestType,
   String? subcategoryId,
-  String? from,
-  String? to,
-  String? direction,
+  dynamic from,
+  dynamic to,
+  dynamic direction,
   String? date,
   int? bags,
   String? time,
@@ -664,11 +720,15 @@ TripsOutcity copyWith({  int? id,
   String? km,
   String? minutes,
   int? cost,
-  dynamic startTime,
-  dynamic endTime,
+  String? startTime,
+  String? endTime,
   String? createdAt,
+  dynamic orderTime,
   String? updatedAt,
-  dynamic deletedAt,
+  String? deletedAt,
+  String? firstName,
+  String? lastName,
+  String? phone,
 }) => TripsOutcity(  id: id ?? _id,
   customerId: customerId ?? _customerId,
   userId: userId ?? _userId,
@@ -704,8 +764,12 @@ TripsOutcity copyWith({  int? id,
   startTime: startTime ?? _startTime,
   endTime: endTime ?? _endTime,
   createdAt: createdAt ?? _createdAt,
+  orderTime: orderTime ?? _orderTime,
   updatedAt: updatedAt ?? _updatedAt,
   deletedAt: deletedAt ?? _deletedAt,
+  firstName: firstName ?? _firstName,
+  lastName: lastName ?? _lastName,
+  phone: phone ?? _phone,
 );
   int? get id => _id;
   dynamic get customerId => _customerId;
@@ -717,9 +781,9 @@ TripsOutcity copyWith({  int? id,
   String? get categoryId => _categoryId;
   dynamic get requestType => _requestType;
   String? get subcategoryId => _subcategoryId;
-  String? get from => _from;
-  String? get to => _to;
-  String? get direction => _direction;
+  dynamic get from => _from;
+  dynamic get to => _to;
+  dynamic get direction => _direction;
   String? get date => _date;
   int? get bags => _bags;
   String? get time => _time;
@@ -739,11 +803,15 @@ TripsOutcity copyWith({  int? id,
   String? get km => _km;
   String? get minutes => _minutes;
   int? get cost => _cost;
-  dynamic get startTime => _startTime;
-  dynamic get endTime => _endTime;
+  String? get startTime => _startTime;
+  String? get endTime => _endTime;
   String? get createdAt => _createdAt;
+  dynamic get orderTime => _orderTime;
   String? get updatedAt => _updatedAt;
-  dynamic get deletedAt => _deletedAt;
+  String? get deletedAt => _deletedAt;
+  String? get firstName => _firstName;
+  String? get lastName => _lastName;
+  String? get phone => _phone;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -782,8 +850,12 @@ TripsOutcity copyWith({  int? id,
     map['start_time'] = _startTime;
     map['end_time'] = _endTime;
     map['created_at'] = _createdAt;
+    map['order_time'] = _orderTime;
     map['updated_at'] = _updatedAt;
     map['deleted_at'] = _deletedAt;
+    map['first_name'] = _firstName;
+    map['last_name'] = _lastName;
+    map['phone'] = _phone;
     return map;
   }
 

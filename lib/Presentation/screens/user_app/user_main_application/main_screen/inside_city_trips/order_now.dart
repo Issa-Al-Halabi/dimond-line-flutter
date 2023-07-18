@@ -76,6 +76,12 @@ class _OrderNowState extends State<OrderNow> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    Loader.hide();
+    super.dispose();
+  }
+
   convertToAddress(double lat, double long) async {
     print(widget.sourceAddress.toString());
     String apiurl =

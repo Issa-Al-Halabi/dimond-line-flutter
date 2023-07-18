@@ -41,7 +41,6 @@ class _MapScreen2State extends State<MapScreen2> {
   List carsLatList = [];
   List carsLngList = [];
 
-
   @override
   void initState() {
     getPer();
@@ -54,6 +53,7 @@ class _MapScreen2State extends State<MapScreen2> {
   void dispose() {
     controllerFrom.dispose();
     controllerTo.dispose();
+      Loader.hide();
     super.dispose();
   }
 
@@ -89,7 +89,8 @@ class _MapScreen2State extends State<MapScreen2> {
       zoom: 10,
     );
     initMainMarker();
-    var creat = await Provider.of<NearestCarsMapProvider>(context, listen: false);
+    var creat =
+        await Provider.of<NearestCarsMapProvider>(context, listen: false);
     getNearestCarsApi(creat);
     if (mounted) {
       setState(() {});
@@ -111,9 +112,10 @@ class _MapScreen2State extends State<MapScreen2> {
               data["results"][0]["address_components"][1]
                   ["long_name"]; // f there is atleast one address
           print("address" + address);
-          if(mounted) setState(() {
-            print(address);
-          });
+          if (mounted)
+            setState(() {
+              print(address);
+            });
         }
       } else {
         print(data["error_message"]);
@@ -134,12 +136,12 @@ class _MapScreen2State extends State<MapScreen2> {
         length = creat.data.data!.length;
         print('------------------');
         print(length);
-          for (int i = 0; i < creat.data.data!.length; i++) {
-            setState(() {
-              carsLatList.add(creat.data.data![i].latitude);
-              carsLngList.add(creat.data.data![i].longitude);
-            });
-          }
+        for (int i = 0; i < creat.data.data!.length; i++) {
+          setState(() {
+            carsLatList.add(creat.data.data![i].latitude);
+            carsLngList.add(creat.data.data![i].longitude);
+          });
+        }
         initMarker();
         Loader.hide();
         setState(() {});
@@ -171,25 +173,23 @@ class _MapScreen2State extends State<MapScreen2> {
   }
 
   void initMarker() async {
-   for (int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
       Uint8List imageData = await getMarker();
       myMarker.add(Marker(
-        markerId: MarkerId('$i'),
-        position: LatLng(
-          double.parse(carsLatList[i]),
-          double.parse(carsLngList[i]),
-        ),
-    // rotation: double.parse(i),
-    rotation: i.toDouble(),
-        // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          icon: BitmapDescriptor.fromBytes(imageData)
-      ));
-      setState(() {
-      });
+          markerId: MarkerId('$i'),
+          position: LatLng(
+            double.parse(carsLatList[i]),
+            double.parse(carsLngList[i]),
+          ),
+          // rotation: double.parse(i),
+          rotation: i.toDouble(),
+          // icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          icon: BitmapDescriptor.fromBytes(imageData)));
+      setState(() {});
     }
   }
 
-  void initMainMarker(){
+  void initMainMarker() {
     myMarker.add(Marker(
       markerId: MarkerId('source'),
       infoWindow: InfoWindow(
@@ -201,8 +201,7 @@ class _MapScreen2State extends State<MapScreen2> {
       onTap: () {
         print('marker tab');
       },
-      icon: BitmapDescriptor.defaultMarkerWithHue(
-          BitmapDescriptor.hueBlue),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
     ));
   }
 
@@ -299,13 +298,13 @@ class _MapScreen2State extends State<MapScreen2> {
                                           ))),
                                       onTap: () async {
                                         Loader.show(context,
-                                            progressIndicator:
-                                                LoaderWidget());
+                                            progressIndicator: LoaderWidget());
                                         convertToAddress(lat, long);
                                         print('address is:');
                                         print(address);
                                         Loader.hide();
-                                        Future.delayed(const Duration(seconds: 1))
+                                        Future.delayed(
+                                                const Duration(seconds: 1))
                                             .then((_) async {
                                           Navigator.pushReplacement(
                                               context,
@@ -347,13 +346,13 @@ class _MapScreen2State extends State<MapScreen2> {
                                           ))),
                                       onTap: () async {
                                         Loader.show(context,
-                                            progressIndicator:
-                                                LoaderWidget());
+                                            progressIndicator: LoaderWidget());
                                         convertToAddress(lat, long);
                                         print('address is:');
                                         print(address);
                                         Loader.hide();
-                                        Future.delayed(const Duration(seconds: 1))
+                                        Future.delayed(
+                                                const Duration(seconds: 1))
                                             .then((_) async {
                                           Navigator.pushReplacement(
                                               context,

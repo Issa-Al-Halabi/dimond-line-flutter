@@ -428,6 +428,37 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                 ),
                                               )
                                             : shimmer(context),
+
+                                        Positioned(
+                                            top: 1.h,
+                                            left: 3.w,
+                                            child: InkWell(
+                                              onTap: (){
+                                                init2();
+                                              },
+                                              child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color:
+                                                      primaryBlue.withOpacity(0.3),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 7,
+                                                      offset: const Offset(0, 0),
+                                                    ),
+                                                  ],
+                                                  borderRadius: BorderRadius.all(
+                                                      Radius.circular(100)),
+                                                  color: backgroundColor,
+                                                ),
+                                                child: Center(
+                                                  child: Icon(Icons.refresh_outlined, color: primaryBlue,
+                                                  size: 30),
+                                                ),
+                                              ),
+                                            )),
                                         Positioned(
                                             bottom: 1.h,
                                             child: Visibility(

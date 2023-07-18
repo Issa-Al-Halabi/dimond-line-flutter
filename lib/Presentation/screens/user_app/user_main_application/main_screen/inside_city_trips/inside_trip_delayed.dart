@@ -83,6 +83,12 @@ class _InsideTripDelayedScreenState extends State<InsideTripDelayedScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    Loader.hide();
+    super.dispose();
+  }
+
   Future<void> getLatAndLong() async {
     _kGooglePlex = CameraPosition(
       target: LatLng(double.parse(widget.delayTripModel.pickupLatitude!),

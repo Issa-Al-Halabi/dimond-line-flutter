@@ -92,6 +92,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    Loader.hide();
+    super.dispose();
+  }
+
   Future<void> getLatAndLong() async {
     _kGooglePlex = CameraPosition(
       target: LatLng(double.parse(widget.momentTripModel.pickupLatitude!),
@@ -620,38 +626,38 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                               onTap: (latlng) {},
                             ),
                           ),
-                          Positioned(
-                            top: 4.h,
-                            right: 1.w,
-                            child: widget.isSecondTrip == true
-                                ? InkWell(
-                                    child: Container(
-                                        width: 50,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: primaryBlue
-                                                    .withOpacity(0.3),
-                                                spreadRadius: 2,
-                                                blurRadius: 7,
-                                                offset: const Offset(0, 0),
-                                              ),
-                                            ],
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(100)),
-                                            color: primaryBlue),
-                                        child: Center(
-                                            child: Icon(
-                                          Icons.compare_arrows_outlined,
-                                          size: 35,
-                                          color: backgroundColor,
-                                        ))),
-                                    onTap: () async {
-                                      navigateToSecondTrip();
-                                    })
-                                : Text(''),
-                          ),
+                          // Positioned(
+                          //   top: 4.h,
+                          //   right: 1.w,
+                          //   child: widget.isSecondTrip == true
+                          //       ? InkWell(
+                          //           child: Container(
+                          //               width: 50,
+                          //               height: 50,
+                          //               decoration: BoxDecoration(
+                          //                   boxShadow: [
+                          //                     BoxShadow(
+                          //                       color: primaryBlue
+                          //                           .withOpacity(0.3),
+                          //                       spreadRadius: 2,
+                          //                       blurRadius: 7,
+                          //                       offset: const Offset(0, 0),
+                          //                     ),
+                          //                   ],
+                          //                   borderRadius: BorderRadius.all(
+                          //                       Radius.circular(100)),
+                          //                   color: primaryBlue),
+                          //               child: Center(
+                          //                   child: Icon(
+                          //                 Icons.compare_arrows_outlined,
+                          //                 size: 35,
+                          //                 color: backgroundColor,
+                          //               ))),
+                          //           onTap: () async {
+                          //             navigateToSecondTrip();
+                          //           })
+                          //       : Text(''),
+                          // ),
                           Positioned(
                               bottom: 0.h,
                               child: StreamBuilder<Map<String, dynamic>>(
@@ -713,6 +719,14 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                         print('your trip didnt accept');
                                         navigateDash();
                                       }
+                                    }
+
+                                    else{
+                                      print('ttttttttttttt');
+                                      print(data);
+                                      String statusDelayed = data['data']['status'];
+                                      print(statusDelayed);
+                                      print(data['data']['id']);
                                     }
 
                                     // else {
