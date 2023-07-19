@@ -76,14 +76,15 @@ class _DriverDashboardState extends State<DriverDashboard> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       var data = await creat.startedTrips();
-      print('data');
-      print(data);
       if (creat.data.error == false) {
         int length = creat.data.data!.length;
+        print('data');
+        print(creat.data.data);
         print('length');
         print(length);
         if(length != 0){
           isTrip = true;
+
           for(int i =0; i< creat.data.data!.length; i++){
             tripId = creat.data.data![i].id.toString();
             status = creat.data.data![i].status!;

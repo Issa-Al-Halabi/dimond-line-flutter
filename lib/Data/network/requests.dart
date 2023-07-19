@@ -12,10 +12,8 @@ import 'package:diamond_line/Data/Models/User_Models/get_user_trips_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/login_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/forget_password_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/get_profile_model.dart';
-import 'package:diamond_line/Data/Models/User_Models/id_register_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/order_tour_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/order_trip_outside_model.dart';
-import 'package:diamond_line/Data/Models/User_Models/passport_number_register_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/send_otp_email_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/send_otp_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/source_destination_delayed_model.dart';
@@ -23,7 +21,6 @@ import 'package:diamond_line/Data/Models/User_Models/source_distenation_model.da
 import 'package:diamond_line/Data/Models/User_Models/trip_out_city_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/update_profile_foreigner_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/update_profile_model.dart';
-import 'package:diamond_line/Data/Models/User_Models/update_profile_passport_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_email_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_model.dart';
 import 'package:http/http.dart';
@@ -46,7 +43,6 @@ import '../Models/User_Models/user_register_model.dart';
 import '../util/request_type.dart';
 import 'network_client.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/io_client.dart';
 
 class AppRequests {
   static network_client client = network_client(Client());
@@ -493,7 +489,6 @@ class AppRequests {
   static Future<SendOtpEmailModel> sendOtpEmailRequest(String email) async {
     print("otp fetch email :  " + email.toString());
     print("SendOtpEmailRequest");
-    bool error;
     final response = await client.request(
         requestType: RequestType.POST,
         path: "api/otp_email",
@@ -2296,6 +2291,14 @@ class AppRequests {
     } else {
       return StartedInsideTripsModel.fromJson(json.decode(response.body));
     }
+  }
+
+  // in domain api
+  static Future inDomainRequest() async {
+    print("inDomainRequest");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? '';
+    print(token);
   }
 
 

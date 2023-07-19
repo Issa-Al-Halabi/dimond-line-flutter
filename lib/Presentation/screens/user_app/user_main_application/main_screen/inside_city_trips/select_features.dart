@@ -103,7 +103,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
       List optionsId,
       String order_time) async {
     _isNetworkAvail = await isNetworkAvailable();
-    Loader.show(context, progressIndicator: LoaderWidget());
+    // Loader.show(context, progressIndicator: LoaderWidget());
     if (_isNetworkAvail) {
       print("There is internet");
       var data = await AppRequests.bookNowRequest(
@@ -121,7 +121,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
           order_time);
       data = json.decode(data);
       if (data["error"] == false) {
-        Loader.hide();
+        // Loader.hide();
         if(mounted)
         setState(() {
           msg = data["message"];
@@ -157,11 +157,11 @@ class _SelectFeaturesState extends State<SelectFeatures> {
           );
         });
       } else {
-        Loader.hide();
+        // Loader.hide();
         setSnackbar(data["message"].toString(), context);
       }
     } else {
-      Loader.hide();
+      // Loader.hide();
       setSnackbar("nointernet".tr(), context);
     }
   }

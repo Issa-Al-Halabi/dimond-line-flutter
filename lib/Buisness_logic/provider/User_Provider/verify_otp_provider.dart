@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:diamond_line/Data/Models/User_Models/send_otp_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_model.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 

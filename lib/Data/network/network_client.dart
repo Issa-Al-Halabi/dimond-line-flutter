@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:diamond_line/Data/util/nothing.dart';
 import 'package:diamond_line/Data/util/request_type.dart';
 import 'package:diamond_line/Data/util/request_type_exception.dart';

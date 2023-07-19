@@ -58,6 +58,7 @@ class _OutDriverMainScreennState extends State<OutDriverMainScreen> {
   Future initShared() async {
     prefs = await SharedPreferences.getInstance();
     deviceNumber = prefs.getString('deviceNumber') ?? '';
+    print('deviceNumber');
     print(deviceNumber);
     deviceNumb = int.parse(deviceNumber);
     print(deviceNumb);
@@ -74,15 +75,15 @@ class _OutDriverMainScreennState extends State<OutDriverMainScreen> {
     cl = await Geolocator.getCurrentPosition().then((value) => value);
     lat = cl.latitude;
     lng = cl.longitude;
-    if (lat != 0.0 || lng != 0.0) {
+    if (lat != 0.0 && lng != 0.0) {
       getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
     } else {
       print('no lat or lng');
       getLatAndLong();
     }
-    if (mounted) {
-      setState(() {});
-    }
+    // if (mounted) {
+    //   setState(() {});
+    // }
   }
 
   /////////////////////////get location api //////////////////////////////////
@@ -92,7 +93,7 @@ class _OutDriverMainScreennState extends State<OutDriverMainScreen> {
       print("There is internet");
       var data = await AppRequests.getLocationRequest(lat, lng, device_id);
       print(data);
-      data = json.decode(data);
+      // data = json.decode(data);
       // if (data["error"] == false) {
       //   if(mounted) {
       //     setState(() {

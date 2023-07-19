@@ -900,6 +900,24 @@ class _TrackingScreenState extends State<TrackingScreen> {
     }
   }
 
+  // bool isInDomain = false;
+  // void checkDistanceToDestination(double currentLatitude,double currentLongitude, double destinationLatitude,double destinationLongitude) async {
+  //   double distance = Geolocator.distanceBetween(
+  //       currentLatitude, currentLongitude, destinationLatitude, destinationLongitude);
+  //   print('my new distance $distance');
+  //
+  //   if (distance <= 4000) {
+  //     isInDomain = true;
+  //     print('<4000');
+  //     print(isInDomain);
+  //     // todo
+  //     inDomainApi();
+  //   }
+  //   else{
+  //     print('not <4000');
+  //   }
+  // }
+
   /////////////////////////trip end api //////////////////////////////////
   Future<void> endTripApi(String trip_id, String end_time, String finalDistance) async {
     _isNetworkAvail = await isNetworkAvailable();
@@ -951,6 +969,14 @@ class _TrackingScreenState extends State<TrackingScreen> {
       setSnackbar("nointernet".tr(), context);
     }
   }
+
+  // ////////////////// in domain api //////////////////////////
+  // Future<void> inDomainApi() async {
+  //   _isNetworkAvail = await isNetworkAvailable();
+  //   if (_isNetworkAvail) {
+  //     await AppRequests.inDomainRequest();
+  //   }
+  // }
 
   Future<bool> isNetworkAvailable() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -1050,8 +1076,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
                             print('=========================');
                             if (data['positions'] != null) {
                               // todo
-                              // if (data['positions'][0]['deviceId'] == deviceNumb) {
-                              if (data['positions'][0]['deviceId'] == 248) {
+                              if (data['positions'][0]['deviceId'] == deviceNumb) {
+                              // if (data['positions'][0]['deviceId'] == 248) {
                                 print('--------------------------------');
                                 lat = data['positions'][0]['latitude'];
                                 lng = data['positions'][0]['longitude'];
@@ -1060,10 +1086,18 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                 updatePolyline();
                                 updateMainPolyline(lat, lng);
                                 //todo
-                                // getLocationApi(
-                                //     lat.toString(),
-                                //     lng.toString(),
-                                //     deviceNumb.toString());
+                                getLocationApi(
+                                    lat.toString(),
+                                    lng.toString(),
+                                    deviceNumb.toString());
+
+                                //todo
+                                // if (isInDomain == false) {
+                                //   // check if its in 4 km to arrive
+                                //   checkDistanceToDestination(lat, lng,
+                                //       double.parse(widget.dropLatitude),
+                                //       double.parse(widget.dropLongitude));
+                                // }
                               }
                             }
                           } else {

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_email_model.dart';
-import 'package:diamond_line/Data/Models/User_Models/verify_otp_model.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 
 class VerifyOtpEmailProvider extends ChangeNotifier {
