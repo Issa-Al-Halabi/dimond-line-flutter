@@ -265,7 +265,11 @@
   "driver arrive" : "وصل السائق",
   "dont let him wait" : "لا تدعه ينتظر",
   "your trip didnt accept" : "لم يتم قبول رحلتك,\nالرجاء المحاولة لاحقا",
-  "There are no requests yet" : "لا يوجد طلبات حتى الآن"
+  "There are no requests yet" : "لا يوجد طلبات حتى الآن",
+  "please_enable_your_location_service_and_try_again" : "الرجاء تفعيل خدمات الموقع ثم إعادة المحاولة",
+  "please_enable_your_location_permission_and_try_again" : "الرجاء اعطاء دايموند لاين صلاحية الوصول لموقع الجهاز ثم إعادة المحاولة",
+  "retry" : "إعادة المحاولة",
+  "please select type" : "الرجاء اختيار نوع الرحلة"
 
 
 }

@@ -160,25 +160,32 @@ class _DriverDashboardState extends State<DriverDashboard> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final differance = DateTime.now().difference(timeback);
-        final isExitWarning = differance >= Duration(seconds: 2);
-        timeback = DateTime.now();
-        if (isExitWarning) {
-          final Message = "Press back agin to Exit".tr();
-          Fluttertoast.showToast(
-              msg: Message,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: white,
-              textColor: primaryBlue,
-              fontSize: 5.sp);
-          return false;
-        } else {
-          Fluttertoast.cancel();
-          SystemNavigator.pop();
-          return true;
-        }
+        // if(widget.index == 2){
+          final differance = DateTime.now().difference(timeback);
+          final isExitWarning = differance >= Duration(seconds: 2);
+          timeback = DateTime.now();
+          if (isExitWarning) {
+            final Message = "Press back agin to Exit".tr();
+            Fluttertoast.showToast(
+                msg: Message,
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: white,
+                textColor: primaryBlue,
+                fontSize: 5.sp);
+            return false;
+          } else {
+            Fluttertoast.cancel();
+            SystemNavigator.pop();
+            return true;
+          }
+        // }
+        // else{
+        //   widget.index = 2;
+        //   setState(() {});
+        //   return false;
+        // }
       },
       child: Scaffold(
         // body: screens[_bottomNavIndex],

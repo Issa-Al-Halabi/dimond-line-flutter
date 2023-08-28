@@ -265,5 +265,9 @@
   "driver arrive" : "driver arrived",
   "dont let him wait" : "don't let him wait",
   "your trip didnt accept" : "Your trip didn't accept,\nPlease try later",
-  "There are no requests yet" : "There are no requests yet"
+  "There are no requests yet" : "There are no requests yet",
+  "please_enable_your_location_service_and_try_again" : "please enable your location service and try again",
+  "please_enable_your_location_permission_and_try_again" : "please give Diamond Line location access permission to your device and try again",
+  "retry" : "Retry",
+  "please select type" : "please select type of trip"
 }

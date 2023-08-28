@@ -520,13 +520,16 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
 
   // ecash
   Future<void> createPaymentEcash(String paymentId) async {
-    String baseUrl = 'https://checkout.ecash-pay.co';
-    String MerchantId = '4K1L3P';
-    String MerchantSecret = 'OX7JBF77DJECOVTA5R9HIZG019UUAHP3DOLUEM3U5IA0P1UXOQIYWCGE2Q7EG1NS';
-    String TerminalKey = 'LX94AO';
+    // String baseUrl = 'https://checkout.ecash-pay.co';
+    String baseUrl = 'https://checkout.ecash-pay.com';
+    // String MerchantId = '4K1L3P';
+    String MerchantId = 'T26REL';
+    // String MerchantSecret = 'OX7JBF77DJECOVTA5R9HIZG019UUAHP3DOLUEM3U5IA0P1UXOQIYWCGE2Q7EG1NS';
+    String MerchantSecret = '6VFDA69N466ZZ8KAOVO081J2VG0CKG8BSRLUN3NIFAB13PU3S50P6VGBRPG3A3A8';
+    // String TerminalKey = 'LX94AO';
+    String TerminalKey = 'ZPALC4';
     // String Amount = '1500';
-    String Amount = '3666';
-    // String Amount = amountController.text;
+    String Amount = amountController.text;
     String paymentRef = paymentId;
     //TODO
     String data = '$MerchantId$MerchantSecret$Amount$paymentRef';
@@ -558,58 +561,6 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                 total: Amount,
                 VerificationCode: VerificationCode)));
   }
-
-// // e cash
-//   Future<void> createPaymentEcash(String paymentId) async {
-//     // test
-//     String baseUrl = 'https://checkout.ecash-pay.co';
-//
-//     // test
-//     // String MerchantId = 'IXZM1E';
-//     String MerchantId = '4K1L3P';
-//
-//     // test
-//     String MerchantSecret = 'OX7JBF77DJECOVTA5R9HIZG019UUAHP3DOLUEM3U5IA0P1UXOQIYWCGE2Q7EG1NS';
-//
-//     // test
-//     // String TerminalKey = 'GB97ST';
-//     // String TerminalKey = 'LX94AO';
-//     String TerminalKey = 'LX94AO';
-//
-//     // test
-//     //String Amount = '1500';
-//     String Amount = amountController.text.toString();
-//
-//     String paymentRef = paymentId;
-//
-//     String CallBackUrl =
-//         "https%3A%2F%2Fhadyati.sy%2Fapp%2Fv1%2Fapi%2Fecash_payment";
-//     String RedirectUrl = "https%3A%2F%2Fhadyati.sy%2Fhadyati%2F";
-//
-//     String data = '$MerchantId$MerchantSecret$Amount$paymentRef';
-//     String VerificationCode = generateMd5(data);
-//     print('VerificationCode after crypto ' + VerificationCode);
-//     VerificationCode = VerificationCode.toUpperCase();
-//     print('VerificationCode after crypto and uppercase ' + VerificationCode);
-//
-//     // String url = '$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN/$paymentRef/$RedirectUrl/$CallBackUrl';
-//     // String url ='$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN/$paymentRef';
-//     String url ='$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN';
-//     // String url = '$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/3000.00/EN';
-//
-//
-//     // String url = 'https://checkout.ecash-pay.co/Checkout/Card/GB97ST/IXZM1E/744F03E5FE93EC8C7302DAD09E823701/SYP/1000.00/';
-//     print('this url\n');
-//     print(url);
-//     Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//             builder: (BuildContext context) => EcashWebView(
-//                 url: url,
-//                 tripId: paymentRef,
-//                 total: Amount,
-//                 VerificationCode: VerificationCode)));
-//   }
 
   void getDialog() {
     AwesomeDialog(

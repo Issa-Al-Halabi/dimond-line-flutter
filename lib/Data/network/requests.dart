@@ -1940,6 +1940,10 @@ class AppRequests {
     String token = prefs.getString('token') ?? '';
     user_id = prefs.getString('user_id') ?? '';
     print(token);
+    print('methodmeeeeeeee');
+    print(method);
+    print(amount);
+    print(user_id);
     print("start send");
     var req =
     http.MultipartRequest('POST', Uri.parse('$BaseUrl/api/charge-wallet'));

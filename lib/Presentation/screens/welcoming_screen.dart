@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/inside_trip_delayed.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/inside_trip_moment.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_registration/are_you.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:diamond_line/Presentation/Screens/landing_page.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import '../../Buisness_logic/provider/User_Provider/init_user_trips_provider.dar
 import '../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Functions/helper.dart';
+import '../widgets/location_service_dialog.dart';
 import 'driver_app/driver_main_application/driver_main_screen/driver_dashboard.dart';
 import 'driver_app/driver_main_application/driver_main_screen/tracking_screen.dart';
 import 'user_app/user_main_application/main_screen/user_dashboard.dart';
@@ -88,11 +90,12 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
   void initState() {
     initShared();
     getVersion();
-    getPer();
+    // getPer();
+    CheckLocationServicesInDevice();
     // requestLocationPermission(context);
     // getTrips();
     super.initState();
-    startTimer();
+    // startTimer();
   }
 
   late PermissionStatus status;
@@ -227,6 +230,38 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
+    }
+  }
+
+  bool _serviceEnabled = false;
+  Future<void> CheckLocationServicesInDevice() async {
+    _serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (_serviceEnabled) {
+      LocationPermission permissionStatus = await Geolocator.requestPermission();
+      if (permissionStatus == LocationPermission.always || permissionStatus == LocationPermission.whileInUse) {
+        // Position _locationData = await Geolocator.getCurrentPosition();
+        startTimer();
+      }
+      else if (permissionStatus == LocationPermission.denied || permissionStatus == LocationPermission.deniedForever) {
+        LocationServiceDialog(
+          context,
+          onRetry: () {
+            CheckLocationServicesInDevice();
+          },
+          onClose: () {  },
+          title: "please_enable_your_location_permission_and_try_again".tr(),
+        );
+      }
+    } else {
+      print('elseeee');
+      LocationServiceDialog(
+        context,
+        onRetry: () {
+          CheckLocationServicesInDevice();
+        },
+        onClose: () {},
+        title: "please_enable_your_location_service_and_try_again".tr(),
+      );
     }
   }
 

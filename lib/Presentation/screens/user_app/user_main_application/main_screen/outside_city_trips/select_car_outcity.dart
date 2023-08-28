@@ -388,63 +388,68 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                     h: 6.h,
                                     w: 50.w,
                                     onTap: () async {
-                                      if (isAccept == true &&
-                                          isOrdered == false) {
-                                        print('call api cancel');
-                                        print(tripId);
-                                        await cancelTrip(tripId);
-                                      } else {
-                                        print(widget.fromLat!);
-                                        print(widget.fromLon!);
-                                        print(widget.toLat!);
-                                        print(widget.toLon!);
-                                        print(widget.categoryId);
-                                        print(widget.subCategoryId);
-                                        print(widget.distance!);
-                                        print(widget.timeOfTrip!);
-                                        print(oneVechileId);
-                                        print(widget.time);
-                                        print(widget.date);
-                                        print(widget.bags);
-                                        print(widget.seats);
-                                        print('********');
-                                        print(orderTypeId);
-                                        var creat = await Provider.of<
-                                                TripOutCityProvider>(context,
-                                            listen: false);
-                                        tripOutcityApi(
-                                            widget.fromLat!,
-                                            widget.fromLon!,
-                                            widget.toLat!,
-                                            widget.toLon!,
-                                            widget.categoryId,
-                                            widget.subCategoryId,
-                                            widget.distance!,
-                                            widget.timeOfTrip!,
-                                            oneVechileId,
-                                            widget.time,
-                                            widget.date,
-                                            widget.bags,
-                                            widget.seats,
-                                            orderTypeId,
-                                            addressFromMarker,
-                                            addressToMarker,
-                                            creat);
-                                        print(isAccept);
-                                        setState(() {
-                                          isAccept = true;
+                                      if(orderTypeId ==''){
+                                        setSnackbar('please select type'.tr(), context);
+                                      }
+                                      else{
+                                        if (isAccept == true &&
+                                            isOrdered == false) {
+                                          print('call api cancel');
+                                          print(tripId);
+                                          await cancelTrip(tripId);
+                                        } else {
+                                          print(widget.fromLat!);
+                                          print(widget.fromLon!);
+                                          print(widget.toLat!);
+                                          print(widget.toLon!);
+                                          print(widget.categoryId);
+                                          print(widget.subCategoryId);
+                                          print(widget.distance!);
+                                          print(widget.timeOfTrip!);
+                                          print(oneVechileId);
+                                          print(widget.time);
+                                          print(widget.date);
+                                          print(widget.bags);
+                                          print(widget.seats);
+                                          print('********');
+                                          print(orderTypeId);
+                                          var creat = await Provider.of<
+                                              TripOutCityProvider>(context,
+                                              listen: false);
+                                          tripOutcityApi(
+                                              widget.fromLat!,
+                                              widget.fromLon!,
+                                              widget.toLat!,
+                                              widget.toLon!,
+                                              widget.categoryId,
+                                              widget.subCategoryId,
+                                              widget.distance!,
+                                              widget.timeOfTrip!,
+                                              oneVechileId,
+                                              widget.time,
+                                              widget.date,
+                                              widget.bags,
+                                              widget.seats,
+                                              orderTypeId,
+                                              addressFromMarker,
+                                              addressToMarker,
+                                              creat);
                                           print(isAccept);
-                                        });
-                                        Timer timer = Timer.periodic(
-                                            // Duration(seconds: 20), (timer) {
-                                            Duration(hours: 24), (timer) {
                                           setState(() {
-                                            isOrdered = true;
+                                            isAccept = true;
                                             print(isAccept);
-                                            print(isOrdered);
-                                            timer.cancel();
                                           });
-                                        });
+                                          Timer timer = Timer.periodic(
+                                            // Duration(seconds: 20), (timer) {
+                                              Duration(hours: 24), (timer) {
+                                            setState(() {
+                                              isOrdered = true;
+                                              print(isAccept);
+                                              print(isOrdered);
+                                              timer.cancel();
+                                            });
+                                          });
+                                        }
                                       }
                                     }),
                               ),

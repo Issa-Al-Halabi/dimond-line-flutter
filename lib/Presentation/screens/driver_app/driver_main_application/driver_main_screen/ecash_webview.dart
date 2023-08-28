@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/driver_dashboard.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -13,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../../Buisness_logic/provider/Driver_Provider/check_payment_status_provider.dart';
 import '../../../../../Data/network/requests.dart';
-import '../../../../Functions/helper.dart';
 
 class EcashWebView extends StatefulWidget {
   EcashWebView(
@@ -41,8 +41,8 @@ class _EcashWebViewState extends State<EcashWebView> {
   String typeOfDriver = '';
   late SharedPreferences prefs;
 
-  @override
   void initState() {
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
     super.initState();
   }
 
@@ -55,6 +55,7 @@ class _EcashWebViewState extends State<EcashWebView> {
 
   @override
   void dispose() {
+    Loader.hide();
     super.dispose();
   }
 
@@ -126,7 +127,7 @@ class _EcashWebViewState extends State<EcashWebView> {
             );
           }
         } else {
-          setSnackbar('Payment Failed Please try again'.tr(), context);
+          // setSnackbar('Payment Failed Please try again'.tr(), context);
           deletePaymentIdApi();
         }
         setState(() {});
@@ -143,11 +144,11 @@ class _EcashWebViewState extends State<EcashWebView> {
   Future<void> deletePaymentIdApi() async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
-      Loader.show(context, progressIndicator: LoaderWidget());
+      // Loader.show(context, progressIndicator: LoaderWidget());
       var data = await AppRequests.deletePaymentIdRequest(widget.paymentId);
       data = json.decode(data);
       if (data["error"] == false) {
-        Loader.hide();
+        // Loader.hide();
         setState(() {
           print("delete");
           if (typeOfDriver == 'driver') {
@@ -199,7 +200,7 @@ class _EcashWebViewState extends State<EcashWebView> {
           }
         });
       } else {
-        Loader.hide();
+        // Loader.hide();
         // setSnackbar(data["message"].toString(), context);
       }
     } else {
@@ -231,6 +232,9 @@ class _EcashWebViewState extends State<EcashWebView> {
   }
 
   Future<bool> onWillPop() async {
+    if (Loader.isShown == true) {
+      Loader.hide();
+    }
     final differance = DateTime.now().difference(currentBackPressTime);
     final isExitWarning = differance >= Duration(seconds: 2);
     currentBackPressTime = DateTime.now();
@@ -247,19 +251,6 @@ class _EcashWebViewState extends State<EcashWebView> {
       );
       return false;
     } else {
-      // if (res == 'https://checkout.ecash-pay.co/Checkout/Card/RXUFG8/1SVIFW/${widget.VerificationCode}/SYP/${widget.total}/') {
-      //   print('88************ return to merchant');
-      //   setSnackbar(
-      //       'please enter on return to merchant button to continue payment',
-      //       context);
-      //   return false;
-      // } else {
-      //   print('delete order');
-      //   deletePaymentIdApi();
-      //   Fluttertoast.cancel();
-      //   return true;
-      // }
-
       var creat = await Provider.of<CheckPaymentStatusProvider>(context, listen: false);
       checkPayment(creat);
       return false;
@@ -268,48 +259,27 @@ class _EcashWebViewState extends State<EcashWebView> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: willPopLoader,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Image.asset(
-            'assets/images/logo.png',
-            height: 40,
-          ),
-          leadingWidth: 110,
-          centerTitle: true,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Image.asset(
+          'assets/images/logo.png',
+          height: 40,
         ),
-        body: WillPopScope(
-          onWillPop: onWillPop,
-          child: Column(
-            children: [
-              Expanded(
-                  child: WebView(
-                key: _key,
-                javascriptMode: JavascriptMode.unrestricted,
-                initialUrl: widget.url,
-                // initialUrl: Uri.encodeFull(widget.url),
-                // navigationDelegate: (request) async {
-                  // res = request.url;
-                  // print('request.url' + request.url);
-                  // if (request.url == "https://hadyati.sy/hadyati/") {
-                  //   print('************ hadyati webview');
-                  //   // var creat = await Provider.of<EcashPaymentStatusProvider>(context, listen: false);
-                  //   // checkPayment(creat);
-                  // }
-                  // else if (request.url == "https://return.sy/hadyati/") {
-                  //   print('************ return to merchant');
-                  //   setSnackbar(
-                  //       'please enter on return to merchant button to continue payment',
-                  //       context);
-                  // }
-                  // setSnackbar('please enter on return to merchant button to continue payment', context);
-                  // return NavigationDecision.navigate;
-                // },
-              ))
-            ],
-          ),
+        leadingWidth: 110,
+        centerTitle: true,
+      ),
+      body: WillPopScope(
+        onWillPop: onWillPop,
+        child: Column(
+          children: [
+            Expanded(
+                child: WebView(
+              key: _key,
+              javascriptMode: JavascriptMode.unrestricted,
+              initialUrl: widget.url,
+            ))
+          ],
         ),
       ),
     );
