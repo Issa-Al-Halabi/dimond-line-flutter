@@ -363,23 +363,23 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
 
 
 
-                                      // // TODO
-                                      // RadioListTile(
-                                      //   title: myText(
-                                      //     text: "ecash".tr(),
-                                      //     fontSize: 5.sp,
-                                      //     color: primaryBlue,
-                                      //   ),
-                                      //   value: "ecash",
-                                      //   groupValue: type,
-                                      //   activeColor: primaryBlue,
-                                      //   onChanged: (value) {
-                                      //     setState(() {
-                                      //       // type = "ecash".tr();
-                                      //       type = "ecash";
-                                      //     });
-                                      //   },
-                                      // ),
+                                      // TODO
+                                      RadioListTile(
+                                        title: myText(
+                                          text: "ecash".tr(),
+                                          fontSize: 5.sp,
+                                          color: primaryBlue,
+                                        ),
+                                        value: "ecash",
+                                        groupValue: type,
+                                        activeColor: primaryBlue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            // type = "ecash".tr();
+                                            type = "ecash";
+                                          });
+                                        },
+                                      ),
                                       RadioListTile(
                                         title: myText(
                                           text: "transfer".tr(),
@@ -469,7 +469,21 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                                   //   // widget.tripId
                                                   // );
                                                 } else if (type == 'transfer') {
-                                                  getDialog();
+                                                  // getDialog();
+
+                                                    var im = await picker.pickImage(source: ImageSource.gallery);
+                                                    if (im != null) {
+                                                      setState(() {
+                                                        imageFile = File(im.path);
+                                                      });
+                                                      print(imageFile);
+                                                      var creat = Provider.of<ChargeWalletProvider>(context,
+                                                          listen: false);
+                                                      chargeWalletTransferApi(
+                                                          type, amountController.text, imageFile!, creat);
+                                                    } else {
+                                                      setSnackbar('please select image'.tr(), context);
+                                                    }
                                                 }
                                                 // else {
                                                 //   var creat =

@@ -52,11 +52,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    initBoolean();
     phoneController = TextEditingController();
     passwordController = TextEditingController();
     termsApi();
     initShared();
     super.initState();
+  }
+
+  initBoolean(){
+    totalAgree = false;
+    isAgree = false;
+    newValue = false;
   }
 
 

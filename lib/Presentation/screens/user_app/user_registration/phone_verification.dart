@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Presentation/screens/driver_app/driver_registration/driver_register.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/loader_widget.dart';
@@ -17,13 +18,17 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../constants.dart';
 import '../../../Functions/helper.dart';
+import '../../driver_app/driver_main_application/driver_main_screen/driver_dashboard.dart';
 import '../../driver_app/driver_registration/driver_login.dart';
 import 'forget_password.dart';
 
-
 class PhoneVerification extends StatefulWidget {
-  PhoneVerification({required this.phone, required this.code,
-    this.isDriver = false, this.isFromForgetPass = false, Key? key})
+  PhoneVerification(
+      {required this.phone,
+      required this.code,
+      this.isDriver = false,
+      this.isFromForgetPass = false,
+      Key? key})
       : super(key: key);
   String phone, code;
   bool isDriver;
@@ -55,9 +60,9 @@ class _PhoneVerificationState extends State<PhoneVerification> {
       // isClickable = true;
       Future.delayed(const Duration(seconds: 60)).then((_) async {
         // isClickable= false;
-        isClickable= true;
+        isClickable = true;
       });
-      });
+    });
     super.initState();
   }
 
@@ -81,55 +86,187 @@ class _PhoneVerificationState extends State<PhoneVerification> {
         Loader.hide();
         setState(() {
           Future.delayed(const Duration(seconds: 1)).then((_) async {
-            if(widget.isFromForgetPass == false){
-              Navigator.of(context).push(
-                PageRouteBuilder(
-                  pageBuilder: (BuildContext context, Animation<double> animation,
-                      Animation<double> secondaryAnimation) {
-                    return Registration();
-                  },
-                  transitionsBuilder: (BuildContext context,
-                      Animation<double> animation,
-                      Animation<double> secondaryAnimation,
-                      Widget child) {
-                    return Align(
-                      child: SizeTransition(
-                        sizeFactor: animation,
-                        child: child,
-                      ),
-                    );
-                  },
-                  transitionDuration: Duration(milliseconds: 500),
-                ),
-              );
-            }
-            else {
-              Navigator.of(context).push(
-                PageRouteBuilder(
-                  pageBuilder: (BuildContext context,
-                      Animation<double> animation,
-                      Animation<double> secondaryAnimation) {
-                    // return DriverLogin();
-                    return ForgetPassword(
-                      emailOrPhone: widget.phone,
-                      title: 'forget',
-                      isDriver: widget.isDriver == true ? true : false,
-                    );
-                  },
-                  transitionsBuilder: (BuildContext context,
-                      Animation<double> animation,
-                      Animation<double> secondaryAnimation,
-                      Widget child) {
-                    return Align(
-                      child: SizeTransition(
-                        sizeFactor: animation,
-                        child: child,
-                      ),
-                    );
-                  },
-                  transitionDuration: Duration(milliseconds: 500),
-                ),
-              );
+            // if(widget.isFromForgetPass == false){
+            //   Navigator.of(context).push(
+            //     PageRouteBuilder(
+            //       pageBuilder: (BuildContext context, Animation<double> animation,
+            //           Animation<double> secondaryAnimation) {
+            //         return Registration();
+            //       },
+            //       transitionsBuilder: (BuildContext context,
+            //           Animation<double> animation,
+            //           Animation<double> secondaryAnimation,
+            //           Widget child) {
+            //         return Align(
+            //           child: SizeTransition(
+            //             sizeFactor: animation,
+            //             child: child,
+            //           ),
+            //         );
+            //       },
+            //       transitionDuration: Duration(milliseconds: 500),
+            //     ),
+            //   );
+            // }
+            // else {
+            //   Navigator.of(context).push(
+            //     PageRouteBuilder(
+            //       pageBuilder: (BuildContext context,
+            //           Animation<double> animation,
+            //           Animation<double> secondaryAnimation) {
+            //         // return DriverLogin();
+            //         return ForgetPassword(
+            //           emailOrPhone: widget.phone,
+            //           title: 'forget',
+            //           isDriver: widget.isDriver == true ? true : false,
+            //         );
+            //       },
+            //       transitionsBuilder: (BuildContext context,
+            //           Animation<double> animation,
+            //           Animation<double> secondaryAnimation,
+            //           Widget child) {
+            //         return Align(
+            //           child: SizeTransition(
+            //             sizeFactor: animation,
+            //             child: child,
+            //           ),
+            //         );
+            //       },
+            //       transitionDuration: Duration(milliseconds: 500),
+            //     ),
+            //   );
+            // }
+
+            if (widget.isDriver == true) {
+              if (widget.isFromForgetPass == false) {
+                if (typeOfDriver == 'external_driver') {
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) {
+                        return DriverDashboard(
+                          driverType: 'external_driver',
+                        );
+                      },
+                      transitionsBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation,
+                          Widget child) {
+                        return Align(
+                          child: SizeTransition(
+                            sizeFactor: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      transitionDuration: Duration(milliseconds: 500),
+                    ),
+                  );
+                } else {
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation) {
+                        return DriverDashboard(
+                          driverType: 'driver',
+                        );
+                      },
+                      transitionsBuilder: (BuildContext context,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation,
+                          Widget child) {
+                        return Align(
+                          child: SizeTransition(
+                            sizeFactor: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                      transitionDuration: Duration(milliseconds: 500),
+                    ),
+                  );
+                }
+              } else {
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    pageBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation) {
+                      // return DriverLogin();
+                      return ForgetPassword(
+                        emailOrPhone: widget.phone,
+                        title: 'forget',
+                        isDriver: widget.isDriver == true ? true : false,
+                      );
+                    },
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      return Align(
+                        child: SizeTransition(
+                          sizeFactor: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    transitionDuration: Duration(milliseconds: 500),
+                  ),
+                );
+              }
+            } else {
+              if (widget.isFromForgetPass == false) {
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    pageBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation) {
+                      return Registration();
+                    },
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      return Align(
+                        child: SizeTransition(
+                          sizeFactor: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    transitionDuration: Duration(milliseconds: 500),
+                  ),
+                );
+              } else {
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    pageBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation) {
+                      // return DriverLogin();
+                      return ForgetPassword(
+                        emailOrPhone: widget.phone,
+                        title: 'forget',
+                        isDriver: widget.isDriver == true ? true : false,
+                      );
+                    },
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      return Align(
+                        child: SizeTransition(
+                          sizeFactor: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    transitionDuration: Duration(milliseconds: 500),
+                  ),
+                );
+              }
             }
           });
         });
@@ -148,8 +285,10 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     if (_isNetworkAvail) {
       print("There is internet");
       Loader.show(context, progressIndicator: LoaderWidget());
-      await creat.getSendOtp(phone, widget. isFromForgetPass == true ? 'forget_password' : 'sign_up',
-      widget.isDriver == true ? false : true);
+      await creat.getSendOtp(
+          phone,
+          widget.isFromForgetPass == true ? 'forget_password' : 'sign_up',
+          widget.isDriver == true ? false : true);
       if (creat.data.error == false) {
         Loader.hide();
         setSnackbar("sendotpsuccess".tr(), context);
@@ -158,7 +297,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
         setState(() {
           isClickable = false;
           Future.delayed(const Duration(seconds: 60)).then((_) async {
-            isClickable= true;
+            isClickable = true;
           });
           verifyUserResend(creat.data.data!.code.toString());
         });
@@ -168,7 +307,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
         setState(() {
           isClickable = false;
           Future.delayed(const Duration(seconds: 60)).then((_) async {
-            isClickable= true;
+            isClickable = true;
           });
         });
       }
@@ -202,7 +341,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
 
   void verifyUser() async {
     ////////////////mtn
-    String msg =" The code for the Diamond line app is";
+    String msg = " The code for the Diamond line app is";
     try {
       String phone = '963' + widget.phone.toString();
       print(phone);
@@ -216,7 +355,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
 
   void verifyUserResend(String code) async {
     ////////////////mtn
-    String msg =" The code for the Diamond line app is";
+    String msg = " The code for the Diamond line app is";
     try {
       String phone = '963' + widget.phone.toString();
       print('resend');
@@ -228,7 +367,6 @@ class _PhoneVerificationState extends State<PhoneVerification> {
       setSnackbar('somethingMSg'.tr(), context);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +387,8 @@ class _PhoneVerificationState extends State<PhoneVerification> {
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)),
                 color: backgroundColor,
               ),
               child: SingleChildScrollView(
@@ -295,12 +434,11 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     SizedBox(height: 2.h),
                     TextButton(
                         onPressed: () {
-                          if(isClickable == true){
+                          if (isClickable == true) {
                             var creat2 = Provider.of<SendOtpProvider>(context,
                                 listen: false);
                             resendOtp(widget.phone, creat2);
-                          }
-                          else{
+                          } else {
                             setSnackbar('please wait 60 s'.tr(), context);
                           }
                         },
