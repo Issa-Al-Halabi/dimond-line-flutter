@@ -32,8 +32,6 @@ class OutDriverMainScreen extends StatefulWidget {
 }
 
 class _OutDriverMainScreennState extends State<OutDriverMainScreen> {
-  final picker = ImagePicker();
-  File? imageFile;
   DateTime timeback = DateTime.now();
   bool _isNetworkAvail = true;
   String msg = '';

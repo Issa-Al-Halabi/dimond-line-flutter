@@ -33,8 +33,6 @@ class _InDriverMainScreenState extends State<InDriverMainScreen> {
   String msg = '';
   bool isPending = false;
   late final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  final picker = ImagePicker();
-  File? imageFile;
   double lat = 0.0;
   double lng = 0.0;
   late Position cl;

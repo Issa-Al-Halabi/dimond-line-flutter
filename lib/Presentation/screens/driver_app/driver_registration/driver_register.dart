@@ -1,7 +1,10 @@
 import 'dart:convert';
+// import 'dart:html';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../Buisness_logic/provider/User_Provider/send_otp_provider.dart';
 import '../../../widgets/loader_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -502,17 +505,66 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.idCardImage = imageTemp;
-                            idCardStr = idCardImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
+                          // // Future<bool> isAcceptPermission = requestGalleryPermission();
+                          // // if(isAcceptPermission == true){
+                          // // if (await Permission.photos.request().isGranted) {
+                          //
+                          // // if (Platform.isAndroid) {
+                          //   final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          //
+                          //   if (androidInfo.version.sdkInt! <= 32) {
+                          //     /// use [Permissions.storage.status]
+                          //     var result = await Permission.storage.request();
+                          //   }  else {
+                          //     /// use [Permissions.photos.status]
+                          //     result = await Permission.photos.request();
+                          //   }
+                          // // }
+
+
+                          bool isAndroid13 = false;
+                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          if (androidInfo.version.sdkInt! <= 32) {
+                            isAndroid13 = false;
+                          }  else {
+                            isAndroid13 = true;
+                          }
+                            var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                            if (res) {
+                              final imageFile = await ImagePicker()
+                                  .pickImage(source: ImageSource.gallery);
+                              if (imageFile == null) return;
+                              final imageTemp = File(imageFile.path);
+                              setState(() {
+                                this.idCardImage = imageTemp;
+                                idCardStr = idCardImage!.path
+                                    .split('/')
+                                    .last
+                                    .substring(0, 15);
+                              });
+                            }
+                            else{
+                              showWarningGalleryDialog(context);
+                            }
+
+
+                          // if (await Permission.storage.request().isGranted) {
+                          //   final imageFile = await ImagePicker()
+                          //       .pickImage(source: ImageSource.gallery);
+                          //   if (imageFile == null) return;
+                          //   final imageTemp = File(imageFile.path);
+                          //   setState(() {
+                          //     this.idCardImage = imageTemp;
+                          //     idCardStr = idCardImage!.path
+                          //         .split('/')
+                          //         .last
+                          //         .substring(0, 15);
+                          //   });
+                          // }
+                          // else{
+                          //   showWarningGalleryDialog(context);
+                          //   print('ddddddddd');
+                          // }
                         },
                         textColor: grey,
                         color: white,
@@ -527,7 +579,15 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
+                          bool isAndroid13 = false;
+                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          if (androidInfo.version.sdkInt! <= 32) {
+                            isAndroid13 = false;
+                          }  else {
+                            isAndroid13 = true;
+                          }
+                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                          if (res) {   final imageFile = await ImagePicker()
                               .pickImage(source: ImageSource.gallery);
                           if (imageFile == null) return;
                           final imageTemp = File(imageFile.path);
@@ -536,6 +596,11 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                             carImgStr =
                                 CarImage!.path.split('/').last.substring(0, 15);
                           });
+                          }
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
+
                         },
                         textColor: grey,
                         color: white,
@@ -550,7 +615,15 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
+                          bool isAndroid13 = false;
+                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          if (androidInfo.version.sdkInt! <= 32) {
+                            isAndroid13 = false;
+                          }  else {
+                            isAndroid13 = true;
+                          }
+                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                          if (res) {final imageFile = await ImagePicker()
                               .pickImage(source: ImageSource.gallery);
                           if (imageFile == null) return;
                           final imageTemp = File(imageFile.path);
@@ -561,6 +634,11 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                                 .last
                                 .substring(0, 15);
                           });
+                          }
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
+
                         },
                         textColor: grey,
                         color: white,
@@ -575,7 +653,15 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
+                          bool isAndroid13 = false;
+                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          if (androidInfo.version.sdkInt! <= 32) {
+                            isAndroid13 = false;
+                          }  else {
+                            isAndroid13 = true;
+                          }
+                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                          if (res) {  final imageFile = await ImagePicker()
                               .pickImage(source: ImageSource.gallery);
                           if (imageFile == null) return;
                           final imageTemp = File(imageFile.path);
@@ -586,6 +672,11 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                                 .last
                                 .substring(0, 15);
                           });
+                          }
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
+
                         },
                         textColor: grey,
                         color: white,
@@ -600,7 +691,15 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
+                          bool isAndroid13 = false;
+                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          if (androidInfo.version.sdkInt! <= 32) {
+                            isAndroid13 = false;
+                          }  else {
+                            isAndroid13 = true;
+                          }
+                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                          if (res) {final imageFile = await ImagePicker()
                               .pickImage(source: ImageSource.gallery);
                           if (imageFile == null) return;
                           final imageTemp = File(imageFile.path);
@@ -611,6 +710,10 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                                 .last
                                 .substring(0, 15);
                           });
+                          }
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
                         },
                         textColor: grey,
                         color: white,

@@ -10,6 +10,7 @@ import 'package:diamond_line/Buisness_logic/provider/User_Provider/update_profil
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl_standalone.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './Presentation/Router/app_router.dart';
 import 'Buisness_logic/provider/Driver_Provider/charge_wallet_provider.dart';
@@ -171,8 +172,21 @@ void main() async {
   ]);
 
   final deviceLocale = await getDeviceLocale();
-  runApp(
-    EasyLocalization(
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // await Permission.notification.request();
+  // await Permission.notification.isDenied.then((value) {
+  //   if (value) {
+  //     Permission.notification.request();
+  //   }
+  // });
+
+  PermissionStatus status = await Permission.notification.status;
+  if (!status.isGranted) {
+    // The permission is not granted
+    await Permission.notification.request();
+  }
+
+  runApp(EasyLocalization(
       // supportedLocales: [Locale('en', 'US'), Locale('ar', 'AR'),],
       supportedLocales: [
         Locale('en', 'US'),
@@ -186,8 +200,7 @@ void main() async {
       // startLocale: Locale('ar'),
       useOnlyLangCode: true,
       child: MyApp(),
-    ),
-  );
+    ),);
 
   // runApp(
   //   EasyLocalization(

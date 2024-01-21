@@ -269,7 +269,6 @@
   "please_enable_your_location_service_and_try_again" : "الرجاء تفعيل خدمات الموقع ثم إعادة المحاولة",
   "please_enable_your_location_permission_and_try_again" : "الرجاء اعطاء دايموند لاين صلاحية الوصول لموقع الجهاز ثم إعادة المحاولة",
   "retry" : "إعادة المحاولة",
-  "please select type" : "الرجاء اختيار نوع الرحلة"
-
-
+  "please select type" : "الرجاء اختيار نوع الرحلة",
+  "enable gallery" : "يجب اعطاء اذن للتطبيق للوصول الى المعرض من الاعدادات للاستمرار"
 }

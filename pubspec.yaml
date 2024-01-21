@@ -70,6 +70,7 @@ dependencies:
   socket_io_client:
   pusher_channels_flutter:
   permission_handler:
+  device_info_plus:
   #  modal_progress_hud_nsn:
   #  sms_autofill:
   #  country_code_picker:
