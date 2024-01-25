@@ -1,7 +1,10 @@
 import 'dart:convert';
+// import 'dart:html';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../Buisness_logic/provider/User_Provider/send_otp_provider.dart';
 import '../../../widgets/loader_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -502,17 +505,52 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.idCardImage = imageTemp;
-                            idCardStr = idCardImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
+                          // // Future<bool> isAcceptPermission = requestGalleryPermission();
+                          // // if(isAcceptPermission == true){
+                          // // if (await Permission.photos.request().isGranted) {
+                          //
+                          // // if (Platform.isAndroid) {
+                          //   final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          //
+                          //   if (androidInfo.version.sdkInt! <= 32) {
+                          //     /// use [Permissions.storage.status]
+                          //     var result = await Permission.storage.request();
+                          //   }  else {
+                          //     /// use [Permissions.photos.status]
+                          //     result = await Permission.photos.request();
+                          //   }
+                          // // }
+
+                          if (await Permission.storage.request().isGranted) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.idCardImage = imageTemp;
+                              idCardStr = idCardImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });
+                          }
+                          else{
+                            showWarningGalleryDialog(context);
+                            print('ddddddddd');
+                          }
+
+
+                          // final imageFile = await ImagePicker()
+                          //     .pickImage(source: ImageSource.gallery);
+                          // if (imageFile == null) return;
+                          // final imageTemp = File(imageFile.path);
+                          // setState(() {
+                          //   this.idCardImage = imageTemp;
+                          //   idCardStr = idCardImage!.path
+                          //       .split('/')
+                          //       .last
+                          //       .substring(0, 15);
+                          // });
                         },
                         textColor: grey,
                         color: white,
@@ -527,15 +565,21 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.CarImage = imageTemp;
-                            carImgStr =
-                                CarImage!.path.split('/').last.substring(0, 15);
-                          });
+                          if (await Permission.storage.request().isGranted) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.CarImage = imageTemp;
+                              carImgStr =
+                                  CarImage!.path.split('/').last.substring(0, 15);
+                            });
+                          }
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
+
                         },
                         textColor: grey,
                         color: white,
@@ -550,17 +594,22 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.drivingCertiImage = imageTemp;
-                            driCertiStr = drivingCertiImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
+                          if (await Permission.storage.request().isGranted) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.drivingCertiImage = imageTemp;
+                              driCertiStr = drivingCertiImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });}
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
+
                         },
                         textColor: grey,
                         color: white,
@@ -575,17 +624,22 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.carMechaImage = imageTemp;
-                            carMechaStr = carMechaImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
+                          if (await Permission.storage.request().isGranted) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.carMechaImage = imageTemp;
+                              carMechaStr = carMechaImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });   }
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
+
                         },
                         textColor: grey,
                         color: white,
@@ -600,17 +654,22 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         borderRadius: 15,
                         icon: Icons.add,
                         onIconPressed: () async {
-                          final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.carInsuImage = imageTemp;
-                            carInsuStr = carInsuImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
+                          if (await Permission.storage.request().isGranted) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.carInsuImage = imageTemp;
+                              carInsuStr = carInsuImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            }); }
+                          else{
+                            showWarningGalleryDialog(context);
+                          }
+
                         },
                         textColor: grey,
                         color: white,

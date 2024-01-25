@@ -3,6 +3,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/user_register_provider.dart';
 import 'package:diamond_line/Presentation/Functions/Validators.dart';
@@ -121,14 +122,19 @@ class _RegistrationState extends State<Registration> {
             child: imageFile == null
                 ? TextButton(
                     onPressed: () async {
-                      // pickImage();
-                      var im =
-                          await picker.pickImage(source: ImageSource.gallery);
-                      if (im != null) {
-                        setState(() {
-                          imageFile = File(im.path);
-                        });
+                      if (await Permission.storage.request().isGranted) {
+                        // pickImage();
+                        var im =
+                        await picker.pickImage(source: ImageSource.gallery);
+                        if (im != null) {
+                          setState(() {
+                            imageFile = File(im.path);
+                          });
+                        }    }
+                      else{
+                        showWarningGalleryDialog(context);
                       }
+
                     },
                     child: Center(
                         child: myText(

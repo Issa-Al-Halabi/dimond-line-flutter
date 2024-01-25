@@ -10,7 +10,7 @@ import 'package:web_socket_channel/io.dart';
 class network_client {
   // static String Url =
   // "http://dimond-line.peaklinkdemo.com";
-  static String Url = "http://diamond-line.com.sy";
+  static String Url = "https://diamond-line.com.sy";
   static String _baseUrl = Url;
 
   final Client _client;

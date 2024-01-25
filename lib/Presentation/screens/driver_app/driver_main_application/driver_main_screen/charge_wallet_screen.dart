@@ -4,6 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
@@ -470,7 +471,7 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                                   // );
                                                 } else if (type == 'transfer') {
                                                   // getDialog();
-
+                                                  if (await Permission.storage.request().isGranted) {
                                                     var im = await picker.pickImage(source: ImageSource.gallery);
                                                     if (im != null) {
                                                       setState(() {
@@ -483,7 +484,12 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                                           type, amountController.text, imageFile!, creat);
                                                     } else {
                                                       setSnackbar('please select image'.tr(), context);
-                                                    }
+                                                    }   }
+                                                  else{
+                                                    showWarningGalleryDialog(context);
+                                                  }
+
+
                                                 }
                                                 // else {
                                                 //   var creat =
@@ -595,21 +601,27 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                   h: 6.h,
                   w: 60.w,
                   onTap: () async {
-                    var im = await picker.pickImage(source: ImageSource.camera);
-                    if (im != null) {
-                      setState(() {
-                        imageFile = File(im.path);
-                      });
-                      print(imageFile);
-                      print(type);
-                      print(amountController.text);
-                      var creat = Provider.of<ChargeWalletProvider>(context,
-                          listen: false);
-                      chargeWalletTransferApi(
-                          type, amountController.text, imageFile!, creat);
-                    } else {
-                      setSnackbar('please select image'.tr(), context);
+                    if (await Permission.storage.request().isGranted) {
+                      var im = await picker.pickImage(source: ImageSource.camera);
+                      if (im != null) {
+                        setState(() {
+                          imageFile = File(im.path);
+                        });
+                        print(imageFile);
+                        print(type);
+                        print(amountController.text);
+                        var creat = Provider.of<ChargeWalletProvider>(context,
+                            listen: false);
+                        chargeWalletTransferApi(
+                            type, amountController.text, imageFile!, creat);
+                      } else {
+                        setSnackbar('please select image'.tr(), context);
+                      }
                     }
+                    else{
+                      showWarningGalleryDialog(context);
+                    }
+
                   }),
               SizedBox(
                 height: 2.h,
@@ -619,20 +631,25 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                   h: 6.h,
                   w: 60.w,
                   onTap: () async {
-                    var im =
-                        await picker.pickImage(source: ImageSource.gallery);
-                    if (im != null) {
-                      setState(() {
-                        imageFile = File(im.path);
-                      });
-                      print(imageFile);
-                      var creat = Provider.of<ChargeWalletProvider>(context,
-                          listen: false);
-                      chargeWalletTransferApi(
-                          type, amountController.text, imageFile!, creat);
-                    } else {
-                      setSnackbar('please select image'.tr(), context);
+                    if (await Permission.storage.request().isGranted) {
+                      var im =
+                      await picker.pickImage(source: ImageSource.gallery);
+                      if (im != null) {
+                        setState(() {
+                          imageFile = File(im.path);
+                        });
+                        print(imageFile);
+                        var creat = Provider.of<ChargeWalletProvider>(context,
+                            listen: false);
+                        chargeWalletTransferApi(
+                            type, amountController.text, imageFile!, creat);
+                      } else {
+                        setSnackbar('please select image'.tr(), context);
+                      }   }
+                    else{
+                      showWarningGalleryDialog(context);
                     }
+
                   }),
               SizedBox(
                 height: 2.h,

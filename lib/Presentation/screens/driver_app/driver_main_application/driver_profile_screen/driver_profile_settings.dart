@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/get_profile_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/update_profile_provider.dart';
@@ -187,11 +188,16 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                                 imageFile == null
                                     ? TextButton(
                                         onPressed: () async {
-                                          var im = await picker.pickImage(
-                                              source: ImageSource.gallery);
-                                          setState(() {
-                                            imageFile = File(im!.path);
-                                          });
+                                          if (await Permission.storage.request().isGranted) {
+                                            var im = await picker.pickImage(
+                                                source: ImageSource.gallery);
+                                            setState(() {
+                                              imageFile = File(im!.path);
+                                            });   }
+                                          else{
+                                            showWarningGalleryDialog(context);
+                                          }
+
                                         },
                                         child: Center(
                                             child: myText(
@@ -235,16 +241,21 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                                   color: white,
                                 ),
                                 onPressed: () async {
-                                  // await pickImage();
-                                  var im = await picker.pickImage(
-                                      source: ImageSource.gallery);
-                                  setState(() {
-                                    print('im!.path');
-                                    print(im!.path);
-                                    imageFile = File(im.path);
-                                    print('imageFile');
-                                    print(imageFile);
-                                  });
+                                  if (await Permission.storage.request().isGranted) {
+                                    // await pickImage();
+                                    var im = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    setState(() {
+                                      print('im!.path');
+                                      print(im!.path);
+                                      imageFile = File(im.path);
+                                      print('imageFile');
+                                      print(imageFile);
+                                    });    }
+                                  else{
+                                    showWarningGalleryDialog(context);
+                                  }
+
                                 },
                               ))
                         ]),

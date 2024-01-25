@@ -935,7 +935,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
           totalPrice = data["data"]["new_cost"].toString();
           adminFare = data["data"]["admin_fare"].toString();
           Future.delayed(const Duration(seconds: 3)).then((_) async {
-            Navigator.of(context).push(
+            // Navigator.of(context).push(
+            Navigator.of(context).pushReplacement(
               PageRouteBuilder(
                 pageBuilder: (BuildContext context, Animation<double> animation,
                     Animation<double> secondaryAnimation) {

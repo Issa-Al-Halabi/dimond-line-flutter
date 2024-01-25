@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../widgets/loader_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/public_ext.dart';
@@ -106,16 +107,21 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
                         child: imageFile == null
                             ? TextButton(
                                 onPressed: () async {
-                                  var im = await picker.pickImage(
-                                      source: ImageSource.gallery);
-                                  // setState(() {
-                                  //   imageFile = File(im!.path);
-                                  // });
-                                  if (im != null) {
-                                    setState(() {
-                                      imageFile = File(im.path);
-                                    });
+                                  if (await Permission.storage.request().isGranted) {
+                                    var im = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    // setState(() {
+                                    //   imageFile = File(im!.path);
+                                    // });
+                                    if (im != null) {
+                                      setState(() {
+                                        imageFile = File(im.path);
+                                      });
+                                    }   }
+                                  else{
+                                    showWarningGalleryDialog(context);
                                   }
+
                                 },
                                 child: Center(
                                     child: myText(
@@ -220,7 +226,7 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
-                        child: RaisedButton(
+                        child: MaterialButton(
                           disabledColor: grey,
                           color: primaryBlue,
                           child: Text(
