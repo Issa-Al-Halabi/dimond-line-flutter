@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -235,16 +236,23 @@ class _UserProfileSettingsState extends State<UserProfileSettings> {
                             child: imageFile == null
                                 ? TextButton(
                                     onPressed: () async {
-                                      if (await Permission.storage.request().isGranted) {
-                                        var im = await picker.pickImage(
-                                            source: ImageSource.gallery);
-                                        setState(() {
-                                          imageFile = File(im!.path);
-                                        });    }
+                                      bool isAndroid13 = false;
+                                      final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                      if (androidInfo.version.sdkInt! <= 32) {
+                                        isAndroid13 = false;
+                                      }  else {
+                                        isAndroid13 = true;
+                                      }
+                                      var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                                      if (res) {   var im = await picker.pickImage(
+                                          source: ImageSource.gallery);
+                                      setState(() {
+                                        imageFile = File(im!.path);
+                                      });
+                                      }
                                       else{
                                         showWarningGalleryDialog(context);
                                       }
-
                                     },
                                     child: Center(
                                         child: myText(
@@ -286,20 +294,27 @@ class _UserProfileSettingsState extends State<UserProfileSettings> {
                                   color: white,
                                 ),
                                 onPressed: () async {
-                                  if (await Permission.storage.request().isGranted) {
-                                    var im = await picker.pickImage(
-                                        source: ImageSource.gallery);
-                                    setState(() {
-                                      print('im!.path');
-                                      print(im!.path);
-                                      imageFile = File(im.path);
-                                      print('imageFile');
-                                      print(imageFile);
-                                    });   }
+                                  bool isAndroid13 = false;
+                                  final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                  if (androidInfo.version.sdkInt! <= 32) {
+                                    isAndroid13 = false;
+                                  }  else {
+                                    isAndroid13 = true;
+                                  }
+                                  var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                                  if (res) {  var im = await picker.pickImage(
+                                      source: ImageSource.gallery);
+                                  setState(() {
+                                    print('im!.path');
+                                    print(im!.path);
+                                    imageFile = File(im.path);
+                                    print('imageFile');
+                                    print(imageFile);
+                                  });
+                                  }
                                   else{
                                     showWarningGalleryDialog(context);
                                   }
-
                                 },
                               ))
                         ]),

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../widgets/loader_widget.dart';
@@ -107,17 +108,26 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
                         child: imageFile == null
                             ? TextButton(
                                 onPressed: () async {
-                                  if (await Permission.storage.request().isGranted) {
-                                    var im = await picker.pickImage(
-                                        source: ImageSource.gallery);
-                                    // setState(() {
-                                    //   imageFile = File(im!.path);
-                                    // });
-                                    if (im != null) {
-                                      setState(() {
-                                        imageFile = File(im.path);
-                                      });
-                                    }   }
+
+                                  bool isAndroid13 = false;
+                                  final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                  if (androidInfo.version.sdkInt! <= 32) {
+                                    isAndroid13 = false;
+                                  }  else {
+                                    isAndroid13 = true;
+                                  }
+                                  var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                                  if (res) {  var im = await picker.pickImage(
+                                      source: ImageSource.gallery);
+                                  // setState(() {
+                                  //   imageFile = File(im!.path);
+                                  // });
+                                  if (im != null) {
+                                    setState(() {
+                                      imageFile = File(im.path);
+                                    });
+                                  }
+                                  }
                                   else{
                                     showWarningGalleryDialog(context);
                                   }
@@ -226,7 +236,7 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
-                        child: MaterialButton(
+                        child: RaisedButton(
                           disabledColor: grey,
                           color: primaryBlue,
                           child: Text(

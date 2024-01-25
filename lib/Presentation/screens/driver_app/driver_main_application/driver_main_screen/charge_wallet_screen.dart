@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -471,24 +472,32 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                                   // );
                                                 } else if (type == 'transfer') {
                                                   // getDialog();
-                                                  if (await Permission.storage.request().isGranted) {
-                                                    var im = await picker.pickImage(source: ImageSource.gallery);
-                                                    if (im != null) {
-                                                      setState(() {
-                                                        imageFile = File(im.path);
-                                                      });
-                                                      print(imageFile);
-                                                      var creat = Provider.of<ChargeWalletProvider>(context,
-                                                          listen: false);
-                                                      chargeWalletTransferApi(
-                                                          type, amountController.text, imageFile!, creat);
-                                                    } else {
-                                                      setSnackbar('please select image'.tr(), context);
-                                                    }   }
+
+                                                  bool isAndroid13 = false;
+                                                  final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                                  if (androidInfo.version.sdkInt! <= 32) {
+                                                    isAndroid13 = false;
+                                                  }  else {
+                                                    isAndroid13 = true;
+                                                  }
+                                                  var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                                                  if (res) { var im = await picker.pickImage(source: ImageSource.gallery);
+                                                  if (im != null) {
+                                                    setState(() {
+                                                      imageFile = File(im.path);
+                                                    });
+                                                    print(imageFile);
+                                                    var creat = Provider.of<ChargeWalletProvider>(context,
+                                                        listen: false);
+                                                    chargeWalletTransferApi(
+                                                        type, amountController.text, imageFile!, creat);
+                                                  } else {
+                                                    setSnackbar('please select image'.tr(), context);
+                                                  }
+                                                  }
                                                   else{
                                                     showWarningGalleryDialog(context);
                                                   }
-
 
                                                 }
                                                 // else {
@@ -601,22 +610,29 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                   h: 6.h,
                   w: 60.w,
                   onTap: () async {
-                    if (await Permission.storage.request().isGranted) {
-                      var im = await picker.pickImage(source: ImageSource.camera);
-                      if (im != null) {
-                        setState(() {
-                          imageFile = File(im.path);
-                        });
-                        print(imageFile);
-                        print(type);
-                        print(amountController.text);
-                        var creat = Provider.of<ChargeWalletProvider>(context,
-                            listen: false);
-                        chargeWalletTransferApi(
-                            type, amountController.text, imageFile!, creat);
-                      } else {
-                        setSnackbar('please select image'.tr(), context);
-                      }
+                    bool isAndroid13 = false;
+                    final androidInfo = await DeviceInfoPlugin().androidInfo;
+                    if (androidInfo.version.sdkInt! <= 32) {
+                      isAndroid13 = false;
+                    }  else {
+                      isAndroid13 = true;
+                    }
+                    var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                    if (res) { var im = await picker.pickImage(source: ImageSource.camera);
+                    if (im != null) {
+                      setState(() {
+                        imageFile = File(im.path);
+                      });
+                      print(imageFile);
+                      print(type);
+                      print(amountController.text);
+                      var creat = Provider.of<ChargeWalletProvider>(context,
+                          listen: false);
+                      chargeWalletTransferApi(
+                          type, amountController.text, imageFile!, creat);
+                    } else {
+                      setSnackbar('please select image'.tr(), context);
+                    }
                     }
                     else{
                       showWarningGalleryDialog(context);
@@ -631,21 +647,29 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                   h: 6.h,
                   w: 60.w,
                   onTap: () async {
-                    if (await Permission.storage.request().isGranted) {
-                      var im =
-                      await picker.pickImage(source: ImageSource.gallery);
-                      if (im != null) {
-                        setState(() {
-                          imageFile = File(im.path);
-                        });
-                        print(imageFile);
-                        var creat = Provider.of<ChargeWalletProvider>(context,
-                            listen: false);
-                        chargeWalletTransferApi(
-                            type, amountController.text, imageFile!, creat);
-                      } else {
-                        setSnackbar('please select image'.tr(), context);
-                      }   }
+                    bool isAndroid13 = false;
+                    final androidInfo = await DeviceInfoPlugin().androidInfo;
+                    if (androidInfo.version.sdkInt! <= 32) {
+                      isAndroid13 = false;
+                    }  else {
+                      isAndroid13 = true;
+                    }
+                    var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
+                    if (res) { var im =
+                    await picker.pickImage(source: ImageSource.gallery);
+                    if (im != null) {
+                      setState(() {
+                        imageFile = File(im.path);
+                      });
+                      print(imageFile);
+                      var creat = Provider.of<ChargeWalletProvider>(context,
+                          listen: false);
+                      chargeWalletTransferApi(
+                          type, amountController.text, imageFile!, creat);
+                    } else {
+                      setSnackbar('please select image'.tr(), context);
+                    }
+                    }
                     else{
                       showWarningGalleryDialog(context);
                     }

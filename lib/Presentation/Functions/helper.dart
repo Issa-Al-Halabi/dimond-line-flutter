@@ -112,6 +112,15 @@ Future<bool> requestGalleryPermission() async {
   }
 }
 
+Future<bool> isAndroid13() async {
+  final androidInfo = await DeviceInfoPlugin().androidInfo;
+  if (androidInfo.version.sdkInt! <= 32) {
+    return false;
+  }  else {
+    return true;
+  }
+}
+
 Future<PermissionStatus> requestCameraPermission() async {
   return await Permission.camera.request();
 }
