@@ -120,12 +120,12 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
             content: Text(
                 'The app requires location permission to function properly.'),
             actions: [
-              FlatButton(
+              MaterialButton(
                 child: Text('Yes'),
                 onPressed: () =>
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
               ),
-              FlatButton(
+              MaterialButton(
                 child: Text('No'),
                 // onPressed: () => requestLocationPermission(context),
                 onPressed: () {
