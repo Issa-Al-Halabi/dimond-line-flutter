@@ -270,5 +270,6 @@
     "please_enable_your_location_permission_and_try_again" : "please give Diamond Line location access permission to your device and try again",
     "retry" : "Retry",
     "please select type" : "please select type of trip",
-    "enable gallery" : "You should give app a permission to access gallery in setting to continue"
+    "enable gallery" : "You should give app a permission to access gallery in setting to continue",
+    "search" : "search"
 }

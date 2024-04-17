@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Presentation/widgets/text_with_textfield.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../../../widgets/loader_widget.dart';
@@ -22,6 +23,7 @@ class SelectGoverment extends StatefulWidget {
 class _SelectGovermentState extends State<SelectGoverment> {
   bool _isNetworkAvail = true;
   late List titleList;
+  late List titleListSearch;
   late List subCategoryIdList;
   late List categoryIdList;
   String subCategoryId = '';
@@ -29,11 +31,31 @@ class _SelectGovermentState extends State<SelectGoverment> {
   String title = '';
   int countGoverment = 0;
   String govermentType = '';
+  TextEditingController searchCities = TextEditingController();
 
   @override
   void initState() {
     init();
+    searchCities.addListener(() {
+      print(searchCities.text);
+
+      titleListSearch = titleList
+          .where((element) =>
+              element.toLowerCase().contains(searchCities.text.toLowerCase()))
+          .toList();
+      countGoverment = titleListSearch.length;
+      setState(() {});
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    searchCities.removeListener(() {
+      print("dispose From removeListener");
+    });
+    searchCities.dispose();
+    super.dispose();
   }
 
   Future<void> init() async {
@@ -45,6 +67,7 @@ class _SelectGovermentState extends State<SelectGoverment> {
   Future<void> GetGovermentApi(GetGovermentProvider creat) async {
     subCategoryIdList = [];
     titleList = [];
+    titleListSearch = [];
     categoryIdList = [];
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
@@ -57,6 +80,7 @@ class _SelectGovermentState extends State<SelectGoverment> {
             subCategoryIdList.add(creat.data.data![i].id.toString());
             categoryIdList.add(creat.data.data![i].categoryId);
             titleList.add(creat.data.data![i].title);
+            titleListSearch.add(creat.data.data![i].title);
           });
         }
         countGoverment = creat.data.data!.length;
@@ -115,7 +139,7 @@ class _SelectGovermentState extends State<SelectGoverment> {
                 child: Column(
                   children: [
                     Container(
-                      height: 82.h,
+                      height: 90.h,
                       width: getScreenWidth(context),
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -133,6 +157,14 @@ class _SelectGovermentState extends State<SelectGoverment> {
                       ),
                       child: Column(
                         children: [
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          TextWithTextField(
+                            text: "search".tr(),
+                            controller: searchCities,
+                            icon: const Icon(Icons.search),
+                          ),
                           SizedBox(
                             height: 2.h,
                           ),
@@ -158,19 +190,22 @@ class _SelectGovermentState extends State<SelectGoverment> {
                                             width: 50.w,
                                             child: RadioListTile<String>(
                                               title: Text(
-                                                titleList[index].toString(),
+                                                titleListSearch[index]
+                                                    .toString(),
                                                 style: TextStyle(
                                                     fontSize: 5.sp,
                                                     color: primaryBlue3),
                                               ),
-                                              value: titleList[index].toString(),
+                                              value: titleListSearch[index]
+                                                  .toString(),
                                               groupValue: govermentType,
                                               onChanged: (String? value) {
                                                 setState(() {
                                                   print(value);
-                                                  print(subCategoryIdList[index]);
+                                                  print(
+                                                      subCategoryIdList[index]);
                                                   print(categoryIdList[index]);
-                                                  print(titleList[index]);
+                                                  print(titleListSearch[index]);
                                                   govermentType = value!;
                                                   subCategoryId =
                                                       subCategoryIdList[index]
@@ -178,7 +213,8 @@ class _SelectGovermentState extends State<SelectGoverment> {
                                                   categoryId =
                                                       categoryIdList[index]
                                                           .toString();
-                                                  title = titleList[index];
+                                                  title =
+                                                      titleListSearch[index];
                                                 });
                                               },
                                             ),
@@ -197,20 +233,25 @@ class _SelectGovermentState extends State<SelectGoverment> {
                             children: [
                               ContainerWidget(
                                   text: 'done'.tr(),
-                                  h: 7.h,
+                                  h: 6.h,
                                   w: 80.w,
                                   onTap: () {
-                                    if(title == ''){
+                                    if (title == '') {
                                       print('no');
-                                      setSnackbar('please select the destination'.tr(), context);
-                                    }
-                                    else{ Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (context) => MapScreen(
-                                          country: 'damas',
-                                          categoryId: categoryId.toString(),
-                                          subCategoryId: subCategoryId,
-                                          to: title,
-                                        )));
+                                      setSnackbar(
+                                          'please select the destination'.tr(),
+                                          context);
+                                    } else {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => MapScreen(
+                                                    country: 'damas',
+                                                    categoryId:
+                                                        categoryId.toString(),
+                                                    subCategoryId:
+                                                        subCategoryId,
+                                                    to: title,
+                                                  )));
                                     }
                                   }),
                               SizedBox(
