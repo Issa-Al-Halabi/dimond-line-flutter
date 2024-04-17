@@ -123,28 +123,28 @@ class _RegistrationState extends State<Registration> {
             child: imageFile == null
                 ? TextButton(
                     onPressed: () async {
-
                       bool isAndroid13 = false;
                       final androidInfo = await DeviceInfoPlugin().androidInfo;
                       if (androidInfo.version.sdkInt! <= 32) {
                         isAndroid13 = false;
-                      }  else {
+                      } else {
                         isAndroid13 = true;
                       }
-                      var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                      if (res) {     // pickImage();
+                      var res = isAndroid13 == true
+                          ? await Permission.photos.request().isGranted
+                          : await Permission.storage.request().isGranted;
+                      if (res) {
+                        // pickImage();
                         var im =
-                        await picker.pickImage(source: ImageSource.gallery);
+                            await picker.pickImage(source: ImageSource.gallery);
                         if (im != null) {
                           setState(() {
                             imageFile = File(im.path);
                           });
                         }
-                      }
-                      else{
+                      } else {
                         showWarningGalleryDialog(context);
                       }
-
                     },
                     child: Center(
                         child: myText(
@@ -212,6 +212,7 @@ class _RegistrationState extends State<Registration> {
           ),
           ContainerWithTextField(
             hintText: 'password'.tr(),
+            isPassword: true,
             w: 90.w,
             onTap: () {},
             txtController: passwordController,
@@ -287,8 +288,7 @@ class _RegistrationState extends State<Registration> {
                 _isNetworkAvail = await isNetworkAvailable();
                 if (_isNetworkAvail) {
                   print("There is internet");
-                  Loader.show(context,
-                      progressIndicator: LoaderWidget());
+                  Loader.show(context, progressIndicator: LoaderWidget());
                   var creat = await Provider.of<UserRegisterProvider>(context,
                       listen: false);
                   print(creat);
@@ -381,7 +381,8 @@ class _RegistrationState extends State<Registration> {
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)),
                 color: backgroundColor,
               ),
               child: SingleChildScrollView(

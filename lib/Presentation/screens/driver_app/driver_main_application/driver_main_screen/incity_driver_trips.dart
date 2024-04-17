@@ -224,8 +224,7 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
             onTap: () {
               print('marker info tab');
             }),
-        icon: BitmapDescriptor.fromBytes(imageData)
-    ));
+        icon: BitmapDescriptor.fromBytes(imageData)));
   }
 
   void initMarker() async {
@@ -265,7 +264,16 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
     ));
   }
 
-  void navigate(String trip_id, String pickupLatitude, String pickupLongitude, String dropLatitude, String dropLongitude, List options, String profileImage, String isOption,) {
+  void navigate(
+    String trip_id,
+    String pickupLatitude,
+    String pickupLongitude,
+    String dropLatitude,
+    String dropLongitude,
+    List options,
+    String profileImage,
+    String isOption,
+  ) {
     if (requestType == 'moment') {
       Navigator.of(context).push(
         PageRouteBuilder(
@@ -350,7 +358,7 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: willPopLoader,
+      onWillPop: willPopLoader,
       child: Scaffold(
         body: _kGooglePlex == null
             ? Center(child: LoaderWidget())
@@ -409,7 +417,8 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                           .withOpacity(0.3),
                                                       spreadRadius: 2,
                                                       blurRadius: 7,
-                                                      offset: const Offset(0, 0),
+                                                      offset:
+                                                          const Offset(0, 0),
                                                     ),
                                                   ],
                                                   color: backgroundColor,
@@ -428,12 +437,11 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                 ),
                                               )
                                             : shimmer(context),
-
                                         Positioned(
                                             top: 1.h,
                                             left: 3.w,
                                             child: InkWell(
-                                              onTap: (){
+                                              onTap: () {
                                                 init2();
                                               },
                                               child: Container(
@@ -442,20 +450,24 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                 decoration: BoxDecoration(
                                                   boxShadow: [
                                                     BoxShadow(
-                                                      color:
-                                                      primaryBlue.withOpacity(0.3),
+                                                      color: primaryBlue
+                                                          .withOpacity(0.3),
                                                       spreadRadius: 2,
                                                       blurRadius: 7,
-                                                      offset: const Offset(0, 0),
+                                                      offset:
+                                                          const Offset(0, 0),
                                                     ),
                                                   ],
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(100)),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(100)),
                                                   color: backgroundColor,
                                                 ),
                                                 child: Center(
-                                                  child: Icon(Icons.refresh_outlined, color: primaryBlue,
-                                                  size: 30),
+                                                  child: Icon(
+                                                      Icons.refresh_outlined,
+                                                      color: primaryBlue,
+                                                      size: 30),
                                                 ),
                                               ),
                                             )),
@@ -485,47 +497,49 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                                     vertical:
                                                                         1.h),
                                                             child: length == 0
-                                                                ?
-                                                            Center(child: Column(
-                                                              children: [
-                                                                SizedBox(
-                                                                  height:
-                                                                  20.h,
-                                                                ),
-                                                                Image.asset(
-                                                                  noData,
-                                                                  fit: BoxFit
-                                                                      .fill,
-                                                                  height:
-                                                                  30.h,
-                                                                ),
-                                                                SizedBox(
-                                                                  height:
-                                                                  2.h,
-                                                                ),
-                                                                Text(
-                                                                  'there are no trips'
-                                                                      .tr(),
-                                                                  style: TextStyle(
-                                                                      fontFamily:
-                                                                      'cairo',
-                                                                      color:
-                                                                      primaryBlue,
-                                                                      fontSize: 6.sp),
-                                                                )
-                                                              ],
-                                                            ))
+                                                                ? Center(
+                                                                    child:
+                                                                        Column(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height:
+                                                                            20.h,
+                                                                      ),
+                                                                      Image
+                                                                          .asset(
+                                                                        noData,
+                                                                        fit: BoxFit
+                                                                            .fill,
+                                                                        height:
+                                                                            30.h,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            2.h,
+                                                                      ),
+                                                                      Text(
+                                                                        'there are no trips'
+                                                                            .tr(),
+                                                                        style: TextStyle(
+                                                                            fontFamily:
+                                                                                'cairo',
+                                                                            color:
+                                                                                primaryBlue,
+                                                                            fontSize:
+                                                                                6.sp),
+                                                                      )
+                                                                    ],
+                                                                  ))
                                                                 : Padding(
-                                                                    padding: EdgeInsets
-                                                                        .symmetric(
-                                                                            horizontal:
-                                                                                2.w),
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            2.w),
                                                                     child:
                                                                         InkWell(
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         print('id of trip' +
-                                                                            idList[index]
-                                                                                .toString());
+                                                                            idList[index].toString());
                                                                         setState(
                                                                             () {
                                                                           idTrip =
@@ -548,32 +562,22 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                                               kmList[index].toString();
                                                                           requestType =
                                                                               requestTypeList[index].toString();
-                                                                          time = timeList[index]
-                                                                              .toString();
-                                                                          date = dateList[index]
-                                                                              .toString();
+                                                                          time =
+                                                                              timeList[index].toString();
+                                                                          date =
+                                                                              dateList[index].toString();
                                                                           userIdForTrip =
                                                                               userIdList[index].toString();
                                                                         });
                                                                         navigate(
-                                                                            idList[index]
-                                                                                .toString(),
-                                                                            tripsList[index]
-                                                                                .pickupLatitude,
-                                                                            tripsList[index]
-                                                                                .pickupLongitude,
-                                                                            tripsList[index]
-                                                                                .dropLatitude,
-                                                                            tripsList[index]
-                                                                                .dropLongitude,
-                                                                            tripsList[index]
-                                                                                .optionId,
-                                                                            tripsList[index]
-                                                                                .profileImage
-                                                                                .toString(),
-                                                                            tripsList[index]
-                                                                                .options
-                                                                                .toString());
+                                                                            idList[index].toString(),
+                                                                            tripsList[index].pickupLatitude,
+                                                                            tripsList[index].pickupLongitude,
+                                                                            tripsList[index].dropLatitude,
+                                                                            tripsList[index].dropLongitude,
+                                                                            tripsList[index].optionId,
+                                                                            tripsList[index].profileImage.toString(),
+                                                                            tripsList[index].options.toString());
                                                                       },
                                                                       child:
                                                                           Container(
@@ -585,14 +589,10 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                                             BoxDecoration(
                                                                           boxShadow: [
                                                                             BoxShadow(
-                                                                              color:
-                                                                                  primaryBlue.withOpacity(0.3),
-                                                                              spreadRadius:
-                                                                                  2,
-                                                                              blurRadius:
-                                                                                  7,
-                                                                              offset:
-                                                                                  Offset(0, 0),
+                                                                              color: primaryBlue.withOpacity(0.3),
+                                                                              spreadRadius: 2,
+                                                                              blurRadius: 7,
+                                                                              offset: Offset(0, 0),
                                                                             ),
                                                                           ],
                                                                           borderRadius:
@@ -603,17 +603,14 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                                         child:
                                                                             Padding(
                                                                           padding: EdgeInsets.only(
-                                                                              left:
-                                                                                  2.w,
+                                                                              left: 2.w,
                                                                               right: 2.w),
                                                                           child:
                                                                               SingleChildScrollView(
                                                                             child:
                                                                                 Column(
-                                                                              mainAxisAlignment:
-                                                                                  MainAxisAlignment.start,
-                                                                              crossAxisAlignment:
-                                                                                  CrossAxisAlignment.start,
+                                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
                                                                                 SizedBox(
                                                                                   height: 1.h,

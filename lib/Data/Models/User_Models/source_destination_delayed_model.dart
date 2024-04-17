@@ -6,7 +6,8 @@ class SourceDestinationDelayedModel {
   SourceDestinationDelayedModel({
     bool? error,
     String? message,
-    List<Data>? data,}){
+    List<Data>? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -25,13 +26,16 @@ class SourceDestinationDelayedModel {
   bool? _error;
   String? _message;
   List<Data>? _data;
-  SourceDestinationDelayedModel copyWith({  bool? error,
+  SourceDestinationDelayedModel copyWith({
+    bool? error,
     String? message,
     List<Data>? data,
-  }) => SourceDestinationDelayedModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      SourceDestinationDelayedModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   List<Data>? get data => _data;
@@ -45,7 +49,6 @@ class SourceDestinationDelayedModel {
     }
     return map;
   }
-
 }
 
 /// id : 13
@@ -66,7 +69,8 @@ class Data {
     int? baseTime,
     int? cost,
     int? limitDistance,
-    int? price,}){
+    int? price,
+  }) {
     _id = id;
     _vehicletype = vehicletype;
     _icon = icon;
@@ -95,7 +99,8 @@ class Data {
   int? _cost;
   int? _limitDistance;
   int? _price;
-  Data copyWith({  int? id,
+  Data copyWith({
+    int? id,
     String? vehicletype,
     String? icon,
     int? baseKm,
@@ -103,15 +108,17 @@ class Data {
     int? cost,
     int? limitDistance,
     int? price,
-  }) => Data(  id: id ?? _id,
-    vehicletype: vehicletype ?? _vehicletype,
-    icon: icon ?? _icon,
-    baseKm: baseKm ?? _baseKm,
-    baseTime: baseTime ?? _baseTime,
-    cost: cost ?? _cost,
-    limitDistance: limitDistance ?? _limitDistance,
-    price: price ?? _price,
-  );
+  }) =>
+      Data(
+        id: id ?? _id,
+        vehicletype: vehicletype ?? _vehicletype,
+        icon: icon ?? _icon,
+        baseKm: baseKm ?? _baseKm,
+        baseTime: baseTime ?? _baseTime,
+        cost: cost ?? _cost,
+        limitDistance: limitDistance ?? _limitDistance,
+        price: price ?? _price,
+      );
   int? get id => _id;
   String? get vehicletype => _vehicletype;
   String? get icon => _icon;
@@ -133,5 +140,4 @@ class Data {
     map['price'] = _price;
     return map;
   }
-
 }

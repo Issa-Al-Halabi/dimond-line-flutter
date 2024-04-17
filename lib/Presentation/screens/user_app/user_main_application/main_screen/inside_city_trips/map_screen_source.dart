@@ -84,10 +84,10 @@ class _MapScreenSourceState extends State<MapScreenSource> {
                   ["long_name"]; // f there is atleast one address
           print("address" + widget.sourceAddress);
           //you can use the JSON data to get address in your own format
-          setState(() {
-            //refresh
-            print(widget.sourceAddress);
-          });
+          // setState(() {
+          //refresh
+          print(widget.sourceAddress);
+          // });
         }
       } else {
         print(data["error_message"]);
@@ -230,17 +230,17 @@ class _MapScreenSourceState extends State<MapScreenSource> {
                                           color: backgroundColor,
                                         ),
                                         child: Center(
-                                            child: isRTL ? Icon(
-                                          Icons.arrow_back_ios_new,
-                                          size: 40,
-                                          color: primaryBlue,
-                                        )
+                                            child: isRTL
+                                                ? Icon(
+                                                    Icons.arrow_back_ios_new,
+                                                    size: 40,
+                                                    color: primaryBlue,
+                                                  )
                                                 : Icon(
-                                              Icons.arrow_forward_ios,
-                                              size: 40,
-                                              color: primaryBlue,
-                                            )
-                                        )),
+                                                    Icons.arrow_forward_ios,
+                                                    size: 40,
+                                                    color: primaryBlue,
+                                                  ))),
                                     onTap: () async {
                                       print('map screen source done');
                                       print(widget.fromLat);

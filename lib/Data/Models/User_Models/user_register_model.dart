@@ -6,7 +6,8 @@ class UerRegisterModel {
   UerRegisterModel({
     bool? error,
     String? message,
-    Data? data,}){
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -20,13 +21,16 @@ class UerRegisterModel {
   bool? _error;
   String? _message;
   Data? _data;
-  UerRegisterModel copyWith({  bool? error,
+  UerRegisterModel copyWith({
+    bool? error,
     String? message,
     Data? data,
-  }) => UerRegisterModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      UerRegisterModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ class UerRegisterModel {
     }
     return map;
   }
-
 }
 
 /// api_token : "GiEQ0WHCxcjNVnGZZU7B4XfDiXm50j2C5cC5RvXG0iNNd0prSkP8mZuJq6fY"
@@ -49,7 +52,8 @@ class UerRegisterModel {
 class Data {
   Data({
     String? apiToken,
-    User? user,}){
+    User? user,
+  }) {
     _apiToken = apiToken;
     _user = user;
   }
@@ -60,11 +64,14 @@ class Data {
   }
   String? _apiToken;
   User? _user;
-  Data copyWith({  String? apiToken,
+  Data copyWith({
+    String? apiToken,
     User? user,
-  }) => Data(  apiToken: apiToken ?? _apiToken,
-    user: user ?? _user,
-  );
+  }) =>
+      Data(
+        apiToken: apiToken ?? _apiToken,
+        user: user ?? _user,
+      );
   String? get apiToken => _apiToken;
   User? get user => _user;
 
@@ -76,7 +83,6 @@ class Data {
     }
     return map;
   }
-
 }
 
 /// first_name : "lemar000000000"
@@ -114,7 +120,7 @@ class User {
     int? id,
     List<Roles>? roles,
     // List<dynamic>? metaData,
-  }){
+  }) {
     _firstName = firstName;
     _lastName = lastName;
     _fatherName = fatherName;
@@ -177,7 +183,8 @@ class User {
   int? _id;
   List<Roles>? _roles;
   // List<dynamic>? _metaData;
-  User copyWith({  String? firstName,
+  User copyWith({
+    String? firstName,
     String? lastName,
     String? fatherName,
     String? motherName,
@@ -193,23 +200,25 @@ class User {
     int? id,
     List<Roles>? roles,
     // List<dynamic>? metaData,
-  }) => User(  firstName: firstName ?? _firstName,
-    lastName: lastName ?? _lastName,
-    fatherName: fatherName ?? _fatherName,
-    motherName: motherName ?? _motherName,
-    placeOfBirth: placeOfBirth ?? _placeOfBirth,
-    dateOfBirth: dateOfBirth ?? _dateOfBirth,
-    phone: phone ?? _phone,
-    email: email ?? _email,
-    userType: userType ?? _userType,
-    deviceToken: deviceToken ?? _deviceToken,
-    deletedAt: deletedAt ?? _deletedAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    createdAt: createdAt ?? _createdAt,
-    id: id ?? _id,
-    roles: roles ?? _roles,
-    // metaData: metaData ?? _metaData,
-  );
+  }) =>
+      User(
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        fatherName: fatherName ?? _fatherName,
+        motherName: motherName ?? _motherName,
+        placeOfBirth: placeOfBirth ?? _placeOfBirth,
+        dateOfBirth: dateOfBirth ?? _dateOfBirth,
+        phone: phone ?? _phone,
+        email: email ?? _email,
+        userType: userType ?? _userType,
+        deviceToken: deviceToken ?? _deviceToken,
+        deletedAt: deletedAt ?? _deletedAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        createdAt: createdAt ?? _createdAt,
+        id: id ?? _id,
+        roles: roles ?? _roles,
+        // metaData: metaData ?? _metaData,
+      );
   String? get firstName => _firstName;
   String? get lastName => _lastName;
   String? get fatherName => _fatherName;
@@ -251,7 +260,6 @@ class User {
     // }
     return map;
   }
-
 }
 
 /// id : 7
@@ -268,7 +276,8 @@ class Roles {
     String? guardName,
     String? createdAt,
     String? updatedAt,
-    Pivot? pivot,}){
+    Pivot? pivot,
+  }) {
     _id = id;
     _name = name;
     _guardName = guardName;
@@ -291,19 +300,22 @@ class Roles {
   String? _createdAt;
   String? _updatedAt;
   Pivot? _pivot;
-  Roles copyWith({  int? id,
+  Roles copyWith({
+    int? id,
     String? name,
     String? guardName,
     String? createdAt,
     String? updatedAt,
     Pivot? pivot,
-  }) => Roles(  id: id ?? _id,
-    name: name ?? _name,
-    guardName: guardName ?? _guardName,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    pivot: pivot ?? _pivot,
-  );
+  }) =>
+      Roles(
+        id: id ?? _id,
+        name: name ?? _name,
+        guardName: guardName ?? _guardName,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        pivot: pivot ?? _pivot,
+      );
   int? get id => _id;
   String? get name => _name;
   String? get guardName => _guardName;
@@ -323,7 +335,6 @@ class Roles {
     }
     return map;
   }
-
 }
 
 /// model_id : "265"
@@ -334,7 +345,8 @@ class Pivot {
   Pivot({
     dynamic modelId,
     dynamic roleId,
-    dynamic modelType,}){
+    dynamic modelType,
+  }) {
     _modelId = modelId;
     _roleId = roleId;
     _modelType = modelType;
@@ -348,13 +360,16 @@ class Pivot {
   dynamic _modelId;
   dynamic _roleId;
   dynamic _modelType;
-  Pivot copyWith({  dynamic modelId,
+  Pivot copyWith({
+    dynamic modelId,
     dynamic roleId,
     dynamic modelType,
-  }) => Pivot(  modelId: modelId ?? _modelId,
-    roleId: roleId ?? _roleId,
-    modelType: modelType ?? _modelType,
-  );
+  }) =>
+      Pivot(
+        modelId: modelId ?? _modelId,
+        roleId: roleId ?? _roleId,
+        modelType: modelType ?? _modelType,
+      );
   dynamic get modelId => _modelId;
   dynamic get roleId => _roleId;
   dynamic get modelType => _modelType;
@@ -366,5 +381,4 @@ class Pivot {
     map['model_type'] = _modelType;
     return map;
   }
-
 }

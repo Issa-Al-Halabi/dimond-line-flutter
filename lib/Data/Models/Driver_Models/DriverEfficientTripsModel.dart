@@ -4,13 +4,14 @@
 
 class DriverEfficientTripsModel {
   DriverEfficientTripsModel({
-      bool? error, 
-      String? message, 
-      Data? data,}){
+    bool? error,
+    String? message,
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
-}
+  }
 
   DriverEfficientTripsModel.fromJson(dynamic json) {
     _error = json['error'];
@@ -20,13 +21,16 @@ class DriverEfficientTripsModel {
   bool? _error;
   String? _message;
   Data? _data;
-DriverEfficientTripsModel copyWith({  bool? error,
-  String? message,
-  Data? data,
-}) => DriverEfficientTripsModel(  error: error ?? _error,
-  message: message ?? _message,
-  data: data ?? _data,
-);
+  DriverEfficientTripsModel copyWith({
+    bool? error,
+    String? message,
+    Data? data,
+  }) =>
+      DriverEfficientTripsModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ DriverEfficientTripsModel copyWith({  bool? error,
     }
     return map;
   }
-
 }
 
 /// trips_outcity : [{"id":168,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"18","from":null,"to":null,"direction":null,"date":"2023-01-17","bags":1,"time":"18:30 pm","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":1,"status":"started","payment":0,"pickup_latitude":"33.5138073","pickup_longitude":"36.2765279","drop_latitude":"36.2021047","drop_longitude":"37.1342603","km":"0.0","minutes":"250.23333333333332","cost":103740,"start_time":"13:12:22","end_time":"13:36:23","created_at":"2023-01-17 16:50:05","order_time":null,"updated_at":"2023-02-05 12:19:49","deleted_at":"2023-02-05 12:19:49","first_name":"Isabella","last_name":"Britt","phone":"968531420"},{"id":167,"customer_id":null,"user_id":246,"vehicle_id":65,"type_id":null,"option_id":null,"driver_id":242,"category_id":"2","request_type":null,"subcategory_id":"19","from":null,"to":null,"direction":"round trip","date":"2022-07-15","bags":3,"time":"4:15:00 am","pickup":null,"dropoff":null,"duration":null,"pickup_addr":null,"dest_addr":null,"note":null,"travellers":2,"status":"accepted","payment":0,"pickup_latitude":"12.15","pickup_longitude":"264.5","drop_latitude":"598.2","drop_longitude":"10","km":"9","minutes":"0","cost":712500,"start_time":"06:30:00","end_time":"18:00:00","created_at":"2023-01-17 15:53:10","order_time":null,"updated_at":"2023-06-15 10:49:00","deleted_at":null,"first_name":"Isabella","last_name":"Britt","phone":"968531420"}]
@@ -48,11 +51,12 @@ DriverEfficientTripsModel copyWith({  bool? error,
 
 class Data {
   Data({
-      List<TripsOutcity>? tripsOutcity, 
-      List<TripInside>? tripInside,}){
+    List<TripsOutcity>? tripsOutcity,
+    List<TripInside>? tripInside,
+  }) {
     _tripsOutcity = tripsOutcity;
     _tripInside = tripInside;
-}
+  }
 
   Data.fromJson(dynamic json) {
     if (json['trips_outcity'] != null) {
@@ -70,11 +74,14 @@ class Data {
   }
   List<TripsOutcity>? _tripsOutcity;
   List<TripInside>? _tripInside;
-Data copyWith({  List<TripsOutcity>? tripsOutcity,
-  List<TripInside>? tripInside,
-}) => Data(  tripsOutcity: tripsOutcity ?? _tripsOutcity,
-  tripInside: tripInside ?? _tripInside,
-);
+  Data copyWith({
+    List<TripsOutcity>? tripsOutcity,
+    List<TripInside>? tripInside,
+  }) =>
+      Data(
+        tripsOutcity: tripsOutcity ?? _tripsOutcity,
+        tripInside: tripInside ?? _tripInside,
+      );
   List<TripsOutcity>? get tripsOutcity => _tripsOutcity;
   List<TripInside>? get tripInside => _tripInside;
 
@@ -88,7 +95,6 @@ Data copyWith({  List<TripsOutcity>? tripsOutcity,
     }
     return map;
   }
-
 }
 
 /// id : 169
@@ -135,47 +141,48 @@ Data copyWith({  List<TripsOutcity>? tripsOutcity,
 
 class TripInside {
   TripInside({
-      int? id, 
-      dynamic customerId, 
-      int? userId, 
-      dynamic vehicleId, 
-      int? typeId, 
-      dynamic optionId, 
-      int? driverId, 
-      String? categoryId, 
-      String? requestType, 
-      String? subcategoryId, 
-      dynamic from, 
-      dynamic to, 
-      dynamic direction, 
-      String? date, 
-      int? bags, 
-      String? time, 
-      dynamic pickup, 
-      dynamic dropoff, 
-      dynamic duration, 
-      String? pickupAddr, 
-      String? destAddr, 
-      dynamic note, 
-      int? travellers, 
-      String? status, 
-      int? payment, 
-      String? pickupLatitude, 
-      String? pickupLongitude, 
-      String? dropLatitude, 
-      String? dropLongitude, 
-      String? km, 
-      String? minutes, 
-      int? cost, 
-      String? startTime, 
-      String? endTime, 
-      String? createdAt, 
-      dynamic orderTime, 
-      String? updatedAt, 
-      dynamic deletedAt, 
-      String? firstName, 
-      String? lastName, 
-      String? phone,}){
+    int? id,
+    dynamic customerId,
+    int? userId,
+    dynamic vehicleId,
+    int? typeId,
+    dynamic optionId,
+    int? driverId,
+    String? categoryId,
+    String? requestType,
+    String? subcategoryId,
+    dynamic from,
+    dynamic to,
+    dynamic direction,
+    String? date,
+    int? bags,
+    String? time,
+    dynamic pickup,
+    dynamic dropoff,
+    dynamic duration,
+    String? pickupAddr,
+    String? destAddr,
+    dynamic note,
+    int? travellers,
+    String? status,
+    int? payment,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? km,
+    String? minutes,
+    int? cost,
+    String? startTime,
+    String? endTime,
+    String? createdAt,
+    dynamic orderTime,
+    String? updatedAt,
+    dynamic deletedAt,
+    String? firstName,
+    String? lastName,
+    String? phone,
+  }) {
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -217,7 +224,7 @@ class TripInside {
     _firstName = firstName;
     _lastName = lastName;
     _phone = phone;
-}
+  }
 
   TripInside.fromJson(dynamic json) {
     _id = json['id'];
@@ -303,89 +310,92 @@ class TripInside {
   String? _firstName;
   String? _lastName;
   String? _phone;
-TripInside copyWith({  int? id,
-  dynamic customerId,
-  int? userId,
-  dynamic vehicleId,
-  int? typeId,
-  dynamic optionId,
-  int? driverId,
-  String? categoryId,
-  String? requestType,
-  String? subcategoryId,
-  dynamic from,
-  dynamic to,
-  dynamic direction,
-  String? date,
-  int? bags,
-  String? time,
-  dynamic pickup,
-  dynamic dropoff,
-  dynamic duration,
-  String? pickupAddr,
-  String? destAddr,
-  dynamic note,
-  int? travellers,
-  String? status,
-  int? payment,
-  String? pickupLatitude,
-  String? pickupLongitude,
-  String? dropLatitude,
-  String? dropLongitude,
-  String? km,
-  String? minutes,
-  int? cost,
-  String? startTime,
-  String? endTime,
-  String? createdAt,
-  dynamic orderTime,
-  String? updatedAt,
-  dynamic deletedAt,
-  String? firstName,
-  String? lastName,
-  String? phone,
-}) => TripInside(  id: id ?? _id,
-  customerId: customerId ?? _customerId,
-  userId: userId ?? _userId,
-  vehicleId: vehicleId ?? _vehicleId,
-  typeId: typeId ?? _typeId,
-  optionId: optionId ?? _optionId,
-  driverId: driverId ?? _driverId,
-  categoryId: categoryId ?? _categoryId,
-  requestType: requestType ?? _requestType,
-  subcategoryId: subcategoryId ?? _subcategoryId,
-  from: from ?? _from,
-  to: to ?? _to,
-  direction: direction ?? _direction,
-  date: date ?? _date,
-  bags: bags ?? _bags,
-  time: time ?? _time,
-  pickup: pickup ?? _pickup,
-  dropoff: dropoff ?? _dropoff,
-  duration: duration ?? _duration,
-  pickupAddr: pickupAddr ?? _pickupAddr,
-  destAddr: destAddr ?? _destAddr,
-  note: note ?? _note,
-  travellers: travellers ?? _travellers,
-  status: status ?? _status,
-  payment: payment ?? _payment,
-  pickupLatitude: pickupLatitude ?? _pickupLatitude,
-  pickupLongitude: pickupLongitude ?? _pickupLongitude,
-  dropLatitude: dropLatitude ?? _dropLatitude,
-  dropLongitude: dropLongitude ?? _dropLongitude,
-  km: km ?? _km,
-  minutes: minutes ?? _minutes,
-  cost: cost ?? _cost,
-  startTime: startTime ?? _startTime,
-  endTime: endTime ?? _endTime,
-  createdAt: createdAt ?? _createdAt,
-  orderTime: orderTime ?? _orderTime,
-  updatedAt: updatedAt ?? _updatedAt,
-  deletedAt: deletedAt ?? _deletedAt,
-  firstName: firstName ?? _firstName,
-  lastName: lastName ?? _lastName,
-  phone: phone ?? _phone,
-);
+  TripInside copyWith({
+    int? id,
+    dynamic customerId,
+    int? userId,
+    dynamic vehicleId,
+    int? typeId,
+    dynamic optionId,
+    int? driverId,
+    String? categoryId,
+    String? requestType,
+    String? subcategoryId,
+    dynamic from,
+    dynamic to,
+    dynamic direction,
+    String? date,
+    int? bags,
+    String? time,
+    dynamic pickup,
+    dynamic dropoff,
+    dynamic duration,
+    String? pickupAddr,
+    String? destAddr,
+    dynamic note,
+    int? travellers,
+    String? status,
+    int? payment,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? km,
+    String? minutes,
+    int? cost,
+    String? startTime,
+    String? endTime,
+    String? createdAt,
+    dynamic orderTime,
+    String? updatedAt,
+    dynamic deletedAt,
+    String? firstName,
+    String? lastName,
+    String? phone,
+  }) =>
+      TripInside(
+        id: id ?? _id,
+        customerId: customerId ?? _customerId,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        typeId: typeId ?? _typeId,
+        optionId: optionId ?? _optionId,
+        driverId: driverId ?? _driverId,
+        categoryId: categoryId ?? _categoryId,
+        requestType: requestType ?? _requestType,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        direction: direction ?? _direction,
+        date: date ?? _date,
+        bags: bags ?? _bags,
+        time: time ?? _time,
+        pickup: pickup ?? _pickup,
+        dropoff: dropoff ?? _dropoff,
+        duration: duration ?? _duration,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        destAddr: destAddr ?? _destAddr,
+        note: note ?? _note,
+        travellers: travellers ?? _travellers,
+        status: status ?? _status,
+        payment: payment ?? _payment,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        km: km ?? _km,
+        minutes: minutes ?? _minutes,
+        cost: cost ?? _cost,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        createdAt: createdAt ?? _createdAt,
+        orderTime: orderTime ?? _orderTime,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        phone: phone ?? _phone,
+      );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
@@ -473,7 +483,6 @@ TripInside copyWith({  int? id,
     map['phone'] = _phone;
     return map;
   }
-
 }
 
 /// id : 168
@@ -520,47 +529,48 @@ TripInside copyWith({  int? id,
 
 class TripsOutcity {
   TripsOutcity({
-      int? id, 
-      dynamic customerId, 
-      int? userId, 
-      int? vehicleId, 
-      dynamic typeId, 
-      dynamic optionId, 
-      int? driverId, 
-      String? categoryId, 
-      dynamic requestType, 
-      String? subcategoryId, 
-      dynamic from, 
-      dynamic to, 
-      dynamic direction, 
-      String? date, 
-      int? bags, 
-      String? time, 
-      dynamic pickup, 
-      dynamic dropoff, 
-      dynamic duration, 
-      dynamic pickupAddr, 
-      dynamic destAddr, 
-      dynamic note, 
-      int? travellers, 
-      String? status, 
-      int? payment, 
-      String? pickupLatitude, 
-      String? pickupLongitude, 
-      String? dropLatitude, 
-      String? dropLongitude, 
-      String? km, 
-      String? minutes, 
-      int? cost, 
-      String? startTime, 
-      String? endTime, 
-      String? createdAt, 
-      dynamic orderTime, 
-      String? updatedAt, 
-      String? deletedAt, 
-      String? firstName, 
-      String? lastName, 
-      String? phone,}){
+    int? id,
+    dynamic customerId,
+    int? userId,
+    int? vehicleId,
+    dynamic typeId,
+    dynamic optionId,
+    int? driverId,
+    String? categoryId,
+    dynamic requestType,
+    String? subcategoryId,
+    dynamic from,
+    dynamic to,
+    dynamic direction,
+    String? date,
+    int? bags,
+    String? time,
+    dynamic pickup,
+    dynamic dropoff,
+    dynamic duration,
+    dynamic pickupAddr,
+    dynamic destAddr,
+    dynamic note,
+    int? travellers,
+    String? status,
+    int? payment,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? km,
+    String? minutes,
+    int? cost,
+    String? startTime,
+    String? endTime,
+    String? createdAt,
+    dynamic orderTime,
+    String? updatedAt,
+    String? deletedAt,
+    String? firstName,
+    String? lastName,
+    String? phone,
+  }) {
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -602,7 +612,7 @@ class TripsOutcity {
     _firstName = firstName;
     _lastName = lastName;
     _phone = phone;
-}
+  }
 
   TripsOutcity.fromJson(dynamic json) {
     _id = json['id'];
@@ -688,89 +698,92 @@ class TripsOutcity {
   String? _firstName;
   String? _lastName;
   String? _phone;
-TripsOutcity copyWith({  int? id,
-  dynamic customerId,
-  int? userId,
-  int? vehicleId,
-  dynamic typeId,
-  dynamic optionId,
-  int? driverId,
-  String? categoryId,
-  dynamic requestType,
-  String? subcategoryId,
-  dynamic from,
-  dynamic to,
-  dynamic direction,
-  String? date,
-  int? bags,
-  String? time,
-  dynamic pickup,
-  dynamic dropoff,
-  dynamic duration,
-  dynamic pickupAddr,
-  dynamic destAddr,
-  dynamic note,
-  int? travellers,
-  String? status,
-  int? payment,
-  String? pickupLatitude,
-  String? pickupLongitude,
-  String? dropLatitude,
-  String? dropLongitude,
-  String? km,
-  String? minutes,
-  int? cost,
-  String? startTime,
-  String? endTime,
-  String? createdAt,
-  dynamic orderTime,
-  String? updatedAt,
-  String? deletedAt,
-  String? firstName,
-  String? lastName,
-  String? phone,
-}) => TripsOutcity(  id: id ?? _id,
-  customerId: customerId ?? _customerId,
-  userId: userId ?? _userId,
-  vehicleId: vehicleId ?? _vehicleId,
-  typeId: typeId ?? _typeId,
-  optionId: optionId ?? _optionId,
-  driverId: driverId ?? _driverId,
-  categoryId: categoryId ?? _categoryId,
-  requestType: requestType ?? _requestType,
-  subcategoryId: subcategoryId ?? _subcategoryId,
-  from: from ?? _from,
-  to: to ?? _to,
-  direction: direction ?? _direction,
-  date: date ?? _date,
-  bags: bags ?? _bags,
-  time: time ?? _time,
-  pickup: pickup ?? _pickup,
-  dropoff: dropoff ?? _dropoff,
-  duration: duration ?? _duration,
-  pickupAddr: pickupAddr ?? _pickupAddr,
-  destAddr: destAddr ?? _destAddr,
-  note: note ?? _note,
-  travellers: travellers ?? _travellers,
-  status: status ?? _status,
-  payment: payment ?? _payment,
-  pickupLatitude: pickupLatitude ?? _pickupLatitude,
-  pickupLongitude: pickupLongitude ?? _pickupLongitude,
-  dropLatitude: dropLatitude ?? _dropLatitude,
-  dropLongitude: dropLongitude ?? _dropLongitude,
-  km: km ?? _km,
-  minutes: minutes ?? _minutes,
-  cost: cost ?? _cost,
-  startTime: startTime ?? _startTime,
-  endTime: endTime ?? _endTime,
-  createdAt: createdAt ?? _createdAt,
-  orderTime: orderTime ?? _orderTime,
-  updatedAt: updatedAt ?? _updatedAt,
-  deletedAt: deletedAt ?? _deletedAt,
-  firstName: firstName ?? _firstName,
-  lastName: lastName ?? _lastName,
-  phone: phone ?? _phone,
-);
+  TripsOutcity copyWith({
+    int? id,
+    dynamic customerId,
+    int? userId,
+    int? vehicleId,
+    dynamic typeId,
+    dynamic optionId,
+    int? driverId,
+    String? categoryId,
+    dynamic requestType,
+    String? subcategoryId,
+    dynamic from,
+    dynamic to,
+    dynamic direction,
+    String? date,
+    int? bags,
+    String? time,
+    dynamic pickup,
+    dynamic dropoff,
+    dynamic duration,
+    dynamic pickupAddr,
+    dynamic destAddr,
+    dynamic note,
+    int? travellers,
+    String? status,
+    int? payment,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? km,
+    String? minutes,
+    int? cost,
+    String? startTime,
+    String? endTime,
+    String? createdAt,
+    dynamic orderTime,
+    String? updatedAt,
+    String? deletedAt,
+    String? firstName,
+    String? lastName,
+    String? phone,
+  }) =>
+      TripsOutcity(
+        id: id ?? _id,
+        customerId: customerId ?? _customerId,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        typeId: typeId ?? _typeId,
+        optionId: optionId ?? _optionId,
+        driverId: driverId ?? _driverId,
+        categoryId: categoryId ?? _categoryId,
+        requestType: requestType ?? _requestType,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        direction: direction ?? _direction,
+        date: date ?? _date,
+        bags: bags ?? _bags,
+        time: time ?? _time,
+        pickup: pickup ?? _pickup,
+        dropoff: dropoff ?? _dropoff,
+        duration: duration ?? _duration,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        destAddr: destAddr ?? _destAddr,
+        note: note ?? _note,
+        travellers: travellers ?? _travellers,
+        status: status ?? _status,
+        payment: payment ?? _payment,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        km: km ?? _km,
+        minutes: minutes ?? _minutes,
+        cost: cost ?? _cost,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        createdAt: createdAt ?? _createdAt,
+        orderTime: orderTime ?? _orderTime,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        phone: phone ?? _phone,
+      );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
@@ -858,5 +871,4 @@ TripsOutcity copyWith({  int? id,
     map['phone'] = _phone;
     return map;
   }
-
 }

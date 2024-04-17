@@ -657,10 +657,13 @@ class _MapScreenState extends State<MapScreen> {
                                       width: 60.w,
                                       height: 8.h,
                                       decoration: const BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(25)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(25)),
                                         gradient: RadialGradient(
-                                          colors: [Colors.blueGrey, primaryBlue3],
+                                          colors: [
+                                            Colors.blueGrey,
+                                            primaryBlue3
+                                          ],
                                           radius: 1.2,
                                         ),
                                       ),
@@ -675,8 +678,7 @@ class _MapScreenState extends State<MapScreen> {
                                     ),
                                     onTap: () {
                                       Loader.show(context,
-                                          progressIndicator:
-                                              LoaderWidget());
+                                          progressIndicator: LoaderWidget());
                                       print(fromLat);
                                       print(fromLon);
                                       print(toLat);
@@ -699,8 +701,10 @@ class _MapScreenState extends State<MapScreen> {
                                                       timeOfTrip: timeOfTrip,
                                                       distance:
                                                           distance.toString(),
-                                                      fromLat: fromLat.toString(),
-                                                      fromLon: fromLon.toString(),
+                                                      fromLat:
+                                                          fromLat.toString(),
+                                                      fromLon:
+                                                          fromLon.toString(),
                                                       toLat: toLat.toString(),
                                                       toLon: toLon.toString(),
                                                       to: widget.to,

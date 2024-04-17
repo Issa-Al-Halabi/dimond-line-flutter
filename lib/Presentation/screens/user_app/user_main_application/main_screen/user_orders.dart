@@ -50,7 +50,10 @@ class _UserOrdersState extends State<UserOrders> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      Loader.show(context, progressIndicator: LoaderWidget(),);
+      Loader.show(
+        context,
+        progressIndicator: LoaderWidget(),
+      );
       await creat.getUserOrders();
       if (creat.data.error == false) {
         Loader.hide();
@@ -95,7 +98,8 @@ class _UserOrdersState extends State<UserOrders> {
         setState(() {
           setSnackbar(data["message"].toString(), context);
           Future.delayed(const Duration(seconds: 1)).then((_) async {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserDashboard()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => UserDashboard()));
           });
         });
       } else {
@@ -154,6 +158,7 @@ class _UserOrdersState extends State<UserOrders> {
 
   @override
   Widget build(BuildContext context) {
+    print("user_orders");
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
@@ -202,17 +207,21 @@ class _UserOrdersState extends State<UserOrders> {
                                         itemCount: ordersList.length,
                                         itemBuilder:
                                             (BuildContext context, int index) {
-                                          if(ordersList[index].status.toString() == 'pending'){
+                                          if (ordersList[index]
+                                                  .status
+                                                  .toString() ==
+                                              'pending') {
                                             return Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 SizedBox(
                                                   width: 3.w,
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(
-                                                    vertical: 1.h,),
+                                                    vertical: 1.h,
+                                                  ),
                                                   child: Container(
                                                     // height: 66.h,
                                                     width: 80.w,
@@ -223,16 +232,19 @@ class _UserOrdersState extends State<UserOrders> {
                                                               .withOpacity(0.3),
                                                           spreadRadius: 2,
                                                           blurRadius: 7,
-                                                          offset:
-                                                          const Offset(0, 0),
+                                                          offset: const Offset(
+                                                              0, 0),
                                                         ),
                                                       ],
                                                       borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(20)),
+                                                          const BorderRadius
+                                                                  .all(
+                                                              Radius.circular(
+                                                                  20)),
                                                       color: backgroundColor,
                                                     ),
-                                                    child: SingleChildScrollView(
+                                                    child:
+                                                        SingleChildScrollView(
                                                       child: Column(
                                                         // crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
@@ -241,83 +253,87 @@ class _UserOrdersState extends State<UserOrders> {
                                                           ),
                                                           myText(
                                                               text:
-                                                              'your trip is pending'
-                                                                  .tr(),
+                                                                  'your trip is pending'
+                                                                      .tr(),
                                                               fontSize: 5.5.sp,
                                                               color:
-                                                              // primaryBlue,
-                                                              Colors.black54,
+                                                                  // primaryBlue,
+                                                                  Colors
+                                                                      .black54,
                                                               fontWeight:
-                                                              FontWeight
-                                                                  .w600),
+                                                                  FontWeight
+                                                                      .w600),
                                                           SizedBox(
                                                             height: 2.h,
                                                           ),
                                                           ordersList[index]
-                                                              .categoryId
-                                                              .toString() ==
-                                                              '2'
+                                                                      .categoryId
+                                                                      .toString() ==
+                                                                  '2'
                                                               ? Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                2.w),
-                                                            child: Text(
-                                                              'from'.tr() +
-                                                                  ' ${ordersList[index]
-                                                                      .from
-                                                                      .toString()}' +
-                                                                  ' ' +
-                                                                  'to'.tr() +
-                                                                  ' ' +
-                                                                  '${ordersList[index]
-                                                                      .to
-                                                                      .toString()}',
-                                                              style:
-                                                              TextStyle(
-                                                                color:
-                                                                primaryBlue,
-                                                                fontSize:
-                                                                4.5.sp,
-                                                              ),
-                                                            ),
-                                                          )
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              2.w),
+                                                                  child: Text(
+                                                                    'from'.tr() +
+                                                                        ' ${ordersList[index].from.toString()}' +
+                                                                        ' ' +
+                                                                        'to'.tr() +
+                                                                        ' ' +
+                                                                        '${ordersList[index].to.toString()}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color:
+                                                                          primaryBlue,
+                                                                      fontSize:
+                                                                          4.5.sp,
+                                                                    ),
+                                                                  ),
+                                                                )
                                                               : Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                2.w),
-                                                            child: Text(
-                                                              'from'.tr() +
-                                                                  ' ' +
-                                                                  ' ${ordersList[index]
-                                                                      .pickupAddr
-                                                                      .toString()}' +
-                                                                  '\n' +
-                                                                  'to'.tr() +
-                                                                  ' ' +
-                                                                  '${ordersList[index]
-                                                                      .destAddr
-                                                                      .toString()}',
-                                                              style:
-                                                              TextStyle(
-                                                                color: primaryBlue,
-                                                                fontSize:
-                                                                4.5.sp,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              2.w),
+                                                                  child: Text(
+                                                                    'from'.tr() +
+                                                                        ' ' +
+                                                                        ' ${ordersList[index].pickupAddr.toString()}' +
+                                                                        '\n' +
+                                                                        'to'.tr() +
+                                                                        ' ' +
+                                                                        '${ordersList[index].destAddr.toString()}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color:
+                                                                          primaryBlue,
+                                                                      fontSize:
+                                                                          4.5.sp,
+                                                                    ),
+                                                                  ),
+                                                                ),
                                                           SizedBox(
                                                             height: 1.h,
                                                           ),
                                                           ContainerWidget(
-                                                              text: 'cancel'.tr(),
+                                                              text:
+                                                                  'cancel'.tr(),
                                                               h: 6.h,
                                                               w: 40.w,
                                                               onTap: () async {
-                                                                print('call api cancel');
-                                                                print(ordersList[index].id.toString());
-                                                                await cancelTrip(ordersList[index].id.toString());                                                            }),
+                                                                print(
+                                                                    'call api cancel');
+                                                                print(ordersList[
+                                                                        index]
+                                                                    .id
+                                                                    .toString());
+                                                                await cancelTrip(
+                                                                    ordersList[
+                                                                            index]
+                                                                        .id
+                                                                        .toString());
+                                                              }),
                                                           SizedBox(
                                                             height: 2.h,
                                                           ),
@@ -331,18 +347,18 @@ class _UserOrdersState extends State<UserOrders> {
                                                 )
                                               ],
                                             );
-                                          }
-                                          else {
+                                          } else {
                                             return Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 SizedBox(
                                                   width: 3.w,
                                                 ),
                                                 Padding(
                                                   padding: EdgeInsets.symmetric(
-                                                    vertical: 1.h,),
+                                                    vertical: 1.h,
+                                                  ),
                                                   child: Container(
                                                     // height: 66.h,
                                                     width: 80.w,
@@ -353,187 +369,179 @@ class _UserOrdersState extends State<UserOrders> {
                                                               .withOpacity(0.3),
                                                           spreadRadius: 2,
                                                           blurRadius: 7,
-                                                          offset:
-                                                          const Offset(0, 0),
+                                                          offset: const Offset(
+                                                              0, 0),
                                                         ),
                                                       ],
                                                       borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(20)),
+                                                          const BorderRadius
+                                                                  .all(
+                                                              Radius.circular(
+                                                                  20)),
                                                       color: backgroundColor,
                                                     ),
-                                                    child: SingleChildScrollView(
+                                                    child:
+                                                        SingleChildScrollView(
                                                       child: Column(
                                                         children: [
                                                           SizedBox(
                                                             height: 1.h,
                                                           ),
                                                           ordersList[index]
-                                                              .status
-                                                              .toString() ==
-                                                              'started'
+                                                                      .status
+                                                                      .toString() ==
+                                                                  'started'
                                                               ? myText(
-                                                              text:
-                                                              'your trip is started'
-                                                                  .tr(),
-                                                              fontSize: 5.5.sp,
-                                                              color:
-                                                              Colors.black54,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w600)
+                                                                  text:
+                                                                      'your trip is started'
+                                                                          .tr(),
+                                                                  fontSize:
+                                                                      5.5.sp,
+                                                                  color: Colors
+                                                                      .black54,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600)
                                                               : myText(
-                                                              text:
-                                                              'your trip is accepted'
-                                                                  .tr(),
-                                                              fontSize: 5.5.sp,
-                                                              color:
-                                                              Colors.black54,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w600),
+                                                                  text:
+                                                                      'your trip is accepted'
+                                                                          .tr(),
+                                                                  fontSize:
+                                                                      5.5.sp,
+                                                                  color: Colors
+                                                                      .black54,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
                                                           SizedBox(
                                                             height: 2.h,
                                                           ),
                                                           ordersList[index]
-                                                              .categoryId
-                                                              .toString() ==
-                                                              '2'
+                                                                      .categoryId
+                                                                      .toString() ==
+                                                                  '2'
                                                               ? Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                2.w),
-                                                            child: Text(
-                                                              'from'.tr() +
-                                                                  ' ${ordersList[index]
-                                                                      .from
-                                                                      .toString()}' +
-                                                                  ' ' +
-                                                                  'to'.tr() +
-                                                                  ' ' +
-                                                                  '${ordersList[index]
-                                                                      .to
-                                                                      .toString()}',
-                                                              style:
-                                                              TextStyle(
-                                                                color:
-                                                                primaryBlue,
-                                                                fontSize:
-                                                                4.5.sp,
-                                                              ),
-                                                            ),
-                                                          )
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              2.w),
+                                                                  child: Text(
+                                                                    'from'.tr() +
+                                                                        ' ${ordersList[index].from.toString()}' +
+                                                                        ' ' +
+                                                                        'to'.tr() +
+                                                                        ' ' +
+                                                                        '${ordersList[index].to.toString()}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color:
+                                                                          primaryBlue,
+                                                                      fontSize:
+                                                                          4.5.sp,
+                                                                    ),
+                                                                  ),
+                                                                )
                                                               : Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                2.w),
-                                                            child: Text(
-                                                              'from'.tr() +
-                                                                  ' ' +
-                                                                  ' ${ordersList[index]
-                                                                      .pickupAddr
-                                                                      .toString()}' +
-                                                                  '\n' +
-                                                                  'to'.tr() +
-                                                                  ' ' +
-                                                                  '${ordersList[index]
-                                                                      .destAddr
-                                                                      .toString()}',
-                                                              style:
-                                                              TextStyle(
-                                                                color: primaryBlue,
-                                                                fontSize:
-                                                                4.5.sp,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              2.w),
+                                                                  child: Text(
+                                                                    'from'.tr() +
+                                                                        ' ' +
+                                                                        ' ${ordersList[index].pickupAddr.toString()}' +
+                                                                        '\n' +
+                                                                        'to'.tr() +
+                                                                        ' ' +
+                                                                        '${ordersList[index].destAddr.toString()}',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color:
+                                                                          primaryBlue,
+                                                                      fontSize:
+                                                                          4.5.sp,
+                                                                    ),
+                                                                  ),
+                                                                ),
                                                           Padding(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                horizontal:
-                                                                2.w),
+                                                                    horizontal:
+                                                                        2.w),
                                                             child: Row(
                                                               mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
                                                               children: [
                                                                 Column(
                                                                   children: [
                                                                     Text(
                                                                       ' ${ordersList[index]
-                                                                          // .firstName
-                                                                      .driver.firstName
-                                                                          .toString()}' +
+                                                                              // .firstName
+                                                                              .driver.firstName.toString()}' +
                                                                           ' ' +
                                                                           '${ordersList[index]
                                                                               // .lastName
-                                                                              .driver.lastName
-                                                                              .toString()}',
+                                                                              .driver.lastName.toString()}',
                                                                       style:
-                                                                      TextStyle(
-                                                                        color: primaryBlue,
+                                                                          TextStyle(
+                                                                        color:
+                                                                            primaryBlue,
                                                                         fontSize:
-                                                                        5.sp,
+                                                                            5.sp,
                                                                       ),
                                                                     ),
                                                                     InkWell(
-                                                                      child: Text(
-                                                                        ' ${ordersList[index]
-                                                                            .driver.phone
-                                                                            .toString()}',
+                                                                      child:
+                                                                          Text(
+                                                                        ' ${ordersList[index].driver.phone.toString()}',
                                                                         style:
-                                                                        TextStyle(
+                                                                            TextStyle(
                                                                           color:
-                                                                          primaryBlue,
+                                                                              primaryBlue,
                                                                           fontSize:
-                                                                          5.sp,
+                                                                              5.sp,
                                                                           decoration:
-                                                                          TextDecoration
-                                                                              .underline,
+                                                                              TextDecoration.underline,
                                                                         ),
                                                                       ),
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         launchUrl(
-                                                                            Uri
-                                                                                .parse(
-                                                                                "tel://+963 ${ordersList[index]
-                                                                                    .driver.phone
-                                                                                    .toString()}"));
+                                                                            Uri.parse("tel://+963 ${ordersList[index].driver.phone.toString()}"));
                                                                       },
                                                                     ),
                                                                   ],
                                                                 ),
                                                                 InkWell(
                                                                     child:
-                                                                    FadeInImage(
-                                                                      image: NetworkImage(
-                                                                          ordersList[
-                                                                          index]
-                                                                              .driver.profileImage
-                                                                              .toString()),
-                                                                      height: 10
-                                                                          .h,
-                                                                      width: 10.w,
+                                                                        FadeInImage(
+                                                                      image: NetworkImage(ordersList[
+                                                                              index]
+                                                                          .driver
+                                                                          .profileImage
+                                                                          .toString()),
+                                                                      height:
+                                                                          10.h,
+                                                                      width:
+                                                                          10.w,
                                                                       fit: BoxFit
                                                                           .contain,
-                                                                      imageErrorBuilder: (
-                                                                          context,
-                                                                          error,
-                                                                          stackTrace) =>
+                                                                      imageErrorBuilder: (context,
+                                                                              error,
+                                                                              stackTrace) =>
                                                                           erroWidget(
                                                                               100),
                                                                       placeholder:
-                                                                      placeHolder(
-                                                                          100),
+                                                                          placeHolder(
+                                                                              100),
                                                                     ),
                                                                     onTap: () {
-                                                                      getDialog(
-                                                                          ordersList[
-                                                                          index]
-                                                                              .driver.profileImage
-                                                                              .toString());
+                                                                      getDialog(ordersList[
+                                                                              index]
+                                                                          .driver
+                                                                          .profileImage
+                                                                          .toString());
                                                                     }),
                                                               ],
                                                             ),
@@ -544,67 +552,65 @@ class _UserOrdersState extends State<UserOrders> {
                                                           Padding(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                horizontal:
-                                                                2.w),
+                                                                    horizontal:
+                                                                        2.w),
                                                             child: Row(
                                                               mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
                                                               children: [
                                                                 Column(
                                                                   children: [
                                                                     Text(
-                                                                      ' ${ordersList[index]
-                                              .vehicle.carModel
-                                                                          .toString()}',
+                                                                      ' ${ordersList[index].vehicle.carModel.toString()}',
                                                                       style:
-                                                                      TextStyle(
-                                                                        color: primaryBlue,
+                                                                          TextStyle(
+                                                                        color:
+                                                                            primaryBlue,
                                                                         fontSize:
-                                                                        5.sp,
+                                                                            5.sp,
                                                                       ),
                                                                     ),
                                                                     Text(
-                                                                      ' ${ordersList[index]
-                                                                          .vehicle.color
-                                                                          .toString()}',
+                                                                      ' ${ordersList[index].vehicle.color.toString()}',
                                                                       style:
-                                                                      TextStyle(
-                                                                        color: primaryBlue,
+                                                                          TextStyle(
+                                                                        color:
+                                                                            primaryBlue,
                                                                         fontSize:
-                                                                        5.sp,
+                                                                            5.sp,
                                                                       ),
                                                                     ),
                                                                   ],
                                                                 ),
                                                                 InkWell(
                                                                   child:
-                                                                  FadeInImage(
-                                                                    image: NetworkImage(
-                                                                        ordersList[
-                                                                        index]
-                                                                            .vehicle.vehicleImage
-                                                                            .toString()),
-                                                                    height: 10.h,
+                                                                      FadeInImage(
+                                                                    image: NetworkImage(ordersList[
+                                                                            index]
+                                                                        .vehicle
+                                                                        .vehicleImage
+                                                                        .toString()),
+                                                                    height:
+                                                                        10.h,
                                                                     width: 10.w,
                                                                     fit: BoxFit
                                                                         .contain,
-                                                                    imageErrorBuilder:
-                                                                        (context,
-                                                                        error,
-                                                                        stackTrace) =>
+                                                                    imageErrorBuilder: (context,
+                                                                            error,
+                                                                            stackTrace) =>
                                                                         erroWidget(
                                                                             20),
                                                                     placeholder:
-                                                                    placeHolder(
-                                                                        20),
+                                                                        placeHolder(
+                                                                            20),
                                                                   ),
                                                                   onTap: () {
-                                                                    getDialog(
-                                                                        ordersList[
-                                                                        index]
-                                                                            .vehicle.vehicleImage
-                                                                            .toString());
+                                                                    getDialog(ordersList[
+                                                                            index]
+                                                                        .vehicle
+                                                                        .vehicleImage
+                                                                        .toString());
                                                                   },
                                                                 ),
                                                               ],
@@ -614,33 +620,25 @@ class _UserOrdersState extends State<UserOrders> {
                                                             height: 2.h,
                                                           ),
                                                           ContainerWidget(
-                                                              text: 'share'.tr(),
+                                                              text:
+                                                                  'share'.tr(),
                                                               h: 6.h,
                                                               w: 40.w,
                                                               onTap: () {
                                                                 var str = "AppName"
-                                                                    .tr() +
+                                                                        .tr() +
                                                                     "\n\n" +
                                                                     "I with"
                                                                         .tr() +
                                                                     "\n"
-                                                                        "${ordersList[index]
-                                                                        .driver.firstName
-                                                                        .toString()}"
+                                                                        "${ordersList[index].driver.firstName.toString()}"
                                                                         "\t"
-                                                                        "${ordersList[index]
-                                                                        .driver.lastName
-                                                                        .toString()}\n"
-                                                                        "${ordersList[index]
-                                                                        .driver.phone
-                                                                        .toString()}\n"
-                                                                        "${ordersList[index]
-                                                                        .vehicle.carModel
-                                                                        .toString()}\n"
-                                                                        "${ordersList[index]
-                                                                        .vehicle.color
-                                                                        .toString()}";
-                                                                Share.share(str);
+                                                                        "${ordersList[index].driver.lastName.toString()}\n"
+                                                                        "${ordersList[index].driver.phone.toString()}\n"
+                                                                        "${ordersList[index].vehicle.carModel.toString()}\n"
+                                                                        "${ordersList[index].vehicle.color.toString()}";
+                                                                Share.share(
+                                                                    str);
 
                                                                 print(str);
                                                               }),
@@ -648,93 +646,84 @@ class _UserOrdersState extends State<UserOrders> {
                                                             height: 2.h,
                                                           ),
                                                           ContainerWidget(
-                                                              text: 'track driver'
-                                                                  .tr(),
+                                                              text:
+                                                                  'track driver'
+                                                                      .tr(),
                                                               h: 6.h,
                                                               w: 40.w,
                                                               onTap: () {
                                                                 print(ordersList[
-                                                                index]
+                                                                        index]
                                                                     .id
                                                                     .toString());
                                                                 print(ordersList[
-                                                                index]
+                                                                        index]
                                                                     .pickupLatitude
                                                                     .toString());
                                                                 print(ordersList[
-                                                                index]
+                                                                        index]
                                                                     .pickupLongitude
                                                                     .toString());
                                                                 print(ordersList[
-                                                                index]
-                                                                    .vehicle.deviceNumber
+                                                                        index]
+                                                                    .vehicle
+                                                                    .deviceNumber
                                                                     .toString());
                                                                 print(ordersList[
-                                                                index]
+                                                                        index]
                                                                     .dropLatitude
                                                                     .toString());
                                                                 print(ordersList[
-                                                                index]
+                                                                        index]
                                                                     .dropLongitude
                                                                     .toString());
                                                                 Navigator.of(
-                                                                    context)
+                                                                        context)
                                                                     .push(
                                                                   PageRouteBuilder(
-                                                                    pageBuilder: (
-                                                                        BuildContext context,
-                                                                        Animation<
-                                                                            double>
-                                                                        animation,
-                                                                        Animation<
-                                                                            double>
-                                                                        secondaryAnimation) {
+                                                                    pageBuilder: (BuildContext context,
+                                                                        Animation<double>
+                                                                            animation,
+                                                                        Animation<double>
+                                                                            secondaryAnimation) {
                                                                       return TrackingDriverScreen(
-                                                                          tripId: ordersList[
-                                                                          index]
+                                                                          tripId: ordersList[index]
                                                                               .id
                                                                               .toString(),
-                                                                          driverDeviceNumb: ordersList[
-                                                                          index]
-                                                                              .vehicle.deviceNumber
+                                                                          driverDeviceNumb: ordersList[index]
+                                                                              .vehicle
+                                                                              .deviceNumber
                                                                               .toString(),
-                                                                          pickupLatitude:
-                                                                          ordersList[index]
+                                                                          pickupLatitude: ordersList[index]
                                                                               .pickupLatitude,
-                                                                          pickupLongitude:
-                                                                          ordersList[index]
+                                                                          pickupLongitude: ordersList[index]
                                                                               .pickupLongitude,
-                                                                          dropLatitude:
-                                                                          ordersList[index]
+                                                                          dropLatitude: ordersList[index]
                                                                               .dropLatitude,
                                                                           dropLongitude:
-                                                                          ordersList[index]
-                                                                              .dropLongitude);
+                                                                              ordersList[index].dropLongitude);
                                                                     },
-                                                                    transitionsBuilder: (
-                                                                        BuildContext context,
-                                                                        Animation<
-                                                                            double>
-                                                                        animation,
-                                                                        Animation<
-                                                                            double>
-                                                                        secondaryAnimation,
+                                                                    transitionsBuilder: (BuildContext context,
+                                                                        Animation<double>
+                                                                            animation,
+                                                                        Animation<double>
+                                                                            secondaryAnimation,
                                                                         Widget
-                                                                        child) {
+                                                                            child) {
                                                                       return Align(
                                                                         child:
-                                                                        SizeTransition(
+                                                                            SizeTransition(
                                                                           sizeFactor:
-                                                                          animation,
+                                                                              animation,
                                                                           child:
-                                                                          child,
+                                                                              child,
                                                                         ),
                                                                       );
                                                                     },
                                                                     transitionDuration:
-                                                                    Duration(
-                                                                        milliseconds:
-                                                                        500),
+                                                                        Duration(
+                                                                            milliseconds:
+                                                                                500),
                                                                   ),
                                                                 );
                                                               }),
@@ -755,7 +744,9 @@ class _UserOrdersState extends State<UserOrders> {
                                         }),
                                   ),
                                   // SizedBox(height: 6.h,),
-                                  SizedBox(height: 4.h,),
+                                  SizedBox(
+                                    height: 4.h,
+                                  ),
                                 ],
                               ),
                             )
@@ -763,65 +754,57 @@ class _UserOrdersState extends State<UserOrders> {
                               color: primaryBlue,
                               key: _refreshIndicatorKey,
                               onRefresh: init,
-                          child: Center(child: Column(
-                            children: [
-                              SizedBox(
-                                height:
-                                20.h,
-                              ),
-                              // Image.asset(
-                              //   noData,
-                              //   fit: BoxFit
-                              //       .fill,
-                              //   height:
-                              //   30.h,
-                              // ),
+                              child: Center(
+                                  child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  // Image.asset(
+                                  //   noData,
+                                  //   fit: BoxFit
+                                  //       .fill,
+                                  //   height:
+                                  //   30.h,
+                                  // ),
 
-                              msg == 'There are no requests yet' ?
-                              Image.asset(
-                                noData,
-                                fit: BoxFit
-                                    .fill,
-                                height:
-                                30.h,
-                              )
-                              :
-                              Lottie.asset(
-                                lookingDriver,
-                                height: 30.h,
-                                width: 50.w,
-                              ),
-                              SizedBox(
-                                height:
-                                2.h,
-                              ),
-                              Text(
-                                // 'Your Request has not been approved'
-                                //     .tr(),
-                                  msg.tr(),
-                                style: TextStyle(
-                                    fontFamily:
-                                    'cairo',
-                                    color:
-                                    primaryBlue,
-                                    fontSize: 6.sp),
-                                textAlign: TextAlign.center,
-                              ),
-                              msg == 'There are no requests yet' ?
-                                  Text('')
-                              :
-                              TextButton(
-                                onPressed: init,
-                                child: myText(
-                                  text: 'tap to refresh'.tr(),
-                                  fontSize: 5.sp,
-                                  color: lightBlue3,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ))
-                      )),
+                                  msg == 'There are no requests yet'
+                                      ? Image.asset(
+                                          noData,
+                                          fit: BoxFit.fill,
+                                          height: 30.h,
+                                        )
+                                      : Lottie.asset(
+                                          lookingDriver,
+                                          height: 30.h,
+                                          width: 50.w,
+                                        ),
+                                  SizedBox(
+                                    height: 2.h,
+                                  ),
+                                  Text(
+                                    // 'Your Request has not been approved'
+                                    //     .tr(),
+                                    msg.tr(),
+                                    style: TextStyle(
+                                        fontFamily: 'cairo',
+                                        color: primaryBlue,
+                                        fontSize: 6.sp),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  msg == 'There are no requests yet'
+                                      ? Text('')
+                                      : TextButton(
+                                          onPressed: init,
+                                          child: myText(
+                                            text: 'tap to refresh'.tr(),
+                                            fontSize: 5.sp,
+                                            color: lightBlue3,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                ],
+                              )))),
                 ],
               ),
             ),

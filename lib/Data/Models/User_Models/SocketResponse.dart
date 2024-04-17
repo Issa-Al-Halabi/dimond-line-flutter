@@ -15,20 +15,21 @@
 
 class SocketResponse {
   SocketResponse({
-      String? driverFirstName, 
-      String? driverLastName, 
-      String? driverProfileImage, 
-      String? driverPhone, 
-      int? vehicelDeviceNumber, 
-      String? vehicelCarModel, 
-      String? vehicelColor, 
-      String? vehicelImage, 
-      String? pickupLatitude, 
-      String? pickupLongitude, 
-      String? dropLatitude, 
-      String? dropLongitude, 
-      String? status, 
-      int? id,}){
+    String? driverFirstName,
+    String? driverLastName,
+    String? driverProfileImage,
+    String? driverPhone,
+    int? vehicelDeviceNumber,
+    String? vehicelCarModel,
+    String? vehicelColor,
+    String? vehicelImage,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? status,
+    int? id,
+  }) {
     _driverFirstName = driverFirstName;
     _driverLastName = driverLastName;
     _driverProfileImage = driverProfileImage;
@@ -43,7 +44,7 @@ class SocketResponse {
     _dropLongitude = dropLongitude;
     _status = status;
     _id = id;
-}
+  }
 
   set driverFirstName(String? value) {
     _driverFirstName = value;
@@ -79,35 +80,38 @@ class SocketResponse {
   String? _dropLongitude;
   String? _status;
   int? _id;
-SocketResponse copyWith({  String? driverFirstName,
-  String? driverLastName,
-  String? driverProfileImage,
-  String? driverPhone,
-  int? vehicelDeviceNumber,
-  String? vehicelCarModel,
-  String? vehicelColor,
-  String? vehicelImage,
-  String? pickupLatitude,
-  String? pickupLongitude,
-  String? dropLatitude,
-  String? dropLongitude,
-  String? status,
-  int? id,
-}) => SocketResponse(  driverFirstName: driverFirstName ?? _driverFirstName,
-  driverLastName: driverLastName ?? _driverLastName,
-  driverProfileImage: driverProfileImage ?? _driverProfileImage,
-  driverPhone: driverPhone ?? _driverPhone,
-  vehicelDeviceNumber: vehicelDeviceNumber ?? _vehicelDeviceNumber,
-  vehicelCarModel: vehicelCarModel ?? _vehicelCarModel,
-  vehicelColor: vehicelColor ?? _vehicelColor,
-  vehicelImage: vehicelImage ?? _vehicelImage,
-  pickupLatitude: pickupLatitude ?? _pickupLatitude,
-  pickupLongitude: pickupLongitude ?? _pickupLongitude,
-  dropLatitude: dropLatitude ?? _dropLatitude,
-  dropLongitude: dropLongitude ?? _dropLongitude,
-  status: status ?? _status,
-  id: id ?? _id,
-);
+  SocketResponse copyWith({
+    String? driverFirstName,
+    String? driverLastName,
+    String? driverProfileImage,
+    String? driverPhone,
+    int? vehicelDeviceNumber,
+    String? vehicelCarModel,
+    String? vehicelColor,
+    String? vehicelImage,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? status,
+    int? id,
+  }) =>
+      SocketResponse(
+        driverFirstName: driverFirstName ?? _driverFirstName,
+        driverLastName: driverLastName ?? _driverLastName,
+        driverProfileImage: driverProfileImage ?? _driverProfileImage,
+        driverPhone: driverPhone ?? _driverPhone,
+        vehicelDeviceNumber: vehicelDeviceNumber ?? _vehicelDeviceNumber,
+        vehicelCarModel: vehicelCarModel ?? _vehicelCarModel,
+        vehicelColor: vehicelColor ?? _vehicelColor,
+        vehicelImage: vehicelImage ?? _vehicelImage,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        status: status ?? _status,
+        id: id ?? _id,
+      );
   String? get driverFirstName => _driverFirstName;
   String? get driverLastName => _driverLastName;
   String? get driverProfileImage => _driverProfileImage;

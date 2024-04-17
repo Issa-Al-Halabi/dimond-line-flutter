@@ -109,8 +109,10 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                   pageBuilder: (BuildContext context,
                       Animation<double> animation,
                       Animation<double> secondaryAnimation) {
-                    return DriverDashboard(driverType: 'driver',
-                      index: 1,);
+                    return DriverDashboard(
+                      driverType: 'driver',
+                      index: 1,
+                    );
                   },
                   transitionsBuilder: (BuildContext context,
                       Animation<double> animation,
@@ -126,15 +128,16 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                   transitionDuration: Duration(milliseconds: 500),
                 ),
               );
-            }
-            else {
+            } else {
               Navigator.of(context).push(
                 PageRouteBuilder(
                   pageBuilder: (BuildContext context,
                       Animation<double> animation,
                       Animation<double> secondaryAnimation) {
-                    return DriverDashboard(driverType: 'external_driver',
-                      index: 1,);
+                    return DriverDashboard(
+                      driverType: 'external_driver',
+                      index: 1,
+                    );
                   },
                   transitionsBuilder: (BuildContext context,
                       Animation<double> animation,
@@ -263,6 +266,8 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.profileImage);
+    print("widget.profileImage");
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
@@ -342,8 +347,9 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                           width: 70.w,
                                           decoration: BoxDecoration(
                                             color: lightBlue2,
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(20)),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(20)),
                                           ),
                                         ),
                                       ),
@@ -366,23 +372,31 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                               fontSize: 5.sp,
                                             ),
                                           ),
-                                          InkWell(
-                                              child: FadeInImage(
-                                                image: NetworkImage(widget
-                                                    .profileImage
-                                                    .toString()),
-                                                height: 10.h,
-                                                width: 10.w,
-                                                fit: BoxFit.contain,
-                                                imageErrorBuilder: (context,
-                                                        error, stackTrace) =>
-                                                    erroWidget(100),
-                                                placeholder: placeHolder(100),
-                                              ),
-                                              onTap: () {
-                                                getDialog(widget.profileImage
-                                                    .toString());
-                                              }),
+                                          widget.profileImage
+                                                      .endsWith(".jpg") ||
+                                                  widget.profileImage
+                                                      .endsWith(".png")
+                                              ? InkWell(
+                                                  child: FadeInImage(
+                                                    image: NetworkImage(widget
+                                                        .profileImage
+                                                        .toString()),
+                                                    height: 10.h,
+                                                    width: 10.w,
+                                                    fit: BoxFit.contain,
+                                                    imageErrorBuilder: (context,
+                                                            error,
+                                                            stackTrace) =>
+                                                        erroWidget(100),
+                                                    placeholder:
+                                                        placeHolder(100),
+                                                  ),
+                                                  onTap: () {
+                                                    getDialog(widget
+                                                        .profileImage
+                                                        .toString());
+                                                  })
+                                              : Container(),
                                         ],
                                       ),
                                       SizedBox(
@@ -434,7 +448,8 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                       widget.date != ''
                                           ? Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Image.asset(date,
                                                     height: 6.h, width: 6.w),
@@ -454,7 +469,8 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                       widget.time != ''
                                           ? Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Image.asset(time,
                                                     height: 6.h, width: 6.w),
@@ -481,8 +497,10 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                             width: 14.w,
                                           ),
                                           Text(
-                                            '${widget.kmTrip}' + ' ' + 'km2'.tr(),
-                                             style: TextStyle(
+                                            '${widget.kmTrip}' +
+                                                ' ' +
+                                                'km2'.tr(),
+                                            style: TextStyle(
                                               color: primaryBlue,
                                               fontSize: 5.sp,
                                             ),
@@ -502,7 +520,7 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                             '${widget.minTrip}' +
                                                 ' ' +
                                                 'min2'.tr(),
-                                           style: TextStyle(
+                                            style: TextStyle(
                                               color: primaryBlue,
                                               fontSize: 5.sp,
                                             ),
@@ -541,7 +559,8 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                               style: TextStyle(
                                                 color: lightBlue4,
                                                 fontSize: 5.sp,
-                                                decoration: TextDecoration.underline,
+                                                decoration:
+                                                    TextDecoration.underline,
                                               ),
                                             ),
                                             onTap: () {
@@ -567,7 +586,8 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                                 style: TextStyle(
                                                   color: lightBlue4,
                                                   fontSize: 5.sp,
-                                                  decoration: TextDecoration.underline,
+                                                  decoration:
+                                                      TextDecoration.underline,
                                                 ),
                                               ),
                                               onTap: () {
@@ -584,12 +604,12 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                                       return UserLocationScreen(
                                                         pickupLongitude: widget
                                                             .pickupLongitude,
-                                                        pickupLatitude:
-                                                            widget.pickupLatitude,
+                                                        pickupLatitude: widget
+                                                            .pickupLatitude,
                                                         dropLatitude:
                                                             widget.dropLatitude,
-                                                        dropLongitude:
-                                                            widget.dropLongitude,
+                                                        dropLongitude: widget
+                                                            .dropLongitude,
                                                       );
                                                     },
                                                     transitionsBuilder:
@@ -606,8 +626,9 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                                         ),
                                                       );
                                                     },
-                                                    transitionDuration: Duration(
-                                                        milliseconds: 500),
+                                                    transitionDuration:
+                                                        Duration(
+                                                            milliseconds: 500),
                                                   ),
                                                 );
                                               },
@@ -621,7 +642,8 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                       widget.isOption == 'Yes'
                                           ? Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Image.asset(options,
                                                     height: 6.h, width: 6.w),
@@ -635,7 +657,6 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                               ],
                                             )
                                           : Container(),
-
                                       widget.isOption == 'Yes'
                                           ? Column(
                                               crossAxisAlignment:
@@ -647,7 +668,8 @@ class _TripInfoScreenScreenState extends State<TripInfoScreen> {
                                                             .toString()
                                                             .replaceAll('"', '')
                                                             .replaceAll('[', '')
-                                                            .replaceAll(']', ''),
+                                                            .replaceAll(
+                                                                ']', ''),
                                                         style: TextStyle(
                                                           color: primaryBlue,
                                                           fontSize: 5.sp,

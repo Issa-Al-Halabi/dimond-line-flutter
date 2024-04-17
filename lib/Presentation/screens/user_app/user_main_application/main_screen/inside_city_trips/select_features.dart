@@ -106,6 +106,8 @@ class _SelectFeaturesState extends State<SelectFeatures> {
     // Loader.show(context, progressIndicator: LoaderWidget());
     if (_isNetworkAvail) {
       print("There is internet");
+      print("getNearestCarApi" + type_id);
+
       var data = await AppRequests.bookNowRequest(
           latitude,
           longitude,
@@ -122,40 +124,40 @@ class _SelectFeaturesState extends State<SelectFeatures> {
       data = json.decode(data);
       if (data["error"] == false) {
         // Loader.hide();
-        if(mounted)
-        setState(() {
-          msg = data["message"];
-          String tripId = data["data"]["id"].toString();
-          print('tripId');
-          print(tripId);
-          // setSnackbar(msg, context);
-          Navigator.of(context).pushReplacement(
-            PageRouteBuilder(
-              pageBuilder: (BuildContext context, Animation<double> animation,
-                  Animation<double> secondaryAnimation) {
-                // return UserDashboard(index: 1);
-                return InTripScreen(
-                    tripId: tripId,
-                    pickupLatitude: latitude,
-                    pickupLongitude: longitude,
-                    dropLatitude: tolat,
-                    dropLongitude: tolng);
-              },
-              transitionsBuilder: (BuildContext context,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                  Widget child) {
-                return Align(
-                  child: SizeTransition(
-                    sizeFactor: animation,
-                    child: child,
-                  ),
-                );
-              },
-              transitionDuration: Duration(milliseconds: 500),
-            ),
-          );
-        });
+        if (mounted)
+          setState(() {
+            msg = data["message"];
+            String tripId = data["data"]["id"].toString();
+            print('tripId');
+            print(tripId);
+            // setSnackbar(msg, context);
+            Navigator.of(context).pushReplacement(
+              PageRouteBuilder(
+                pageBuilder: (BuildContext context, Animation<double> animation,
+                    Animation<double> secondaryAnimation) {
+                  // return UserDashboard(index: 1);
+                  return InTripScreen(
+                      tripId: tripId,
+                      pickupLatitude: latitude,
+                      pickupLongitude: longitude,
+                      dropLatitude: tolat,
+                      dropLongitude: tolng);
+                },
+                transitionsBuilder: (BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    Widget child) {
+                  return Align(
+                    child: SizeTransition(
+                      sizeFactor: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                transitionDuration: Duration(milliseconds: 500),
+              ),
+            );
+          });
       } else {
         // Loader.hide();
         setSnackbar(data["message"].toString(), context);
@@ -230,8 +232,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
             ),
           );
         });
-      }
-      else{
+      } else {
         Loader.hide();
         setSnackbar(data["message"].toString(), context);
       }
@@ -387,12 +388,14 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                                             modelList[index]
                                                                 .name!);
                                                         print(index);
-                                                        priceoption += int.parse(
-                                                            modelList[index]
+                                                        priceoption +=
+                                                            int.parse(modelList[
+                                                                    index]
                                                                 .price!
                                                                 .toString());
-                                                        widget.price += int.parse(
-                                                            modelList[index]
+                                                        widget.price +=
+                                                            int.parse(modelList[
+                                                                    index]
                                                                 .price!
                                                                 .toString());
                                                         optionsId.add(
@@ -404,12 +407,14 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                                         setState(() {});
                                                         selectedIndexes
                                                             .remove(index);
-                                                        priceoption -= int.parse(
-                                                            modelList[index]
+                                                        priceoption -=
+                                                            int.parse(modelList[
+                                                                    index]
                                                                 .price!
                                                                 .toString());
-                                                        widget.price -= int.parse(
-                                                            modelList[index]
+                                                        widget.price -=
+                                                            int.parse(modelList[
+                                                                    index]
                                                                 .price!
                                                                 .toString());
                                                         optionsId.remove(
@@ -423,15 +428,15 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                                   SizedBox(width: 10),
                                                   Text(
                                                     "${modelList[index].name}",
-                                                    style:
-                                                        TextStyle(fontSize: 17.0),
+                                                    style: TextStyle(
+                                                        fontSize: 17.0),
                                                   ),
                                                   SizedBox(width: 10),
                                                   Text(
                                                     "${modelList[index].price}",
                                                     // formatter.format(double.parse(modelList[index].price)).toString(),
-                                                    style:
-                                                        TextStyle(fontSize: 17.0),
+                                                    style: TextStyle(
+                                                        fontSize: 17.0),
                                                   ),
                                                 ],
                                               ),
@@ -450,8 +455,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                   w: 60.w,
                                   onTap: () {
                                     Loader.show(context,
-                                        progressIndicator:
-                                            LoaderWidget());
+                                        progressIndicator: LoaderWidget());
                                     // if order now
                                     if (widget.date == '') {
                                       print('********************');

@@ -6,7 +6,8 @@ class ForgetPasswordModel {
   ForgetPasswordModel({
     bool? error,
     String? message,
-    Data? data,}){
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -20,13 +21,16 @@ class ForgetPasswordModel {
   bool? _error;
   String? _message;
   Data? _data;
-  ForgetPasswordModel copyWith({  bool? error,
+  ForgetPasswordModel copyWith({
+    bool? error,
     String? message,
     Data? data,
-  }) => ForgetPasswordModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      ForgetPasswordModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ class ForgetPasswordModel {
     }
     return map;
   }
-
 }
 
 /// id : 242
@@ -55,7 +58,8 @@ class Data {
     String? apiToken,
     String? userType,
     String? deviceToken,
-    String? deviceNumber,}){
+    String? deviceNumber,
+  }) {
     _id = id;
     _apiToken = apiToken;
     _userType = userType;
@@ -75,17 +79,20 @@ class Data {
   String? _userType;
   String? _deviceToken;
   String? _deviceNumber;
-  Data copyWith({  int? id,
+  Data copyWith({
+    int? id,
     String? apiToken,
     String? userType,
     String? deviceToken,
     String? deviceNumber,
-  }) => Data(  id: id ?? _id,
-    apiToken: apiToken ?? _apiToken,
-    userType: userType ?? _userType,
-    deviceToken: deviceToken ?? _deviceToken,
-    deviceNumber: deviceNumber ?? _deviceNumber,
-  );
+  }) =>
+      Data(
+        id: id ?? _id,
+        apiToken: apiToken ?? _apiToken,
+        userType: userType ?? _userType,
+        deviceToken: deviceToken ?? _deviceToken,
+        deviceNumber: deviceNumber ?? _deviceNumber,
+      );
   int? get id => _id;
   String? get apiToken => _apiToken;
   String? get userType => _userType;
@@ -101,5 +108,4 @@ class Data {
     map['device_number'] = _deviceNumber;
     return map;
   }
-
 }

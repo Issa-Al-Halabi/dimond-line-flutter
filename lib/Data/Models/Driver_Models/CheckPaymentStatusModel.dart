@@ -4,13 +4,14 @@
 
 class CheckPaymentStatusModel {
   CheckPaymentStatusModel({
-      bool? error, 
-      String? message, 
-      Data? data,}){
+    bool? error,
+    String? message,
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
-}
+  }
 
   CheckPaymentStatusModel.fromJson(dynamic json) {
     _error = json['error'];
@@ -20,13 +21,16 @@ class CheckPaymentStatusModel {
   bool? _error;
   String? _message;
   Data? _data;
-CheckPaymentStatusModel copyWith({  bool? error,
-  String? message,
-  Data? data,
-}) => CheckPaymentStatusModel(  error: error ?? _error,
-  message: message ?? _message,
-  data: data ?? _data,
-);
+  CheckPaymentStatusModel copyWith({
+    bool? error,
+    String? message,
+    Data? data,
+  }) =>
+      CheckPaymentStatusModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ CheckPaymentStatusModel copyWith({  bool? error,
     }
     return map;
   }
-
 }
 
 /// id : 81
@@ -56,16 +59,17 @@ CheckPaymentStatusModel copyWith({  bool? error,
 
 class Data {
   Data({
-      int? id, 
-      String? driverId, 
-      int? isSuccess, 
-      dynamic message, 
-      String? amount, 
-      String? token, 
-      String? transactionNumber, 
-      String? createdAt, 
-      String? updatedAt, 
-      dynamic deletedAt,}){
+    int? id,
+    String? driverId,
+    int? isSuccess,
+    dynamic message,
+    String? amount,
+    String? token,
+    String? transactionNumber,
+    String? createdAt,
+    String? updatedAt,
+    dynamic deletedAt,
+  }) {
     _id = id;
     _driverId = driverId;
     _isSuccess = isSuccess;
@@ -76,7 +80,7 @@ class Data {
     _createdAt = createdAt;
     _updatedAt = updatedAt;
     _deletedAt = deletedAt;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _id = json['id'];
@@ -100,27 +104,30 @@ class Data {
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
-Data copyWith({  int? id,
-  String? driverId,
-  int? isSuccess,
-  dynamic message,
-  String? amount,
-  String? token,
-  String? transactionNumber,
-  String? createdAt,
-  String? updatedAt,
-  dynamic deletedAt,
-}) => Data(  id: id ?? _id,
-  driverId: driverId ?? _driverId,
-  isSuccess: isSuccess ?? _isSuccess,
-  message: message ?? _message,
-  amount: amount ?? _amount,
-  token: token ?? _token,
-  transactionNumber: transactionNumber ?? _transactionNumber,
-  createdAt: createdAt ?? _createdAt,
-  updatedAt: updatedAt ?? _updatedAt,
-  deletedAt: deletedAt ?? _deletedAt,
-);
+  Data copyWith({
+    int? id,
+    String? driverId,
+    int? isSuccess,
+    dynamic message,
+    String? amount,
+    String? token,
+    String? transactionNumber,
+    String? createdAt,
+    String? updatedAt,
+    dynamic deletedAt,
+  }) =>
+      Data(
+        id: id ?? _id,
+        driverId: driverId ?? _driverId,
+        isSuccess: isSuccess ?? _isSuccess,
+        message: message ?? _message,
+        amount: amount ?? _amount,
+        token: token ?? _token,
+        transactionNumber: transactionNumber ?? _transactionNumber,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+      );
   int? get id => _id;
   String? get driverId => _driverId;
   int? get isSuccess => _isSuccess;
@@ -146,5 +153,4 @@ Data copyWith({  int? id,
     map['deleted_at'] = _deletedAt;
     return map;
   }
-
 }

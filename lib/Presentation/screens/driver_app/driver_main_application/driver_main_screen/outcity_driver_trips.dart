@@ -113,16 +113,16 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
   }
 
   void navigate(
-      String trip_id,
-      String pickupLatitude,
-      String pickupLongitude,
-      String dropLatitude,
-      String dropLongitude,
-      String profileImage,
-      String hasExpense,
-      String date,
-      String time,
-      ) {
+    String trip_id,
+    String pickupLatitude,
+    String pickupLongitude,
+    String dropLatitude,
+    String dropLongitude,
+    String profileImage,
+    String hasExpense,
+    String date,
+    String time,
+  ) {
     Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (BuildContext context, Animation<double> animation,
@@ -144,8 +144,8 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
               profileImage: profileImage,
               hasExpense: hasExpense,
               expensesList: expensesList,
-          date: date,
-          time: time);
+              date: date,
+              time: time);
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation, Widget child) {
@@ -298,37 +298,30 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                       key: _refreshIndicatorKey,
                       onRefresh: init,
                       child: length == 0
-                          ?
-                      Center(child: Column(
-                        children: [
-                          SizedBox(
-                            height:
-                            20.h,
-                          ),
-                          Image.asset(
-                            noData,
-                            fit: BoxFit
-                                .fill,
-                            height:
-                            30.h,
-                          ),
-                          SizedBox(
-                            height:
-                            2.h,
-                          ),
-                          Text(
-                            'there are no trips'
-                                .tr(),
-                            style: TextStyle(
-                                fontFamily:
-                                'cairo',
-                                color:
-                                primaryBlue,
-                                fontSize: 6.sp),
-                          )
-                        ],
-                      ))
-                      : Column(
+                          ? Center(
+                              child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 20.h,
+                                ),
+                                Image.asset(
+                                  noData,
+                                  fit: BoxFit.fill,
+                                  height: 30.h,
+                                ),
+                                SizedBox(
+                                  height: 2.h,
+                                ),
+                                Text(
+                                  'there are no trips'.tr(),
+                                  style: TextStyle(
+                                      fontFamily: 'cairo',
+                                      color: primaryBlue,
+                                      fontSize: 6.sp),
+                                )
+                              ],
+                            ))
+                          : Column(
                               children: [
                                 Expanded(
                                   flex: 8,
@@ -355,7 +348,8 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                           .withOpacity(0.3),
                                                       spreadRadius: 2,
                                                       blurRadius: 7,
-                                                      offset: const Offset(0, 0),
+                                                      offset:
+                                                          const Offset(0, 0),
                                                     ),
                                                   ],
                                                   borderRadius:
@@ -448,7 +442,8 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                         ? Column(
                                                             children: [
                                                               myText(
-                                                                text: 'tour'.tr(),
+                                                                text:
+                                                                    'tour'.tr(),
                                                                 fontSize: 6.sp,
                                                                 color:
                                                                     primaryBlue,
@@ -460,8 +455,8 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                                 height: 1.h,
                                                               ),
                                                               ListTile(
-                                                                  leading:
-                                                                      Image.asset(
+                                                                  leading: Image
+                                                                      .asset(
                                                                     clock,
                                                                     color:
                                                                         primaryBlue,
@@ -476,7 +471,8 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                                         '${tripsList[index].tourDetail[0].endTime.toString()}',
                                                                     style:
                                                                         TextStyle(
-                                                                      color: grey,
+                                                                      color:
+                                                                          grey,
                                                                       fontSize:
                                                                           5.sp,
                                                                     ),
@@ -489,17 +485,16 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                                         primaryBlue,
                                                                   ),
                                                                   title: Text(
-                                                                    formatter.format(int.parse(tripsList[
-                                                                                index]
-                                                                            .tourDetail[
-                                                                                0]
+                                                                    formatter.format(int.parse(tripsList[index]
+                                                                            .tourDetail[0]
                                                                             // .cost))+
                                                                             .cost
                                                                             .toString())) +
                                                                         'sp'.tr(),
                                                                     style:
                                                                         TextStyle(
-                                                                      color: grey,
+                                                                      color:
+                                                                          grey,
                                                                       fontSize:
                                                                           5.sp,
                                                                     ),
@@ -510,13 +505,14 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                     SizedBox(
                                                       height: 2.h,
                                                     ),
-                                                    tripsList[index].hasExpense ==
+                                                    tripsList[index]
+                                                                .hasExpense ==
                                                             'Yes'
                                                         ? Column(
                                                             children: [
                                                               myText(
-                                                                text:
-                                                                    'expens'.tr(),
+                                                                text: 'expens'
+                                                                    .tr(),
                                                                 fontSize: 6.sp,
                                                                 color:
                                                                     primaryBlue,
@@ -614,8 +610,9 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                               '${t.hour}:${t.minute}:${t.second}';
                                                           print(start_time);
                                                           if (tripsList[index]
-                                                              .hasExpense
-                                                              .toString() == 'Yes'){
+                                                                  .hasExpense
+                                                                  .toString() ==
+                                                              'Yes') {
                                                             expensesList =
                                                                 tripsList[index]
                                                                     .expenseDetail;

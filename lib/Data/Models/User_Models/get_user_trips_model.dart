@@ -6,7 +6,8 @@ class GetUserTripsModel {
   GetUserTripsModel({
     bool? error,
     String? message,
-    List<Data>? data,}){
+    List<Data>? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -25,13 +26,16 @@ class GetUserTripsModel {
   bool? _error;
   String? _message;
   List<Data>? _data;
-  GetUserTripsModel copyWith({  bool? error,
+  GetUserTripsModel copyWith({
+    bool? error,
     String? message,
     List<Data>? data,
-  }) => GetUserTripsModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      GetUserTripsModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   List<Data>? get data => _data;
@@ -45,7 +49,6 @@ class GetUserTripsModel {
     }
     return map;
   }
-
 }
 
 /// id : 652
@@ -132,7 +135,8 @@ class Data {
     dynamic deletedAt,
     String? isTour,
     List<TourDetail>? tourDetail,
-    String? canCancle,}){
+    String? canCancle,
+  }) {
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -265,7 +269,8 @@ class Data {
   String? _isTour;
   List<TourDetail>? _tourDetail;
   String? _canCancle;
-  Data copyWith({  int? id,
+  Data copyWith({
+    int? id,
     dynamic customerId,
     int? userId,
     int? vehicleId,
@@ -306,48 +311,50 @@ class Data {
     String? isTour,
     List<TourDetail>? tourDetail,
     String? canCancle,
-  }) => Data(  id: id ?? _id,
-    customerId: customerId ?? _customerId,
-    userId: userId ?? _userId,
-    vehicleId: vehicleId ?? _vehicleId,
-    typeId: typeId ?? _typeId,
-    optionId: optionId ?? _optionId,
-    driverId: driverId ?? _driverId,
-    categoryId: categoryId ?? _categoryId,
-    requestType: requestType ?? _requestType,
-    subcategoryId: subcategoryId ?? _subcategoryId,
-    from: from ?? _from,
-    to: to ?? _to,
-    direction: direction ?? _direction,
-    date: date ?? _date,
-    bags: bags ?? _bags,
-    time: time ?? _time,
-    pickup: pickup ?? _pickup,
-    dropoff: dropoff ?? _dropoff,
-    duration: duration ?? _duration,
-    pickupAddr: pickupAddr ?? _pickupAddr,
-    destAddr: destAddr ?? _destAddr,
-    note: note ?? _note,
-    travellers: travellers ?? _travellers,
-    status: status ?? _status,
-    payment: payment ?? _payment,
-    pickupLatitude: pickupLatitude ?? _pickupLatitude,
-    pickupLongitude: pickupLongitude ?? _pickupLongitude,
-    dropLatitude: dropLatitude ?? _dropLatitude,
-    dropLongitude: dropLongitude ?? _dropLongitude,
-    km: km ?? _km,
-    minutes: minutes ?? _minutes,
-    cost: cost ?? _cost,
-    startTime: startTime ?? _startTime,
-    endTime: endTime ?? _endTime,
-    createdAt: createdAt ?? _createdAt,
-    orderTime: orderTime ?? _orderTime,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-    isTour: isTour ?? _isTour,
-    tourDetail: tourDetail ?? _tourDetail,
-    canCancle: canCancle ?? _canCancle,
-  );
+  }) =>
+      Data(
+        id: id ?? _id,
+        customerId: customerId ?? _customerId,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        typeId: typeId ?? _typeId,
+        optionId: optionId ?? _optionId,
+        driverId: driverId ?? _driverId,
+        categoryId: categoryId ?? _categoryId,
+        requestType: requestType ?? _requestType,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        direction: direction ?? _direction,
+        date: date ?? _date,
+        bags: bags ?? _bags,
+        time: time ?? _time,
+        pickup: pickup ?? _pickup,
+        dropoff: dropoff ?? _dropoff,
+        duration: duration ?? _duration,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        destAddr: destAddr ?? _destAddr,
+        note: note ?? _note,
+        travellers: travellers ?? _travellers,
+        status: status ?? _status,
+        payment: payment ?? _payment,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        km: km ?? _km,
+        minutes: minutes ?? _minutes,
+        cost: cost ?? _cost,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        createdAt: createdAt ?? _createdAt,
+        orderTime: orderTime ?? _orderTime,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        isTour: isTour ?? _isTour,
+        tourDetail: tourDetail ?? _tourDetail,
+        canCancle: canCancle ?? _canCancle,
+      );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
@@ -437,7 +444,6 @@ class Data {
     map['can_cancle'] = _canCancle;
     return map;
   }
-
 }
 
 /// id : 45
@@ -460,7 +466,8 @@ class TourDetail {
     int? cost,
     String? createdAt,
     String? updatedAt,
-    dynamic deletedAt,}){
+    dynamic deletedAt,
+  }) {
     _id = id;
     _tripId = tripId;
     _startTime = startTime;
@@ -492,7 +499,8 @@ class TourDetail {
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
-  TourDetail copyWith({  int? id,
+  TourDetail copyWith({
+    int? id,
     int? tripId,
     String? startTime,
     String? endTime,
@@ -501,16 +509,18 @@ class TourDetail {
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
-  }) => TourDetail(  id: id ?? _id,
-    tripId: tripId ?? _tripId,
-    startTime: startTime ?? _startTime,
-    endTime: endTime ?? _endTime,
-    status: status ?? _status,
-    cost: cost ?? _cost,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-  );
+  }) =>
+      TourDetail(
+        id: id ?? _id,
+        tripId: tripId ?? _tripId,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        status: status ?? _status,
+        cost: cost ?? _cost,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+      );
   int? get id => _id;
   int? get tripId => _tripId;
   String? get startTime => _startTime;
@@ -534,5 +544,4 @@ class TourDetail {
     map['deleted_at'] = _deletedAt;
     return map;
   }
-
 }

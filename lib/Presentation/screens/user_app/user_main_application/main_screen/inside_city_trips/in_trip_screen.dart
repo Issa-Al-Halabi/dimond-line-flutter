@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
+import 'package:diamond_line/Data/network/network_client.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_ended.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -13,7 +15,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' as lt;
-import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -86,21 +88,19 @@ class _InTripScreenState extends State<InTripScreen> {
   SocketResponse delayTripModel = SocketResponse();
   Map<String, dynamic> data = Map();
 
-  var _channel = IOWebSocketChannel.connect(
-    Uri.parse(
-      'ws://mycar.ssc-security.net:8080/api/socket',
-    ),
-  );
+  IOWebSocketChannel? _channel;
 
-  StreamController<Map<String, dynamic>> eventStreamController = StreamController<Map<String, dynamic>>.broadcast();
+  StreamController<Map<String, dynamic>> eventStreamController =
+      StreamController<Map<String, dynamic>>.broadcast();
 
-  PusherChannelsFlutter pusher = PusherChannelsFlutter.getInstance();
+  // PusherChannelsFlutter pusher = PusherChannelsFlutter.getInstance();
 
   @override
   void initState() {
+    Provider.of<InTripProvider>(context, listen: false).tripStatus = "";
     getUserId();
     getCookie();
-    connectSocket();
+    // connectSocket();
     markerOfMainWay();
     getLatAndLong();
     getPolyPoints();
@@ -123,16 +123,18 @@ class _InTripScreenState extends State<InTripScreen> {
   }
 
   Future<void> getCookie() async {
-    Map<String, String> co = {};
-    Response response = await get(Uri.parse(
-      'http://mycar.ssc-security.net:8080/api/session?token=oqBN0XE1usgfA25X465NJs24XHtNs20S',
-    ));
-    co.addAll({"Cookie": response.headers['set-cookie'].toString()});
-    _channel = IOWebSocketChannel.connect(
-        Uri.parse(
-          'ws://mycar.ssc-security.net:8080/api/socket',
-        ),
-        headers: co);
+    try {
+      Map<String, String> co = {};
+      Response response =
+          await get(Uri.parse(network_client.mycarSscSecurity_URL));
+      co.addAll({"Cookie": response.headers['set-cookie'].toString()});
+      print(co);
+      _channel = IOWebSocketChannel.connect(
+          Uri.parse(network_client.mycarSscSecurity_SOCKET),
+          headers: co);
+    } catch (e) {
+      setSnackbar(e.toString(), context);
+    }
   }
 
   Future<Uint8List> getMarker() async {
@@ -299,7 +301,11 @@ class _InTripScreenState extends State<InTripScreen> {
         }
       } else {
         Loader.hide();
-        setSnackbar(data["message"].toString(), context);
+        try {
+          setSnackbar(data["message"].toString(), context);
+        } catch (e) {
+          print(e);
+        }
       }
     } else {
       setSnackbar("nointernet".tr(), context);
@@ -314,72 +320,80 @@ class _InTripScreenState extends State<InTripScreen> {
     print(CUR_USERID);
   }
 
-  void connectSocket() async {
-    try {
-      await pusher.init(
-        apiKey: APIKEY_PUSHER,
-        cluster: CLUSTER_PUSHER,
-        onConnectionStateChange: onConnectionStateChange,
-        onError: onError,
-        onSubscriptionSucceeded: onSubscriptionSucceeded,
-        onEvent: onEvent,
-        onSubscriptionError: onSubscriptionError,
-        onDecryptionFailure: onDecryptionFailure,
-        onMemberAdded: onMemberAdded,
-        onMemberRemoved: onMemberRemoved,
-        onSubscriptionCount: onSubscriptionCount,
-      );
-      await pusher.subscribe(channelName: 'trip-status-$CUR_USERID');
-      await pusher.connect();
-    } catch (e) {
-      log("ERROR: $e");
-    }
-  }
+  // void connectSocket() async {
+  //   try {
+  // await pusher.init(
+  //   apiKey: APIKEY_PUSHER,
+  //   cluster: CLUSTER_PUSHER,
+  //   onConnectionStateChange: onConnectionStateChange,
+  //   onError: onError,
+  //   onSubscriptionSucceeded: onSubscriptionSucceeded,
+  //   onEvent: onEvent,
+  //   onSubscriptionError: onSubscriptionError,
+  //   onDecryptionFailure: onDecryptionFailure,
+  //   onMemberAdded: onMemberAdded,
+  //   onMemberRemoved: onMemberRemoved,
+  //   onSubscriptionCount: onSubscriptionCount,
+  // );
+  // await pusher.subscribe(channelName: 'trip-status-$CUR_USERID');
+  // await pusher.connect();
+  //   } catch (e) {
+  //     log("ERROR: $e");
+  //   }
+  // }
 
-  void onConnectionStateChange(dynamic currentState, dynamic previousState) {
-    log("Connection: $currentState");
-  }
+  // void onConnectionStateChange(dynamic currentState, dynamic previousState) {
+  //   log("Connection: $currentState in trip screen");
+  // }
 
-  void onError(String message, int? code, dynamic e) {
-    log("onError: $message code: $code exception: $e");
-  }
+  // void onError(String message, int? code, dynamic e) {
+  //   log("onError: $message code: $code exception: $e");
+  // }
 
-  void onEvent(PusherEvent event) {
-    log("onEvent: $event");
-    Map<String, dynamic> data = jsonDecode(event.data);
-    eventStreamController.sink.add(data);
-  }
+  // void onEvent(PusherEvent event) {
+  //   log("onEvent in trip screen: $event");
+  //   if (event.data != {}) {
+  //     Map<String, dynamic> data = jsonDecode(event.data);
+  //     eventStreamController.sink.add(data);
+  //   }
+  // }
 
-  void onSubscriptionSucceeded(String channelName, dynamic data) {
-    log("onSubscriptionSucceeded: $channelName data: $data");
-    final me = pusher.getChannel(channelName)?.me;
-    log("Me: $me");
-  }
+  // void onSubscriptionSucceeded(String channelName, dynamic data) {
+  //   log("onSubscriptionSucceeded: $channelName data: $data");
+  //   PusherChannel? me = pusher.getChannel(channelName);
+  //   if (me != null) {
+  //     log("Me: ${me.me}");
+  //   } else {
+  //     log("Me: null null");
+  //   }
+  // }
 
-  void onSubscriptionError(String message, dynamic e) {
-    log("onSubscriptionError: $message Exception: $e");
-  }
+  // void onSubscriptionError(String message, dynamic e) {
+  //   log("onSubscriptionError: $message Exception: $e");
+  // }
 
-  void onDecryptionFailure(String event, String reason) {
-    log("onDecryptionFailure: $event reason: $reason");
-  }
+  // void onDecryptionFailure(String event, String reason) {
+  //   log("onDecryptionFailure: $event reason: $reason");
+  // }
 
-  void onMemberAdded(String channelName, PusherMember member) {
-    log("onMemberAdded: $channelName user: $member");
-  }
+  // void onMemberAdded(String channelName, PusherMember member) {
+  //   log("onMemberAdded: $channelName user: $member");
+  // }
 
-  void onMemberRemoved(String channelName, PusherMember member) {
-    log("onMemberRemoved: $channelName user: $member");
-  }
+  // void onMemberRemoved(String channelName, PusherMember member) {
+  //   log("onMemberRemoved: $channelName user: $member");
+  // }
 
-  void onSubscriptionCount(String channelName, int subscriptionCount) {
-    log("onSubscriptionCount: $channelName subscriptionCount: $subscriptionCount");
-  }
+  // void onSubscriptionCount(String channelName, int subscriptionCount) {
+  //   log("onSubscriptionCount: $channelName subscriptionCount: $subscriptionCount");
+  // }
 
   bool navigate() {
     eventStreamController.close();
-    _channel.sink.close();
-    pusher.disconnect();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
+    // pusher.disconnect();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       Navigator.pushReplacement(
         context,
@@ -439,7 +453,6 @@ class _InTripScreenState extends State<InTripScreen> {
     return true;
   }
 
-
   bool convertSecondTrackFalse() {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       setState(() {
@@ -466,8 +479,8 @@ class _InTripScreenState extends State<InTripScreen> {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       setState(() {
         id = newId;
-          print('id is: $id');
-          print(newId);
+        print('id is: $id');
+        print(newId);
       });
     });
     return true;
@@ -475,8 +488,10 @@ class _InTripScreenState extends State<InTripScreen> {
 
   void navigateToDashboard() {
     eventStreamController.close();
-    _channel.sink.close();
-    pusher.disconnect();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
+    // pusher.disconnect();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => UserDashboard()),
@@ -485,8 +500,10 @@ class _InTripScreenState extends State<InTripScreen> {
 
   bool navigateDash() {
     eventStreamController.close();
-    _channel.sink.close();
-    pusher.disconnect();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
+    // pusher.disconnect();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       setSnackbar('your trip didnt accept'.tr(), context);
       Navigator.pushReplacement(
@@ -499,8 +516,10 @@ class _InTripScreenState extends State<InTripScreen> {
 
   void navigateToSecondTrip() {
     eventStreamController.close();
-    _channel.sink.close();
-    pusher.disconnect();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
+    // pusher.disconnect();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -555,9 +574,9 @@ class _InTripScreenState extends State<InTripScreen> {
                     children: [
                       Stack(
                         children: [
-                          isAcceptTrip == true
+                          isAcceptTrip == true && _channel != null
                               ? StreamBuilder(
-                                  stream: _channel.stream,
+                                  stream: _channel!.stream,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData == true) {
                                       var data =
@@ -566,9 +585,10 @@ class _InTripScreenState extends State<InTripScreen> {
                                       // print(data);
                                       if (data['positions'] != null) {
                                         //TODO
-                                        if (data['positions'][0]['deviceId'] == deviceNumb) {
-                                        // if (data['positions'][0]['deviceId'] ==
-                                        //     204) {
+                                        if (data['positions'][0]['deviceId'] ==
+                                            deviceNumb) {
+                                          // if (data['positions'][0]['deviceId'] ==
+                                          //     204) {
                                           // print(
                                           //     'course me ${data['positions'][0]['course']}');
                                           latRoute =
@@ -684,137 +704,203 @@ class _InTripScreenState extends State<InTripScreen> {
                           //       : Text(''),
                           // ),
                           Positioned(
-                              bottom: 0.h,
-                              child: StreamBuilder<Map<String, dynamic>>(
-                                stream: eventStreamController.stream,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    // Map<String, dynamic> data = snapshot.data!;
-                                    data = snapshot.data!;
-                                    int id = data['data']['id'];
-                                    // setState(() {
-                                    //   id = data['data']['id'];
-                                    //   print('id is: $id');
-                                    //   print(data['data']['id']);
-                                    // });
-                                    // convertId(data['data']['id']);
+                            bottom: 0.h,
+                            child: Consumer<InTripProvider>(
+                                builder: (context, provider, child) {
+                              if (provider.tripStatus != "") {
+                                Map<String, dynamic> data = provider.tripData;
+                                int id = int.parse(data['id']);
+                                // setState(() {
+                                //   id = data['data']['id'];
+                                //   print('id is: $id');
+                                //   print(data['data']['id']);
+                                // });
+                                // convertId(data['data']['id']);
 
-                                    if (id.toString() == widget.tripId) {
-                                      status = data['data']['status'];
-                                      // print('ids equal');
-                                      if (status == 'accepted') {
-                                        convertAccept();
-                                        // convertBoolean(isAcceptTrip);
-                                        deviceNumb = data['data']
-                                            ['vehicel_device_number'];
-                                        driverFname =
-                                            data['data']['driver_first_name'];
-                                        driverLname =
-                                            data['data']['driver_last_name'];
-                                        driverImage = data['data']
-                                            ['driver_profile_image'];
-                                        driverPhone =
-                                            data['data']['driver_phone'];
-                                        carModel =
-                                            data['data']['vehicel_car_model'];
-                                        carColor =
-                                            data['data']['vehicel_color'];
-                                        vehicelImage =
-                                            data['data']['vehicel_image'];
-                                      }
-                                      if (status == 'started') {
-                                        convertStart();
-                                        // convertBoolean(isStartTrip);
-                                      }
-                                      if (status == 'ended') {
-                                        finalCost = data['data']['cost'];
-                                        // print(finalCost);
-                                        navigate();
-                                      }
-                                      if (status == 'canceld') {
-                                        // print('your trip didnt accept');
-                                        navigateDash();
-                                      }
-                                    }
-
-                                    else{
-                                      print('ttttttttttttt');
-                                      print(data);
-                                      String statusDelayed = data['data']['status'];
-                                      print(statusDelayed);
-                                      print(data['data']['id']);
-                                    }
-
-                                    // TODO
-                                    // else {
-                                    //   // print(data);
-                                    //   // print('actual second status ${data['data']['status']}');
-                                    //   String statusDelayed = data['data']['status'];
-                                    //   print('this trip $id is $statusDelayed');
-                                    //   print(widget.tripId);
-                                    //   if (statusDelayed != 'pending' && statusDelayed != 'accepted') {
-                                    //     // print('not pending or accepted');
-                                    //     convertSecondTrack();
-                                    //     // print('second status $statusDelayed');
-                                    //     // convertBoolean(isTrackDriverDelayTrip);
-                                    //     // convertBoolean(isSecondTrip);
-                                    //
-                                    //     // delayTripModel = SocketResponse();
-                                    //
-                                    //
-                                    //     delayTripModel.driverFirstName =
-                                    //         data['data']['driver_first_name'];
-                                    //     delayTripModel.driverLastName =
-                                    //         data['data']['driver_last_name'];
-                                    //     delayTripModel.driverProfileImage =
-                                    //         data['data']
-                                    //             ['driver_profile_image'];
-                                    //     delayTripModel.driverPhone =
-                                    //         data['data']['driver_phone'];
-                                    //     delayTripModel.vehicelDeviceNumber =
-                                    //         data['data']
-                                    //             ['vehicel_device_number'];
-                                    //     delayTripModel.vehicelCarModel =
-                                    //         data['data']['vehicel_car_model'];
-                                    //     delayTripModel.vehicelColor =
-                                    //         data['data']['vehicel_color'];
-                                    //     delayTripModel.vehicelImage =
-                                    //         data['data']['vehicel_image'];
-                                    //     delayTripModel.pickupLatitude =
-                                    //         data['data']['pickup_latitude'];
-                                    //     delayTripModel.pickupLongitude =
-                                    //         data['data']['pickup_longitude'];
-                                    //     delayTripModel.dropLatitude =
-                                    //         data['data']['drop_latitude'];
-                                    //     delayTripModel.dropLongitude =
-                                    //         data['data']['drop_longitude'];
-                                    //     delayTripModel.id = data['data']['id'];
-                                    //     delayTripModel.status =
-                                    //         data['data']['status'];
-                                    //   } else if (statusDelayed == 'ended') {
-                                    //     print('endeeeeeeeeeeeeeeeeeeeeeeeeed');
-                                    //     convertSecondTrackFalse();
-                                    //     // convertBoolean(isTrackDriverDelayTrip);
-                                    //     // convertBoolean(isSecondTrip);
-                                    //   }
-                                    // }
-
-                                    return Row(
-                                      children: [
-                                        status == 'accepted'
-                                            ? AcceptedWidget()
-                                            : status == 'arrived'
-                                                ? ArrivedWidget()
-                                                : status == 'started'
-                                                    ? StartedWidget()
-                                                    : Text('')
-                                      ],
-                                    );
-                                  } else {
-                                    return PendingWidget();
+                                if (id.toString() == widget.tripId) {
+                                  status = data['status'];
+                                  // print('ids equal');
+                                  if (status == 'accepted') {
+                                    convertAccept();
+                                    // convertBoolean(isAcceptTrip);
+                                    deviceNumb = int.parse(
+                                        data['vehicel_device_number']);
+                                    driverFname = data['driver_first_name'];
+                                    driverLname = data['driver_last_name'];
+                                    driverImage = data['driver_profile_image'];
+                                    driverPhone = data['driver_phone'];
+                                    carModel = data['vehicel_car_model'];
+                                    carColor = data['vehicel_color'];
+                                    vehicelImage = data['vehicel_image'];
                                   }
-                                },
-                              ))
+                                  if (status == 'started') {
+                                    convertStart();
+                                    // convertBoolean(isStartTrip);
+                                  }
+                                  if (status == 'ended') {
+                                    finalCost = data['cost'];
+                                    // print(finalCost);
+                                    provider.reset();
+                                    navigate();
+                                  }
+                                  if (status == 'canceld') {
+                                    // print('your trip didnt accept');
+                                    provider.reset();
+                                    navigateDash();
+                                  }
+                                } else {
+                                  print('ttttttttttttt');
+                                  print(data);
+                                  String statusDelayed = data['status'];
+                                  print(statusDelayed);
+                                  print(data['id']);
+                                }
+                                return Row(
+                                  children: [
+                                    status == 'accepted'
+                                        ? AcceptedWidget()
+                                        : status == 'arrived'
+                                            ? ArrivedWidget()
+                                            : status == 'started'
+                                                ? StartedWidget()
+                                                : Text('')
+                                  ],
+                                );
+                              } else {
+                                return PendingWidget();
+                              }
+                            }),
+
+                            //  StreamBuilder<Map<String, dynamic>>(
+                            //   stream: eventStreamController.stream,
+                            //   builder: (context, snapshot) {
+                            //     if (snapshot.hasData) {
+                            //       // Map<String, dynamic> data = snapshot.data!;
+                            //       data = snapshot.data!;
+                            //       int id = data['data']['id'];
+                            //       // setState(() {
+                            //       //   id = data['data']['id'];
+                            //       //   print('id is: $id');
+                            //       //   print(data['data']['id']);
+                            //       // });
+                            //       // convertId(data['data']['id']);
+
+                            //       if (id.toString() == widget.tripId) {
+                            //         status = data['data']['status'];
+                            //         // print('ids equal');
+                            //         if (status == 'accepted') {
+                            //           convertAccept();
+                            //           // convertBoolean(isAcceptTrip);
+                            //           deviceNumb = data['data']
+                            //               ['vehicel_device_number'];
+                            //           driverFname =
+                            //               data['data']['driver_first_name'];
+                            //           driverLname =
+                            //               data['data']['driver_last_name'];
+                            //           driverImage = data['data']
+                            //               ['driver_profile_image'];
+                            //           driverPhone =
+                            //               data['data']['driver_phone'];
+                            //           carModel =
+                            //               data['data']['vehicel_car_model'];
+                            //           carColor =
+                            //               data['data']['vehicel_color'];
+                            //           vehicelImage =
+                            //               data['data']['vehicel_image'];
+                            //         }
+                            //         if (status == 'started') {
+                            //           convertStart();
+                            //           // convertBoolean(isStartTrip);
+                            //         }
+                            //         if (status == 'ended') {
+                            //           finalCost = data['data']['cost'];
+                            //           // print(finalCost);
+                            //           navigate();
+                            //         }
+                            //         if (status == 'canceld') {
+                            //           // print('your trip didnt accept');
+                            //           navigateDash();
+                            //         }
+                            //       } else {
+                            //         print('ttttttttttttt');
+                            //         print(data);
+                            //         String statusDelayed =
+                            //             data['data']['status'];
+                            //         print(statusDelayed);
+                            //         print(data['data']['id']);
+                            //       }
+
+                            //       // TODO
+                            //       // else {
+                            //       //   // print(data);
+                            //       //   // print('actual second status ${data['data']['status']}');
+                            //       //   String statusDelayed = data['data']['status'];
+                            //       //   print('this trip $id is $statusDelayed');
+                            //       //   print(widget.tripId);
+                            //       //   if (statusDelayed != 'pending' && statusDelayed != 'accepted') {
+                            //       //     // print('not pending or accepted');
+                            //       //     convertSecondTrack();
+                            //       //     // print('second status $statusDelayed');
+                            //       //     // convertBoolean(isTrackDriverDelayTrip);
+                            //       //     // convertBoolean(isSecondTrip);
+                            //       //
+                            //       //     // delayTripModel = SocketResponse();
+                            //       //
+                            //       //
+                            //       //     delayTripModel.driverFirstName =
+                            //       //         data['data']['driver_first_name'];
+                            //       //     delayTripModel.driverLastName =
+                            //       //         data['data']['driver_last_name'];
+                            //       //     delayTripModel.driverProfileImage =
+                            //       //         data['data']
+                            //       //             ['driver_profile_image'];
+                            //       //     delayTripModel.driverPhone =
+                            //       //         data['data']['driver_phone'];
+                            //       //     delayTripModel.vehicelDeviceNumber =
+                            //       //         data['data']
+                            //       //             ['vehicel_device_number'];
+                            //       //     delayTripModel.vehicelCarModel =
+                            //       //         data['data']['vehicel_car_model'];
+                            //       //     delayTripModel.vehicelColor =
+                            //       //         data['data']['vehicel_color'];
+                            //       //     delayTripModel.vehicelImage =
+                            //       //         data['data']['vehicel_image'];
+                            //       //     delayTripModel.pickupLatitude =
+                            //       //         data['data']['pickup_latitude'];
+                            //       //     delayTripModel.pickupLongitude =
+                            //       //         data['data']['pickup_longitude'];
+                            //       //     delayTripModel.dropLatitude =
+                            //       //         data['data']['drop_latitude'];
+                            //       //     delayTripModel.dropLongitude =
+                            //       //         data['data']['drop_longitude'];
+                            //       //     delayTripModel.id = data['data']['id'];
+                            //       //     delayTripModel.status =
+                            //       //         data['data']['status'];
+                            //       //   } else if (statusDelayed == 'ended') {
+                            //       //     print('endeeeeeeeeeeeeeeeeeeeeeeeeed');
+                            //       //     convertSecondTrackFalse();
+                            //       //     // convertBoolean(isTrackDriverDelayTrip);
+                            //       //     // convertBoolean(isSecondTrip);
+                            //       //   }
+                            //       // }
+
+                            //       return Row(
+                            //         children: [
+                            //           status == 'accepted'
+                            //               ? AcceptedWidget()
+                            //               : status == 'arrived'
+                            //                   ? ArrivedWidget()
+                            //                   : status == 'started'
+                            //                       ? StartedWidget()
+                            //                       : Text('')
+                            //         ],
+                            //       );
+                            //     } else {
+                            //       return PendingWidget();
+                            //     }
+                            //   },
+                            // )
+                          )
                         ],
                       ),
                     ],

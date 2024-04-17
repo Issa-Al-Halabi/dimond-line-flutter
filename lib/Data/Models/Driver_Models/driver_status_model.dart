@@ -77,6 +77,8 @@
 //
 // }
 
+import 'dart:convert';
+
 /// error : false
 /// message : "Listed Successfully"
 /// data : {"status":"active","device_number":273}
@@ -85,7 +87,8 @@ class DriverStatusModel {
   DriverStatusModel({
     bool? error,
     String? message,
-    Data? data,}){
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -99,13 +102,16 @@ class DriverStatusModel {
   bool? _error;
   String? _message;
   Data? _data;
-  DriverStatusModel copyWith({  bool? error,
+  DriverStatusModel copyWith({
+    bool? error,
     String? message,
     Data? data,
-  }) => DriverStatusModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      DriverStatusModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -119,7 +125,6 @@ class DriverStatusModel {
     }
     return map;
   }
-
 }
 
 /// status : "active"
@@ -128,7 +133,8 @@ class DriverStatusModel {
 class Data {
   Data({
     String? status,
-    int? deviceNumber,}){
+    int? deviceNumber,
+  }) {
     _status = status;
     _deviceNumber = deviceNumber;
   }
@@ -139,11 +145,14 @@ class Data {
   }
   String? _status;
   int? _deviceNumber;
-  Data copyWith({  String? status,
+  Data copyWith({
+    String? status,
     int? deviceNumber,
-  }) => Data(  status: status ?? _status,
-    deviceNumber: deviceNumber ?? _deviceNumber,
-  );
+  }) =>
+      Data(
+        status: status ?? _status,
+        deviceNumber: deviceNumber ?? _deviceNumber,
+      );
   String? get status => _status;
   int? get deviceNumber => _deviceNumber;
 
@@ -153,5 +162,4 @@ class Data {
     map['device_number'] = _deviceNumber;
     return map;
   }
-
 }

@@ -220,7 +220,8 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                       onTap: () {
                                         print('marker2 info tab');
                                       }),
-                                  position: LatLng(widget.toLat!, widget.toLng!),
+                                  position:
+                                      LatLng(widget.toLat!, widget.toLng!),
                                   onTap: () {
                                     print('marker2 tab');
                                   },
@@ -238,7 +239,8 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                               },
                               mapType: MapType.normal,
                               initialCameraPosition: CameraPosition(
-                                target: LatLng(widget.fromLat!, widget.fromLng!),
+                                target:
+                                    LatLng(widget.fromLat!, widget.fromLng!),
                                 zoom: 12,
                               ),
                               onMapCreated: (GoogleMapController controller) {
@@ -263,12 +265,12 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                     width: 2.w,
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 1.h),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 1.h),
                                     child: InkWell(
                                       onTap: () async {
                                         Loader.show(context,
-                                            progressIndicator:
-                                                LoaderWidget());
+                                            progressIndicator: LoaderWidget());
                                         getDistance(
                                             widget.fromLat!,
                                             widget.fromLng!,
@@ -287,7 +289,8 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                         }
                                         print(timeOfTrip);
                                         Loader.hide();
-                                        Future.delayed(const Duration(seconds: 0))
+                                        Future.delayed(
+                                                const Duration(seconds: 0))
                                             .then((_) async {
                                           Navigator.pushReplacement(
                                               context,
@@ -300,13 +303,14 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                                   toLon: widget.toLng!,
                                                   id: widget.idList[index]
                                                       .toString(),
-                                                  price: widget.priceList[index],
+                                                  price:
+                                                      widget.priceList[index],
                                                   km: distance
                                                       .toString()
                                                       .toString(),
                                                   minutes: timeOfTrip,
-                                                  sourceAdd:
-                                                      widget.sourceAdd.toString(),
+                                                  sourceAdd: widget.sourceAdd
+                                                      .toString(),
                                                   destAdd:
                                                       widget.destAdd.toString(),
                                                   date: widget.date,
@@ -324,7 +328,8 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                         decoration: BoxDecoration(
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.grey.withOpacity(0.3),
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
                                               spreadRadius: 2,
                                               blurRadius: 7,
                                               offset: const Offset(0, 0),
@@ -346,9 +351,9 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                               // height: 100.0,
                                               width: 40.w,
                                               fit: BoxFit.contain,
-                                              imageErrorBuilder:
-                                                  (context, error, stackTrace) =>
-                                                      erroWidget(20.h),
+                                              imageErrorBuilder: (context,
+                                                      error, stackTrace) =>
+                                                  erroWidget(20.h),
                                               placeholder: placeHolder(100),
                                             ),
                                             Padding(
@@ -371,7 +376,6 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                                     formatter.format(widget
                                                             .priceList[index]) +
                                                         'sp'.tr(),
-
                                                     style: TextStyle(
                                                       color: grey,
                                                       fontSize: 5.sp,

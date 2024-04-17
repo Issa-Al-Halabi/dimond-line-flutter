@@ -140,7 +140,8 @@ class GetGovermentModel {
   GetGovermentModel({
     bool? error,
     String? message,
-    List<Data>? data,}){
+    List<Data>? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -159,13 +160,16 @@ class GetGovermentModel {
   bool? _error;
   String? _message;
   List<Data>? _data;
-  GetGovermentModel copyWith({  bool? error,
+  GetGovermentModel copyWith({
+    bool? error,
     String? message,
     List<Data>? data,
-  }) => GetGovermentModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      GetGovermentModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   List<Data>? get data => _data;
@@ -179,7 +183,6 @@ class GetGovermentModel {
     }
     return map;
   }
-
 }
 
 /// id : 18
@@ -199,7 +202,8 @@ class Data {
     String? title,
     String? createdAt,
     String? updatedAt,
-    String? deletedAt,}){
+    String? deletedAt,
+  }) {
     _id = id;
     _categoryId = categoryId;
     _typeId = typeId;
@@ -226,21 +230,24 @@ class Data {
   String? _createdAt;
   String? _updatedAt;
   String? _deletedAt;
-  Data copyWith({  int? id,
+  Data copyWith({
+    int? id,
     int? categoryId,
     String? typeId,
     String? title,
     String? createdAt,
     String? updatedAt,
     String? deletedAt,
-  }) => Data(  id: id ?? _id,
-    categoryId: categoryId ?? _categoryId,
-    typeId: typeId ?? _typeId,
-    title: title ?? _title,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-  );
+  }) =>
+      Data(
+        id: id ?? _id,
+        categoryId: categoryId ?? _categoryId,
+        typeId: typeId ?? _typeId,
+        title: title ?? _title,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+      );
   int? get id => _id;
   // int? get categoryId => _categoryId;
   dynamic get categoryId => _categoryId;
@@ -261,5 +268,4 @@ class Data {
     map['deleted_at'] = _deletedAt;
     return map;
   }
-
 }

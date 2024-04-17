@@ -6,7 +6,8 @@ class GetProfileModel {
   GetProfileModel({
     bool? error,
     String? message,
-    Data? data,}){
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -20,13 +21,16 @@ class GetProfileModel {
   bool? _error;
   String? _message;
   Data? _data;
-  GetProfileModel copyWith({  bool? error,
+  GetProfileModel copyWith({
+    bool? error,
     String? message,
     Data? data,
-  }) => GetProfileModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      GetProfileModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ class GetProfileModel {
     }
     return map;
   }
-
 }
 
 /// user : {"id":241,"user_id":null,"first_name":"ليان","last_name":"هدروس","email":"layan@gmail.com","user_type":"user","father_name":"اياس","mother_name":"هنادي","phone":"935681347","is_active":null,"in_service":null,"date_of_birth":"1998-07-11","place_of_birth":"دمشق","profile_image":"92fcb42d-8b0b-4498-b007-d48c2503738c.jpg","personal_identity":null,"driving_certificate":null,"car_mechanic":null,"car_insurance":null,"car_image":null,"group_id":null,"device_token":"e27lb7F9QdK8joG3xjlkix:APA91bF_wxLWnEzuGnHMpAl8CVCszzle2B0jTupRXsuud77SJBzuIblrogj7JgQHE1QHcUBhPBqv7hoHQ0A_CU-hmNZTAspgLXgA9E6nt7P0iRrMQphZtbHvjBDF0hcVvw2GFTQdKyJy","created_at":"2022-12-28T09:57:25.000000Z","updated_at":"2023-04-19T11:22:53.000000Z","deleted_at":null,"metas":[{"id":193,"user_id":241,"type":"NULL","key":"address","value":null,"deleted_at":null,"created_at":"2023-01-17T15:15:03.000000Z","updated_at":"2023-01-17T15:15:03.000000Z"},{"id":299,"user_id":241,"type":"NULL","key":"national_number","value":null,"deleted_at":null,"created_at":"2023-04-09T11:44:37.000000Z","updated_at":"2023-04-09T11:44:37.000000Z"},{"id":300,"user_id":241,"type":"NULL","key":"id_entry","value":null,"deleted_at":null,"created_at":"2023-04-09T11:44:37.000000Z","updated_at":"2023-04-09T11:44:37.000000Z"},{"id":301,"user_id":241,"type":"NULL","key":"passport_number","value":null,"deleted_at":null,"created_at":"2023-04-09T11:44:37.000000Z","updated_at":"2023-04-09T11:44:37.000000Z"}],"meta_data":{"address":null,"national_number":null,"id_entry":null,"passport_number":null}}
@@ -49,7 +52,8 @@ class GetProfileModel {
 class Data {
   Data({
     User? user,
-    String? image,}){
+    String? image,
+  }) {
     _user = user;
     _image = image;
   }
@@ -60,11 +64,14 @@ class Data {
   }
   User? _user;
   String? _image;
-  Data copyWith({  User? user,
+  Data copyWith({
+    User? user,
     String? image,
-  }) => Data(  user: user ?? _user,
-    image: image ?? _image,
-  );
+  }) =>
+      Data(
+        user: user ?? _user,
+        image: image ?? _image,
+      );
   User? get user => _user;
   String? get image => _image;
 
@@ -76,7 +83,6 @@ class Data {
     map['image'] = _image;
     return map;
   }
-
 }
 
 /// id : 241
@@ -133,7 +139,8 @@ class User {
     String? updatedAt,
     dynamic deletedAt,
     List<Metas>? metas,
-    MetaData? metaData,}){
+    MetaData? metaData,
+  }) {
     _id = id;
     _userId = userId;
     _firstName = firstName;
@@ -193,7 +200,8 @@ class User {
         _metas?.add(Metas.fromJson(v));
       });
     }
-    _metaData = json['meta_data'] != null ? MetaData.fromJson(json['meta_data']) : null;
+    _metaData =
+        json['meta_data'] != null ? MetaData.fromJson(json['meta_data']) : null;
   }
   int? _id;
   dynamic _userId;
@@ -221,7 +229,8 @@ class User {
   dynamic _deletedAt;
   List<Metas>? _metas;
   MetaData? _metaData;
-  User copyWith({  int? id,
+  User copyWith({
+    int? id,
     dynamic userId,
     String? firstName,
     String? lastName,
@@ -247,33 +256,35 @@ class User {
     dynamic deletedAt,
     List<Metas>? metas,
     MetaData? metaData,
-  }) => User(  id: id ?? _id,
-    userId: userId ?? _userId,
-    firstName: firstName ?? _firstName,
-    lastName: lastName ?? _lastName,
-    email: email ?? _email,
-    userType: userType ?? _userType,
-    fatherName: fatherName ?? _fatherName,
-    motherName: motherName ?? _motherName,
-    phone: phone ?? _phone,
-    isActive: isActive ?? _isActive,
-    inService: inService ?? _inService,
-    dateOfBirth: dateOfBirth ?? _dateOfBirth,
-    placeOfBirth: placeOfBirth ?? _placeOfBirth,
-    profileImage: profileImage ?? _profileImage,
-    personalIdentity: personalIdentity ?? _personalIdentity,
-    drivingCertificate: drivingCertificate ?? _drivingCertificate,
-    carMechanic: carMechanic ?? _carMechanic,
-    carInsurance: carInsurance ?? _carInsurance,
-    carImage: carImage ?? _carImage,
-    groupId: groupId ?? _groupId,
-    deviceToken: deviceToken ?? _deviceToken,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-    metas: metas ?? _metas,
-    metaData: metaData ?? _metaData,
-  );
+  }) =>
+      User(
+        id: id ?? _id,
+        userId: userId ?? _userId,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        email: email ?? _email,
+        userType: userType ?? _userType,
+        fatherName: fatherName ?? _fatherName,
+        motherName: motherName ?? _motherName,
+        phone: phone ?? _phone,
+        isActive: isActive ?? _isActive,
+        inService: inService ?? _inService,
+        dateOfBirth: dateOfBirth ?? _dateOfBirth,
+        placeOfBirth: placeOfBirth ?? _placeOfBirth,
+        profileImage: profileImage ?? _profileImage,
+        personalIdentity: personalIdentity ?? _personalIdentity,
+        drivingCertificate: drivingCertificate ?? _drivingCertificate,
+        carMechanic: carMechanic ?? _carMechanic,
+        carInsurance: carInsurance ?? _carInsurance,
+        carImage: carImage ?? _carImage,
+        groupId: groupId ?? _groupId,
+        deviceToken: deviceToken ?? _deviceToken,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        metas: metas ?? _metas,
+        metaData: metaData ?? _metaData,
+      );
   int? get id => _id;
   dynamic get userId => _userId;
   String? get firstName => _firstName;
@@ -335,7 +346,6 @@ class User {
     }
     return map;
   }
-
 }
 
 /// address : null
@@ -348,7 +358,8 @@ class MetaData {
     dynamic address,
     dynamic nationalNumber,
     dynamic idEntry,
-    dynamic passportNumber,}){
+    dynamic passportNumber,
+  }) {
     _address = address;
     _nationalNumber = nationalNumber;
     _idEntry = idEntry;
@@ -365,15 +376,18 @@ class MetaData {
   dynamic _nationalNumber;
   dynamic _idEntry;
   dynamic _passportNumber;
-  MetaData copyWith({  dynamic address,
+  MetaData copyWith({
+    dynamic address,
     dynamic nationalNumber,
     dynamic idEntry,
     dynamic passportNumber,
-  }) => MetaData(  address: address ?? _address,
-    nationalNumber: nationalNumber ?? _nationalNumber,
-    idEntry: idEntry ?? _idEntry,
-    passportNumber: passportNumber ?? _passportNumber,
-  );
+  }) =>
+      MetaData(
+        address: address ?? _address,
+        nationalNumber: nationalNumber ?? _nationalNumber,
+        idEntry: idEntry ?? _idEntry,
+        passportNumber: passportNumber ?? _passportNumber,
+      );
   dynamic get address => _address;
   dynamic get nationalNumber => _nationalNumber;
   dynamic get idEntry => _idEntry;
@@ -387,7 +401,6 @@ class MetaData {
     map['passport_number'] = _passportNumber;
     return map;
   }
-
 }
 
 /// id : 193
@@ -408,7 +421,8 @@ class Metas {
     dynamic value,
     dynamic deletedAt,
     String? createdAt,
-    String? updatedAt,}){
+    String? updatedAt,
+  }) {
     _id = id;
     _userId = userId;
     _type = type;
@@ -437,7 +451,8 @@ class Metas {
   dynamic _deletedAt;
   String? _createdAt;
   String? _updatedAt;
-  Metas copyWith({  int? id,
+  Metas copyWith({
+    int? id,
     int? userId,
     String? type,
     String? key,
@@ -445,15 +460,17 @@ class Metas {
     dynamic deletedAt,
     String? createdAt,
     String? updatedAt,
-  }) => Metas(  id: id ?? _id,
-    userId: userId ?? _userId,
-    type: type ?? _type,
-    key: key ?? _key,
-    value: value ?? _value,
-    deletedAt: deletedAt ?? _deletedAt,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-  );
+  }) =>
+      Metas(
+        id: id ?? _id,
+        userId: userId ?? _userId,
+        type: type ?? _type,
+        key: key ?? _key,
+        value: value ?? _value,
+        deletedAt: deletedAt ?? _deletedAt,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+      );
   int? get id => _id;
   int? get userId => _userId;
   String? get type => _type;
@@ -475,5 +492,4 @@ class Metas {
     map['updated_at'] = _updatedAt;
     return map;
   }
-
 }

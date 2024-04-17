@@ -5,8 +5,8 @@ import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
 
 String APIKEY = 'AIzaSyCPsxZeXKcSYK1XXw0O0RbrZiI_Ekou5DY';
-String APIKEY_PUSHER = 'fa7ffa0cd3688f71ab11';
-String CLUSTER_PUSHER = 'mt1';
+// String APIKEY_PUSHER = 'fa7ffa0cd3688f71ab11';
+// String CLUSTER_PUSHER = 'mt1';
 
 // String BaseUrl = "http://dimond-line.peaklinkdemo.com";
 String BaseUrl = "http://diamond-line.com.sy";
@@ -99,20 +99,19 @@ var formatter = NumberFormat('###,###,000', 'en');
 // IconData add = Icons.add;
 // IconData call = Icons.call;
 
-Text getLogoText({required double fontSize}){
+Text getLogoText({required double fontSize}) {
   return Text(
     "DIAMOND LINE\nABYDOS",
     style: TextStyle(
-      fontSize: fontSize,
-      color: backgroundColor,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'assets/fonts/Almarai-Regular'
-    ),
+        fontSize: fontSize,
+        color: backgroundColor,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'assets/fonts/Almarai-Regular'),
     textAlign: TextAlign.center,
   );
 }
 
-Image getLogoImage(){
+Image getLogoImage() {
   return Image.asset(
     'assets/images/logo.png',
     height: 5.h,
@@ -120,29 +119,44 @@ Image getLogoImage(){
   );
 }
 
-Widget getAgreeText(){
+Widget getAgreeText() {
   return Row(
     children: [
       Text(
         'agree'.tr(),
-        style: TextStyle(color: grey, fontSize: 5.sp, fontWeight: FontWeight.bold, fontFamily: 'assets/fonts/Almarai-Regular'),
+        style: TextStyle(
+            color: grey,
+            fontSize: 5.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'assets/fonts/Almarai-Regular'),
       ),
       Text(
         'terms'.tr(),
-        style: TextStyle(color: lightBlue3, fontSize: 5.sp, fontWeight: FontWeight.bold, fontFamily: 'assets/fonts/Almarai-Regular'),
+        style: TextStyle(
+            color: lightBlue3,
+            fontSize: 5.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'assets/fonts/Almarai-Regular'),
       ),
       Text(
         ' & ',
-        style: TextStyle(color: grey, fontSize: 5.sp, fontWeight: FontWeight.bold, fontFamily: 'assets/fonts/Almarai-Regular'),
+        style: TextStyle(
+            color: grey,
+            fontSize: 5.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'assets/fonts/Almarai-Regular'),
       ),
       Text(
         'privacy'.tr(),
-        style: TextStyle(color: lightBlue3, fontSize: 5.sp, fontWeight: FontWeight.bold, fontFamily: 'assets/fonts/Almarai-Regular'),
+        style: TextStyle(
+            color: lightBlue3,
+            fontSize: 5.sp,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'assets/fonts/Almarai-Regular'),
       ),
     ],
   );
 }
-
 
 const List<String> images = [
   'assets/images/1.png',
@@ -189,7 +203,13 @@ String? dropDownValueTo;
 
 const List<String> personItems = ['1', '2', '3', '4', '5', '6', '7'];
 const List<String> bagsItems = ['1', '2', '3', '4', '5', '6', '7'];
-const List<String> fromItems = ['Damascus', 'Aleppo', 'Homs', 'Lattakia', 'Hama'];
+const List<String> fromItems = [
+  'Damascus',
+  'Aleppo',
+  'Homs',
+  'Lattakia',
+  'Hama'
+];
 const List<String> toItems = ['Damascus', 'Aleppo', 'Homs', 'Lattakia', 'Hama'];
 
 TextEditingController firstNameController = TextEditingController();
@@ -205,7 +225,8 @@ TextEditingController nationalNumberController = TextEditingController();
 TextEditingController placeBirthController = TextEditingController();
 // TextEditingController dateBirthController = TextEditingController();
 // TextEditingController dateBirthController = MaskedTextController(mask: '0000-00-00');
-TextEditingController dateBirthController =  new MaskedTextController(mask: '0000-00-00');
+TextEditingController dateBirthController =
+    new MaskedTextController(mask: '0000-00-00');
 TextEditingController profileImageController = TextEditingController();
 TextEditingController passportController = TextEditingController();
 TextEditingController codeController = TextEditingController();

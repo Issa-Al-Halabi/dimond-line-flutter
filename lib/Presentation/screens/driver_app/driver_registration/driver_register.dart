@@ -64,9 +64,9 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
     super.initState();
   }
 
-  initBoolean(){
-     totalAgree = false;
-     isAgree = false;
+  initBoolean() {
+    totalAgree = false;
+    isAgree = false;
   }
 
   /////////////////// terms and conditions /////////////////////
@@ -172,7 +172,11 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
       } else {
         Loader.hide();
         print(creat.data.message);
-        setSnackbar(creat.data.message.toString(), context);
+        setSnackbar(
+            creat.data.message == null
+                ? "There Are Some Errors With Your Data"
+                : creat.data.message.toString(),
+            context);
       }
     } else {
       setSnackbar("nointernet".tr(), context);
@@ -277,7 +281,7 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
             //   );
             // }
             var creat = Provider.of<SendOtpProvider>(context, listen: false);
-            sendOtpApi( phoneController.text, creat);
+            sendOtpApi(phoneController.text, creat);
           });
         });
       } else {
@@ -346,7 +350,6 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
     }
   }
 
-
   Future<bool> isNetworkAvailable() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
@@ -400,7 +403,8 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)),
                 color: backgroundColor,
               ),
               child: SingleChildScrollView(
@@ -450,6 +454,7 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         h: 6.h,
                         w: 90.w,
                         onTap: () {},
+                        isPassword: true,
                         txtController: passwordController,
                         validateFunction: (value) =>
                             Validators.validatePassword(value),
@@ -479,17 +484,16 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                             maxLength: 9,
                             // obscureText: true,
                             decoration: InputDecoration(
-                              errorStyle:
-                                  TextStyle(fontSize: 4.sp, height: 0.01.h),
-                              fillColor: Colors.white,
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 5.sp,
-                              ),
-                              hintText: '+963'+' '+'mobile'.tr(),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(top: 10)
-                            ),
+                                errorStyle:
+                                    TextStyle(fontSize: 4.sp, height: 0.01.h),
+                                fillColor: Colors.white,
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 5.sp,
+                                ),
+                                hintText: '+963' + ' ' + 'mobile'.tr(),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(top: 10)),
                             // maxLength: 9,
                             onChanged: (value) {},
                             validator: (value) =>
@@ -521,32 +525,32 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                           //   }
                           // // }
 
-
                           bool isAndroid13 = false;
-                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          final androidInfo =
+                              await DeviceInfoPlugin().androidInfo;
                           if (androidInfo.version.sdkInt! <= 32) {
                             isAndroid13 = false;
-                          }  else {
+                          } else {
                             isAndroid13 = true;
                           }
-                            var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                            if (res) {
-                              final imageFile = await ImagePicker()
-                                  .pickImage(source: ImageSource.gallery);
-                              if (imageFile == null) return;
-                              final imageTemp = File(imageFile.path);
-                              setState(() {
-                                this.idCardImage = imageTemp;
-                                idCardStr = idCardImage!.path
-                                    .split('/')
-                                    .last
-                                    .substring(0, 15);
-                              });
-                            }
-                            else{
-                              showWarningGalleryDialog(context);
-                            }
-
+                          var res = isAndroid13 == true
+                              ? await Permission.photos.request().isGranted
+                              : await Permission.storage.request().isGranted;
+                          if (res) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.idCardImage = imageTemp;
+                              idCardStr = idCardImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });
+                          } else {
+                            showWarningGalleryDialog(context);
+                          }
 
                           // if (await Permission.storage.request().isGranted) {
                           //   final imageFile = await ImagePicker()
@@ -580,27 +584,31 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         icon: Icons.add,
                         onIconPressed: () async {
                           bool isAndroid13 = false;
-                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          final androidInfo =
+                              await DeviceInfoPlugin().androidInfo;
                           if (androidInfo.version.sdkInt! <= 32) {
                             isAndroid13 = false;
-                          }  else {
+                          } else {
                             isAndroid13 = true;
                           }
-                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                          if (res) {   final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.CarImage = imageTemp;
-                            carImgStr =
-                                CarImage!.path.split('/').last.substring(0, 15);
-                          });
-                          }
-                          else{
+                          var res = isAndroid13 == true
+                              ? await Permission.photos.request().isGranted
+                              : await Permission.storage.request().isGranted;
+                          if (res) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.CarImage = imageTemp;
+                              carImgStr = CarImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });
+                          } else {
                             showWarningGalleryDialog(context);
                           }
-
                         },
                         textColor: grey,
                         color: white,
@@ -616,29 +624,31 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         icon: Icons.add,
                         onIconPressed: () async {
                           bool isAndroid13 = false;
-                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          final androidInfo =
+                              await DeviceInfoPlugin().androidInfo;
                           if (androidInfo.version.sdkInt! <= 32) {
                             isAndroid13 = false;
-                          }  else {
+                          } else {
                             isAndroid13 = true;
                           }
-                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                          if (res) {final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.drivingCertiImage = imageTemp;
-                            driCertiStr = drivingCertiImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
-                          }
-                          else{
+                          var res = isAndroid13 == true
+                              ? await Permission.photos.request().isGranted
+                              : await Permission.storage.request().isGranted;
+                          if (res) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.drivingCertiImage = imageTemp;
+                              driCertiStr = drivingCertiImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });
+                          } else {
                             showWarningGalleryDialog(context);
                           }
-
                         },
                         textColor: grey,
                         color: white,
@@ -654,29 +664,31 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         icon: Icons.add,
                         onIconPressed: () async {
                           bool isAndroid13 = false;
-                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          final androidInfo =
+                              await DeviceInfoPlugin().androidInfo;
                           if (androidInfo.version.sdkInt! <= 32) {
                             isAndroid13 = false;
-                          }  else {
+                          } else {
                             isAndroid13 = true;
                           }
-                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                          if (res) {  final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.carMechaImage = imageTemp;
-                            carMechaStr = carMechaImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
-                          }
-                          else{
+                          var res = isAndroid13 == true
+                              ? await Permission.photos.request().isGranted
+                              : await Permission.storage.request().isGranted;
+                          if (res) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.carMechaImage = imageTemp;
+                              carMechaStr = carMechaImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });
+                          } else {
                             showWarningGalleryDialog(context);
                           }
-
                         },
                         textColor: grey,
                         color: white,
@@ -692,26 +704,29 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         icon: Icons.add,
                         onIconPressed: () async {
                           bool isAndroid13 = false;
-                          final androidInfo = await DeviceInfoPlugin().androidInfo;
+                          final androidInfo =
+                              await DeviceInfoPlugin().androidInfo;
                           if (androidInfo.version.sdkInt! <= 32) {
                             isAndroid13 = false;
-                          }  else {
+                          } else {
                             isAndroid13 = true;
                           }
-                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                          if (res) {final imageFile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
-                          if (imageFile == null) return;
-                          final imageTemp = File(imageFile.path);
-                          setState(() {
-                            this.carInsuImage = imageTemp;
-                            carInsuStr = carInsuImage!.path
-                                .split('/')
-                                .last
-                                .substring(0, 15);
-                          });
-                          }
-                          else{
+                          var res = isAndroid13 == true
+                              ? await Permission.photos.request().isGranted
+                              : await Permission.storage.request().isGranted;
+                          if (res) {
+                            final imageFile = await ImagePicker()
+                                .pickImage(source: ImageSource.gallery);
+                            if (imageFile == null) return;
+                            final imageTemp = File(imageFile.path);
+                            setState(() {
+                              this.carInsuImage = imageTemp;
+                              carInsuStr = carInsuImage!.path
+                                  .split('/')
+                                  .last
+                                  .substring(0, 15);
+                            });
+                          } else {
                             showWarningGalleryDialog(context);
                           }
                         },
@@ -721,7 +736,9 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                         h: 6.h,
                       ),
 
-                      SizedBox(height: 1.h,),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       InkWell(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -750,11 +767,13 @@ class _RegistrationDriverState extends State<RegistrationDriver> {
                               // }),
                               getAgreeText(),
                             ]),
-                        onTap: (){
+                        onTap: () {
                           showAlertDialog(context);
                         },
                       ),
-                      SizedBox(height: 1.h,),
+                      SizedBox(
+                        height: 1.h,
+                      ),
                       // SizedBox(
                       //   height: 3.h,
                       // ),
@@ -874,8 +893,8 @@ class _MyDialogState extends State<alert> {
       title: Center(
           child: myText(
         // text: 'TERM'.tr(),
-            text: 'TERM'.tr() + '\n\n' + "agreePolicy".tr(),
-            fontSize: 4.sp,
+        text: 'TERM'.tr() + '\n\n' + "agreePolicy".tr(),
+        fontSize: 4.sp,
         color: primaryBlue,
       )),
       content: Scrollbar(

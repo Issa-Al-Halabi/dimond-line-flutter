@@ -73,21 +73,16 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
   }
 
 /////////////////////update profile api////////////////////////
-  void updateDriverProfile(
-      String fname,
-      String lname,
-      String phone,
-      String email,
-      String date_of_birth,
-      [File? imageFile]
-      ) async {
+  void updateDriverProfile(String fname, String lname, String phone,
+      String email, String date_of_birth,
+      [File? imageFile]) async {
     _isNetworkAvail = await isNetworkAvailable();
     var creat = Provider.of<UpdateProfileProvider>(context, listen: false);
     if (_isNetworkAvail) {
       print("There is internet");
       Loader.show(context, progressIndicator: LoaderWidget());
-      await creat.getUpdateDriverProfile(fname, lname,
-          phone, email, date_of_birth, imageFile);
+      await creat.getUpdateDriverProfile(
+          fname, lname, phone, email, date_of_birth, imageFile);
       if (creat.data.error == false) {
         Loader.hide();
         setSnackbar("updsuccess".tr(), context);
@@ -132,6 +127,7 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
 
   @override
   Widget build(BuildContext context) {
+    print("object");
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
@@ -162,7 +158,8 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                   ),
                 ],
                 borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
                 color: backgroundColor,
               ),
               child: SingleChildScrollView(
@@ -182,63 +179,75 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                             height: 18.h,
                             width: 45.w,
                             decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(25)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25)),
                               color: lightBlue,
                             ),
-                            child:
-                                imageFile == null
-                                    ? TextButton(
-                                        onPressed: () async {
-                                          bool isAndroid13 = false;
-                                          final androidInfo = await DeviceInfoPlugin().androidInfo;
-                                          if (androidInfo.version.sdkInt! <= 32) {
-                                            isAndroid13 = false;
-                                          }  else {
-                                            isAndroid13 = true;
-                                          }
-                                          var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                                          if (res) {  var im = await picker.pickImage(
-                                              source: ImageSource.gallery);
-                                          setState(() {
-                                            imageFile = File(im!.path);
-                                          });
-                                          }
-                                          else{
-                                            showWarningGalleryDialog(context);
-                                          }
-
-                                        },
-                                        child: Center(
-                                            child: myText(
-                                          text: 'image'.tr(),
-                                          fontSize: 5.sp,
-                                        )),
-                                      )
-                                    : imageFile!.path
+                            child: imageFile == null
+                                ? TextButton(
+                                    onPressed: () async {
+                                      bool isAndroid13 = false;
+                                      final androidInfo =
+                                          await DeviceInfoPlugin().androidInfo;
+                                      if (androidInfo.version.sdkInt! <= 32) {
+                                        isAndroid13 = false;
+                                      } else {
+                                        isAndroid13 = true;
+                                      }
+                                      var res = isAndroid13 == true
+                                          ? await Permission.photos
+                                              .request()
+                                              .isGranted
+                                          : await Permission.storage
+                                              .request()
+                                              .isGranted;
+                                      if (res) {
+                                        var im = await picker.pickImage(
+                                            source: ImageSource.gallery);
+                                        setState(() {
+                                          imageFile = File(im!.path);
+                                        });
+                                      } else {
+                                        showWarningGalleryDialog(context);
+                                      }
+                                    },
+                                    child: Center(
+                                        child: myText(
+                                      text: 'image'.tr(),
+                                      fontSize: 5.sp,
+                                    )),
+                                  )
+                                : imageFile!.path
                                             .toString()
-                                            .startsWith('http')
-                                        ? FadeInImage(
-                                            image: NetworkImage(
-                                              imageFile!.path,
-                                            ),
-                                            fit: BoxFit.fill,
-                                  height: 18.h,
-                                  width: 45.w,
-                                            imageErrorBuilder: (context, error,
-                                                    stackTrace) =>
+                                            .startsWith('http') &&
+                                        (imageFile!.path
+                                                .toString()
+                                                .endsWith("jpg") ||
+                                            imageFile!.path
+                                                .toString()
+                                                .endsWith("png"))
+                                    ? FadeInImage(
+                                        image: NetworkImage(
+                                          imageFile!.path,
+                                        ),
+                                        fit: BoxFit.fill,
+                                        height: 18.h,
+                                        width: 45.w,
+                                        imageErrorBuilder:
+                                            (context, error, stackTrace) =>
                                                 Image.asset(logo),
-                                            placeholder: AssetImage(logo),
-                                          )
-                                        : FadeInImage(
-                                            image: FileImage(imageFile!),
-                                            fit: BoxFit.fill,
-                                  height: 18.h,
-                                  width: 45.w,
-                                            imageErrorBuilder: (context, error,
-                                                    stackTrace) =>
+                                        placeholder: AssetImage(logo),
+                                      )
+                                    : FadeInImage(
+                                        image: FileImage(imageFile!),
+                                        fit: BoxFit.fill,
+                                        height: 18.h,
+                                        width: 45.w,
+                                        imageErrorBuilder:
+                                            (context, error, stackTrace) =>
                                                 Image.asset(logo),
-                                            placeholder: AssetImage(logo),
-                                          ),
+                                        placeholder: AssetImage(logo),
+                                      ),
                           ),
                           Positioned(
                               bottom: 13.h,
@@ -251,14 +260,22 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                                 ),
                                 onPressed: () async {
                                   bool isAndroid13 = false;
-                                  final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                  final androidInfo =
+                                      await DeviceInfoPlugin().androidInfo;
                                   if (androidInfo.version.sdkInt! <= 32) {
                                     isAndroid13 = false;
-                                  }  else {
+                                  } else {
                                     isAndroid13 = true;
                                   }
-                                  var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                                  if (res) {// await pickImage();
+                                  var res = isAndroid13 == true
+                                      ? await Permission.photos
+                                          .request()
+                                          .isGranted
+                                      : await Permission.storage
+                                          .request()
+                                          .isGranted;
+                                  if (res) {
+                                    // await pickImage();
                                     var im = await picker.pickImage(
                                         source: ImageSource.gallery);
                                     setState(() {
@@ -268,8 +285,7 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                                       print('imageFile');
                                       print(imageFile);
                                     });
-                                  }
-                                  else{
+                                  } else {
                                     showWarningGalleryDialog(context);
                                   }
                                 },
@@ -421,7 +437,9 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                               // //     var updat = Provider.of<UpdateProfileProvider>(
                               // // context,
                               // // listen: false);
-                              if(imageFile!.path.toString().startsWith('http')){
+                              if (imageFile!.path
+                                  .toString()
+                                  .startsWith('http')) {
                                 print('ifffffffffffff');
                                 updateDriverProfile(
                                   firstNameController.text,
@@ -430,8 +448,7 @@ class _DriverProfileSettingsState extends State<DriverProfileSettings> {
                                   emailController.text,
                                   dateBirthController.text,
                                 );
-                              }
-                              else{
+                              } else {
                                 print('elseeeeeeeeeeeeeeee');
                                 updateDriverProfile(
                                   firstNameController.text,

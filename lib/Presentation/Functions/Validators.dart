@@ -4,44 +4,38 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../constants.dart';
 
-
-class Validators{
-
-  static bool validateImage(String fileName ){
-    if(fileName.toLowerCase().endsWith('png') ||
+class Validators {
+  static bool validateImage(String fileName) {
+    if (fileName.toLowerCase().endsWith('png') ||
         fileName.toLowerCase().endsWith('jpeg') ||
-        fileName.toLowerCase().endsWith('jpg')
-    ){
+        fileName.toLowerCase().endsWith('jpg')) {
       return true;
-    }
-    else return false;
+    } else
+      return false;
   }
 
-  static String? validateEmptyValue(String? value){
+  static String? validateEmptyValue(String? value) {
     if (value == null || value.isEmpty) {
       return 'The text is empty'.tr();
     }
     return null;
   }
 
-  static String?  validateMaxValue(String? value , int number){
+  static String? validateMaxValue(String? value, int number) {
     if (value == null || value.isEmpty) {
       return 'empty'.tr();
-    }
-    else if (value.length > number ) {
+    } else if (value.length > number) {
       return 'long'.tr();
     }
     return null;
   }
 
-  static String?  validateNumber(String? value){
+  static String? validateNumber(String? value) {
     if (value == null || value.isEmpty) {
       return 'empty'.tr();
-    }
-    else if (value.length > 12 ) {
+    } else if (value.length > 12) {
       return 'long'.tr();
-    }
-    else if (value.length < 8 ) {
+    } else if (value.length < 8) {
       return 'short'.tr();
     }
 
@@ -57,11 +51,11 @@ class Validators{
     // return null;
   }
 
-  static String? validatePhoneNumber(String? value){
+  static String? validatePhoneNumber(String? value) {
     if (value == null || value.isEmpty) {
       return 'empty'.tr();
     }
-    if (value?.startsWith('9') == false) {
+    if (value.startsWith('9') == false) {
       return 'start 9'.tr();
     }
     // if( value.length == 9)
@@ -73,41 +67,34 @@ class Validators{
       } else {
         return 'nonNumeric'.tr();
       }
-    }
-    else if (value.length < 9)
+    } else if (value.length < 9)
       return "short".tr();
     else
       return "long".tr();
   }
 
-
-
-  static String? validateName(String? value){
+  static String? validateName(String? value) {
     if (value == null || value.isEmpty) {
       return 'empty'.tr();
     }
-    if( value.length <= 2)
-      return "short".tr();
+    if (value.length <= 2) return "short".tr();
 
     if (!value.contains(RegExp(r'^[a-zA-Z]+$'))) {
       return 'nonAlphabetic'.tr();
-    }
-
-    else if ( value.length <= 15)
+    } else if (value.length <= 15)
       return null;
     else
       return "long".tr();
   }
 
-
-  static String? validateEmail(String? value){
+  static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'empty'.tr();
     }
-    if( value.length <= 10)
+    if (value.length <= 10)
       return "weak".tr();
     else if (value.length < 30)
-      return null ;
+      return null;
     else
       return "long".tr();
   }
@@ -124,15 +111,15 @@ class Validators{
 // //      return "plong".tr();
 //   }
 
-
-  static String? validatePassword(String? value){
+  static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'empty'.tr();
     }
-    if( value.length < 8)
+    if (value.length < 8)
       return "short".tr();
-    else if (value.length >= 8){
-      RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+    else if (value.length >= 8) {
+      RegExp regex = RegExp(
+          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
       if (!regex.hasMatch(value)) {
         final Message = "weak pass".tr();
         Fluttertoast.showToast(

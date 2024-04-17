@@ -468,7 +468,8 @@ class PaymentModel {
   PaymentModel({
     bool? error,
     String? message,
-    List<Data>? data,}){
+    List<Data>? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -487,13 +488,16 @@ class PaymentModel {
   bool? _error;
   String? _message;
   List<Data>? _data;
-  PaymentModel copyWith({  bool? error,
+  PaymentModel copyWith({
+    bool? error,
     String? message,
     List<Data>? data,
-  }) => PaymentModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      PaymentModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   List<Data>? get data => _data;
@@ -507,7 +511,6 @@ class PaymentModel {
     }
     return map;
   }
-
 }
 
 /// id : 13
@@ -600,7 +603,8 @@ class Data {
     int? amount,
     dynamic transferImage,
     String? paymentStatus,
-    dynamic paymentDetails,}){
+    dynamic paymentDetails,
+  }) {
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -737,7 +741,8 @@ class Data {
   dynamic _transferImage;
   String? _paymentStatus;
   dynamic _paymentDetails;
-  Data copyWith({  int? id,
+  Data copyWith({
+    int? id,
     dynamic customerId,
     int? userId,
     dynamic vehicleId,
@@ -781,51 +786,53 @@ class Data {
     dynamic transferImage,
     String? paymentStatus,
     dynamic paymentDetails,
-  }) => Data(  id: id ?? _id,
-    customerId: customerId ?? _customerId,
-    userId: userId ?? _userId,
-    vehicleId: vehicleId ?? _vehicleId,
-    typeId: typeId ?? _typeId,
-    optionId: optionId ?? _optionId,
-    driverId: driverId ?? _driverId,
-    categoryId: categoryId ?? _categoryId,
-    requestType: requestType ?? _requestType,
-    subcategoryId: subcategoryId ?? _subcategoryId,
-    from: from ?? _from,
-    to: to ?? _to,
-    direction: direction ?? _direction,
-    date: date ?? _date,
-    bags: bags ?? _bags,
-    time: time ?? _time,
-    pickup: pickup ?? _pickup,
-    dropoff: dropoff ?? _dropoff,
-    duration: duration ?? _duration,
-    pickupAddr: pickupAddr ?? _pickupAddr,
-    destAddr: destAddr ?? _destAddr,
-    note: note ?? _note,
-    travellers: travellers ?? _travellers,
-    status: status ?? _status,
-    payment: payment ?? _payment,
-    pickupLatitude: pickupLatitude ?? _pickupLatitude,
-    pickupLongitude: pickupLongitude ?? _pickupLongitude,
-    dropLatitude: dropLatitude ?? _dropLatitude,
-    dropLongitude: dropLongitude ?? _dropLongitude,
-    km: km ?? _km,
-    minutes: minutes ?? _minutes,
-    cost: cost ?? _cost,
-    startTime: startTime ?? _startTime,
-    endTime: endTime ?? _endTime,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-    bookingId: bookingId ?? _bookingId,
-    method: method ?? _method,
-    transactionId: transactionId ?? _transactionId,
-    amount: amount ?? _amount,
-    transferImage: transferImage ?? _transferImage,
-    paymentStatus: paymentStatus ?? _paymentStatus,
-    paymentDetails: paymentDetails ?? _paymentDetails,
-  );
+  }) =>
+      Data(
+        id: id ?? _id,
+        customerId: customerId ?? _customerId,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        typeId: typeId ?? _typeId,
+        optionId: optionId ?? _optionId,
+        driverId: driverId ?? _driverId,
+        categoryId: categoryId ?? _categoryId,
+        requestType: requestType ?? _requestType,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        direction: direction ?? _direction,
+        date: date ?? _date,
+        bags: bags ?? _bags,
+        time: time ?? _time,
+        pickup: pickup ?? _pickup,
+        dropoff: dropoff ?? _dropoff,
+        duration: duration ?? _duration,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        destAddr: destAddr ?? _destAddr,
+        note: note ?? _note,
+        travellers: travellers ?? _travellers,
+        status: status ?? _status,
+        payment: payment ?? _payment,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        km: km ?? _km,
+        minutes: minutes ?? _minutes,
+        cost: cost ?? _cost,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        bookingId: bookingId ?? _bookingId,
+        method: method ?? _method,
+        transactionId: transactionId ?? _transactionId,
+        amount: amount ?? _amount,
+        transferImage: transferImage ?? _transferImage,
+        paymentStatus: paymentStatus ?? _paymentStatus,
+        paymentDetails: paymentDetails ?? _paymentDetails,
+      );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
@@ -919,5 +926,4 @@ class Data {
     map['payment_details'] = _paymentDetails;
     return map;
   }
-
 }

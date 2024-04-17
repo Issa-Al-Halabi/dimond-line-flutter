@@ -388,10 +388,10 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                     h: 6.h,
                                     w: 50.w,
                                     onTap: () async {
-                                      if(orderTypeId ==''){
-                                        setSnackbar('please select type'.tr(), context);
-                                      }
-                                      else{
+                                      if (orderTypeId == '') {
+                                        setSnackbar(
+                                            'please select type'.tr(), context);
+                                      } else {
                                         if (isAccept == true &&
                                             isOrdered == false) {
                                           print('call api cancel');
@@ -414,7 +414,7 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                           print('********');
                                           print(orderTypeId);
                                           var creat = await Provider.of<
-                                              TripOutCityProvider>(context,
+                                                  TripOutCityProvider>(context,
                                               listen: false);
                                           tripOutcityApi(
                                               widget.fromLat!,
@@ -440,7 +440,7 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                             print(isAccept);
                                           });
                                           Timer timer = Timer.periodic(
-                                            // Duration(seconds: 20), (timer) {
+                                              // Duration(seconds: 20), (timer) {
                                               Duration(hours: 24), (timer) {
                                             setState(() {
                                               isOrdered = true;
@@ -826,7 +826,8 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                             print('***********');
                                             print(widget.vechileId[index]
                                                 .toString());
-                                            oneVechileId = widget.vechileId[index]
+                                            oneVechileId = widget
+                                                .vechileId[index]
                                                 .toString();
                                             getDialog();
                                           });
@@ -836,15 +837,16 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                           decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(
-                                                color:
-                                                    Colors.grey.withOpacity(0.3),
+                                                color: Colors.grey
+                                                    .withOpacity(0.3),
                                                 spreadRadius: 2,
                                                 blurRadius: 7,
                                                 offset: const Offset(0, 0),
                                               ),
                                             ],
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(20)),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(20)),
                                             color: backgroundColor,
                                           ),
                                           child: Padding(
@@ -858,7 +860,8 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                                   children: [
                                                     Column(
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment.start,
+                                                          MainAxisAlignment
+                                                              .start,
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
@@ -867,10 +870,11 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                                           height: 2.h,
                                                         ),
                                                         Text(
-                                                          widget
-                                                              .vechileType[index],
+                                                          widget.vechileType[
+                                                              index],
                                                           style: TextStyle(
-                                                              color: primaryBlue,
+                                                              color:
+                                                                  primaryBlue,
                                                               fontSize: 6.sp,
                                                               fontWeight:
                                                                   FontWeight
@@ -880,7 +884,8 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                                           height: 2.h,
                                                         ),
                                                         Text(
-                                                          widget.carModel[index],
+                                                          widget
+                                                              .carModel[index],
                                                           style: TextStyle(
                                                             color: primaryBlue,
                                                             fontSize: 5.sp,
@@ -928,19 +933,30 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                                         ),
                                                       ],
                                                     ),
-                                                    FadeInImage(
-                                                      image: NetworkImage(widget
-                                                          .vechileImage[index]),
-                                                      height: 12.h,
-                                                      width: 25.w,
-                                                      fit: BoxFit.contain,
-                                                      imageErrorBuilder: (context,
-                                                              error,
-                                                              stackTrace) =>
-                                                          erroWidget(100),
-                                                      placeholder:
-                                                          placeHolder(100),
-                                                    ),
+                                                    widget.vechileImage[index]
+                                                                .endsWith(
+                                                                    ".jpg") ||
+                                                            widget.vechileImage[
+                                                                    index]
+                                                                .endsWith(
+                                                                    ".png")
+                                                        ? FadeInImage(
+                                                            image: NetworkImage(
+                                                                widget.vechileImage[
+                                                                    index]),
+                                                            height: 12.h,
+                                                            width: 25.w,
+                                                            fit: BoxFit.contain,
+                                                            imageErrorBuilder:
+                                                                (context, error,
+                                                                        stackTrace) =>
+                                                                    erroWidget(
+                                                                        100),
+                                                            placeholder:
+                                                                placeHolder(
+                                                                    100),
+                                                          )
+                                                        : Container(),
                                                   ],
                                                 ),
                                               ],

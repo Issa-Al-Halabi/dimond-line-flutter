@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
+import 'package:diamond_line/Presentation/Functions/firebase_notification.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/inside_trip_delayed.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/inside_trip_moment.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_registration/are_you.dart';
@@ -237,18 +239,20 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
   Future<void> CheckLocationServicesInDevice() async {
     _serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (_serviceEnabled) {
-      LocationPermission permissionStatus = await Geolocator.requestPermission();
-      if (permissionStatus == LocationPermission.always || permissionStatus == LocationPermission.whileInUse) {
+      LocationPermission permissionStatus =
+          await Geolocator.requestPermission();
+      if (permissionStatus == LocationPermission.always ||
+          permissionStatus == LocationPermission.whileInUse) {
         // Position _locationData = await Geolocator.getCurrentPosition();
         startTimer();
-      }
-      else if (permissionStatus == LocationPermission.denied || permissionStatus == LocationPermission.deniedForever) {
+      } else if (permissionStatus == LocationPermission.denied ||
+          permissionStatus == LocationPermission.deniedForever) {
         LocationServiceDialog(
           context,
           onRetry: () {
             CheckLocationServicesInDevice();
           },
-          onClose: () {  },
+          onClose: () {},
           title: "please_enable_your_location_permission_and_try_again".tr(),
         );
       }
@@ -267,66 +271,71 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
 
   void startTimer() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    Timer(
-        Duration(seconds: 2),
-        () => Navigator.of(context).pushReplacement(
-              PageRouteBuilder(
-                pageBuilder: (BuildContext context, Animation<double> animation,
-                    Animation<double> secondaryAnimation) {
-                  return token != '' && type == 'user'
-                      ? UserDashboard()
-                      // : token != '' && type == 'foreign user' ? UserDashboard()
-                      : token != '' && type == 'organisations'
-                          ? UserDashboard()
-                          ////////////////////////////////////////////////////////
-                          : token != '' && type == 'external_driver'
-                              ? DriverDashboard(
-                                  driverType: 'external_driver',
-                                )
-                              : token != '' && type == 'driver'
-                                  ? DriverDashboard(driverType: 'driver')
-                                  // : token != '' && type == 'external_driver' ?
-                                  //              tripId !='' ?
-                                  //              TrackingScreen(
-                                  //                pickupLatitude: pickupLatitude,
-                                  //                pickupLongitude: pickupLongitude,
-                                  //                dropLongitude: dropLongitude,
-                                  //                dropLatitude: dropLatitude,
-                                  //                tripId: tripId,
-                                  //              )
-                                  //                  :
-                                  //              DriverDashboard(driverType: 'external_driver',)
-                                  //                  : token != '' && type == 'driver' ?
-                                  //              tripId !='' ?
-                                  //              TrackingScreen(
-                                  //                pickupLatitude: pickupLatitude,
-                                  //                pickupLongitude: pickupLongitude,
-                                  //                dropLongitude: dropLongitude,
-                                  //                dropLatitude: dropLatitude,
-                                  //                tripId: tripId,
-                                  //              )
-                                  //                  :
-                                  //              DriverDashboard(driverType: 'driver')
+    Timer(Duration(seconds: 2), () {
+      // InTripProvider inTripProvider =
+      //     Provider.of<InTripProvider>(context, listen: false);
+      // inTripProvider.firebaseInit();
+      // print(inTripProvider.test);
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-                                  : pref.getBool('isFirstTimeUser') ?? true
-                                      ? LandingPage()
-                                      : AreYou();
-                },
-                transitionsBuilder: (BuildContext context,
-                    Animation<double> animation,
-                    Animation<double> secondaryAnimation,
-                    Widget child) {
-                  return Align(
-                    child: SizeTransition(
-                      sizeFactor: animation,
-                      child: child,
-                    ),
-                  );
-                },
-                transitionDuration: Duration(milliseconds: 500),
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (BuildContext context, Animation<double> animation,
+              Animation<double> secondaryAnimation) {
+            return token != '' && type == 'user'
+                ? UserDashboard()
+                // : token != '' && type == 'foreign user' ? UserDashboard()
+                : token != '' && type == 'organisations'
+                    ? UserDashboard()
+                    ////////////////////////////////////////////////////////
+                    : token != '' && type == 'external_driver'
+                        ? DriverDashboard(
+                            driverType: 'external_driver',
+                          )
+                        : token != '' && type == 'driver'
+                            ? DriverDashboard(driverType: 'driver')
+                            // : token != '' && type == 'external_driver' ?
+                            //              tripId !='' ?
+                            //              TrackingScreen(
+                            //                pickupLatitude: pickupLatitude,
+                            //                pickupLongitude: pickupLongitude,
+                            //                dropLongitude: dropLongitude,
+                            //                dropLatitude: dropLatitude,
+                            //                tripId: tripId,
+                            //              )
+                            //                  :
+                            //              DriverDashboard(driverType: 'external_driver',)
+                            //                  : token != '' && type == 'driver' ?
+                            //              tripId !='' ?
+                            //              TrackingScreen(
+                            //                pickupLatitude: pickupLatitude,
+                            //                pickupLongitude: pickupLongitude,
+                            //                dropLongitude: dropLongitude,
+                            //                dropLatitude: dropLatitude,
+                            //                tripId: tripId,
+                            //              )
+                            //                  :
+                            //              DriverDashboard(driverType: 'driver')
+
+                            //////////////////////////////////////////////////////////////////////////////////////////////
+                            : pref.getBool('isFirstTimeUser') ?? true
+                                ? LandingPage()
+                                : AreYou();
+          },
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            return Align(
+              child: SizeTransition(
+                sizeFactor: animation,
+                child: child,
               ),
-            ));
+            );
+          },
+          transitionDuration: Duration(milliseconds: 500),
+        ),
+      );
+    });
   }
 
   // void getTrips() async {
@@ -386,6 +395,9 @@ class _WelcomingScreenState extends State<WelcomingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseNotificationsHandler().context = context;
+    FirebaseNotificationsHandler().inTripProvider =
+        Provider.of<InTripProvider>(context);
     return Scaffold(
       backgroundColor: primaryBlue,
       body: Container(

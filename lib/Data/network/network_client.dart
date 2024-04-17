@@ -8,9 +8,17 @@ import 'dart:convert';
 import 'package:web_socket_channel/io.dart';
 
 class network_client {
-  // static String Url =
-  // "http://dimond-line.peaklinkdemo.com";
+  ////  my car security Urls
+  static const String mycarSscSecurity_TOKEN =
+      "MvPhJO38hOUiyJ333Mh2Ct0w6Jn3o5R1";
+  static const String mycarSscSecurity_URL =
+      "https://mycar.ssc-security.net:8085/api/session?token=${mycarSscSecurity_TOKEN}";
+  static const String mycarSscSecurity_SOCKET =
+      "ws://mycar.ssc-security.net:8080/api/socket";
+  ////  ---------------------------------
+
   static String Url = "https://diamond-line.com.sy";
+  // static String Url = "https://diamondline.peaklink.site";
   static String _baseUrl = Url;
 
   final Client _client;
@@ -88,7 +96,8 @@ class network_client {
     }
   }
 
-  Future<IOWebSocketChannel> requestWebsocket(String path, String? cookies) async {
+  Future<IOWebSocketChannel> requestWebsocket(
+      String path, String? cookies) async {
     print(_baseUrl);
     return IOWebSocketChannel.connect(
         Uri.parse(

@@ -210,7 +210,8 @@ class _UserProfileSettingsState extends State<UserProfileSettings> {
                   ),
                 ],
                 borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
                 color: backgroundColor,
               ),
               child: SingleChildScrollView(
@@ -230,27 +231,35 @@ class _UserProfileSettingsState extends State<UserProfileSettings> {
                             height: 18.h,
                             width: 45.w,
                             decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(25)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25)),
                               color: lightBlue,
                             ),
                             child: imageFile == null
                                 ? TextButton(
                                     onPressed: () async {
                                       bool isAndroid13 = false;
-                                      final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                      final androidInfo =
+                                          await DeviceInfoPlugin().androidInfo;
                                       if (androidInfo.version.sdkInt! <= 32) {
                                         isAndroid13 = false;
-                                      }  else {
+                                      } else {
                                         isAndroid13 = true;
                                       }
-                                      var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                                      if (res) {   var im = await picker.pickImage(
-                                          source: ImageSource.gallery);
-                                      setState(() {
-                                        imageFile = File(im!.path);
-                                      });
-                                      }
-                                      else{
+                                      var res = isAndroid13 == true
+                                          ? await Permission.photos
+                                              .request()
+                                              .isGranted
+                                          : await Permission.storage
+                                              .request()
+                                              .isGranted;
+                                      if (res) {
+                                        var im = await picker.pickImage(
+                                            source: ImageSource.gallery);
+                                        setState(() {
+                                          imageFile = File(im!.path);
+                                        });
+                                      } else {
                                         showWarningGalleryDialog(context);
                                       }
                                     },
@@ -260,7 +269,15 @@ class _UserProfileSettingsState extends State<UserProfileSettings> {
                                       fontSize: 5.sp,
                                     )),
                                   )
-                                : imageFile!.path.toString().startsWith('http')
+                                : imageFile!.path
+                                            .toString()
+                                            .startsWith('http') &&
+                                        (imageFile!.path
+                                                .toString()
+                                                .endsWith("jpg") ||
+                                            imageFile!.path
+                                                .toString()
+                                                .endsWith("png"))
                                     ? FadeInImage(
                                         image: NetworkImage(
                                           imageFile!.path,
@@ -295,24 +312,31 @@ class _UserProfileSettingsState extends State<UserProfileSettings> {
                                 ),
                                 onPressed: () async {
                                   bool isAndroid13 = false;
-                                  final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                  final androidInfo =
+                                      await DeviceInfoPlugin().androidInfo;
                                   if (androidInfo.version.sdkInt! <= 32) {
                                     isAndroid13 = false;
-                                  }  else {
+                                  } else {
                                     isAndroid13 = true;
                                   }
-                                  var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                                  if (res) {  var im = await picker.pickImage(
-                                      source: ImageSource.gallery);
-                                  setState(() {
-                                    print('im!.path');
-                                    print(im!.path);
-                                    imageFile = File(im.path);
-                                    print('imageFile');
-                                    print(imageFile);
-                                  });
-                                  }
-                                  else{
+                                  var res = isAndroid13 == true
+                                      ? await Permission.photos
+                                          .request()
+                                          .isGranted
+                                      : await Permission.storage
+                                          .request()
+                                          .isGranted;
+                                  if (res) {
+                                    var im = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    setState(() {
+                                      print('im!.path');
+                                      print(im!.path);
+                                      imageFile = File(im.path);
+                                      print('imageFile');
+                                      print(imageFile);
+                                    });
+                                  } else {
                                     showWarningGalleryDialog(context);
                                   }
                                 },
@@ -492,7 +516,9 @@ class _UserProfileSettingsState extends State<UserProfileSettings> {
                             print('**********************************');
                             print(imageFile);
                             if (formKey.currentState?.validate() == true) {
-                              if (imageFile!.path.toString().startsWith('http')) {
+                              if (imageFile!.path
+                                  .toString()
+                                  .startsWith('http')) {
                                 print('ifffffffffffff');
                                 updateUserProfile(
                                   firstNameController.text,

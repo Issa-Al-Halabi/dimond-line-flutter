@@ -53,7 +53,7 @@ class _MapScreen2State extends State<MapScreen2> {
   void dispose() {
     controllerFrom.dispose();
     controllerTo.dispose();
-      Loader.hide();
+    Loader.hide();
     super.dispose();
   }
 
@@ -101,27 +101,36 @@ class _MapScreen2State extends State<MapScreen2> {
     print(address);
     String apiurl =
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$long&key=$APIKEY";
-    Response response =
-        await get(Uri.parse(apiurl)); //send get request to API URL
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      if (data["status"] == "OK") {
-        if (data["results"].length > 0) {
-          address = data["results"][0]["address_components"][2]["long_name"] +
-              "," +
-              data["results"][0]["address_components"][1]
-                  ["long_name"]; // f there is atleast one address
-          print("address" + address);
-          if (mounted)
-            setState(() {
-              print(address);
-            });
+    try {
+      Response response =
+          await get(Uri.parse(apiurl)); //send get request to API URL
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        if (data["status"] == "OK") {
+          if (data["results"].length > 0) {
+            address = data["results"][0]["address_components"][2]["long_name"] +
+                "," +
+                data["results"][0]["address_components"][1]
+                    ["long_name"]; // f there is atleast one address
+            print("address" + address);
+            if (mounted)
+              setState(() {
+                print(address);
+              });
+          }
+        } else {
+          print(data["error_message"]);
+          address = "";
         }
       } else {
-        print(data["error_message"]);
+        print("error while fetching geoconding data");
+        address = "";
       }
-    } else {
-      print("error while fetching geoconding data");
+    } catch (e) {
+      if (mounted)
+        setSnackbar(
+            "Error While Connecting Please Check your Internet", context);
+      address = "";
     }
   }
 

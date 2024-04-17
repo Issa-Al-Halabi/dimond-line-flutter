@@ -636,8 +636,6 @@
 //   }
 // }
 
-
-
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
@@ -666,11 +664,11 @@ final network_client client = network_client(Client());
 class TrackingScreen extends StatefulWidget {
   TrackingScreen(
       {required this.tripId,
-        required this.pickupLatitude,
-        required this.pickupLongitude,
-        required this.dropLatitude,
-        required this.dropLongitude,
-        Key? key})
+      required this.pickupLatitude,
+      required this.pickupLongitude,
+      required this.dropLatitude,
+      required this.dropLongitude,
+      Key? key})
       : super(key: key);
   String tripId;
   String pickupLatitude, pickupLongitude, dropLatitude, dropLongitude;
@@ -701,11 +699,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
   Marker marker3 = Marker(markerId: MarkerId("to"));
   Circle? circle;
 
-  var _channel = IOWebSocketChannel.connect(
-    Uri.parse(
-      'ws://mycar.ssc-security.net:8080/api/socket',
-    ),
-  );
+  IOWebSocketChannel? _channel;
 
   @override
   void initState() {
@@ -720,21 +714,25 @@ class _TrackingScreenState extends State<TrackingScreen> {
 
   @override
   void dispose() {
-    _channel.sink.close();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
     super.dispose();
   }
 
   Future<void> getCookie() async {
-    Map<String, String> co = {};
-    Response response = await get(Uri.parse(
-      'http://mycar.ssc-security.net:8080/api/session?token=oqBN0XE1usgfA25X465NJs24XHtNs20S',
-    ));
-    co.addAll({"Cookie": response.headers['set-cookie'].toString()});
-    _channel = IOWebSocketChannel.connect(
-        Uri.parse(
-          'ws://mycar.ssc-security.net:8080/api/socket',
-        ),
-        headers: co);
+    try {
+      Map<String, String> co = {};
+      Response response =
+          await get(Uri.parse(network_client.mycarSscSecurity_URL));
+      co.addAll({"Cookie": response.headers['set-cookie'].toString()});
+      print(co);
+      _channel = IOWebSocketChannel.connect(
+          Uri.parse(network_client.mycarSscSecurity_SOCKET),
+          headers: co);
+    } catch (e) {
+      setSnackbar(e.toString(), context);
+    }
   }
 
   Future initShared() async {
@@ -919,16 +917,19 @@ class _TrackingScreenState extends State<TrackingScreen> {
   // }
 
   /////////////////////////trip end api //////////////////////////////////
-  Future<void> endTripApi(String trip_id, String end_time, String finalDistance) async {
+  Future<void> endTripApi(
+      String trip_id, String end_time, String finalDistance) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       Loader.show(context, progressIndicator: LoaderWidget());
       var data =
-      await AppRequests.endTripRequest(trip_id, end_time, finalDistance);
+          await AppRequests.endTripRequest(trip_id, end_time, finalDistance);
       print(data);
       data = json.decode(data);
       if (data["error"] == false) {
-        _channel.sink.close();
+        if (_channel != null) {
+          _channel!.sink.close();
+        }
         Loader.hide();
         setSnackbar(data["message"].toString(), context);
         setState(() {
@@ -1005,6 +1006,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
   DateTime timeback = DateTime.now();
   @override
   Widget build(BuildContext context) {
+    print("tracking dsfe================================================");
     return WillPopScope(
       onWillPop: () async {
         if (Loader.isShown == true) {
@@ -1034,145 +1036,157 @@ class _TrackingScreenState extends State<TrackingScreen> {
         body: _kGooglePlex == null
             ? Center(child: LoaderWidget())
             : Container(
-          height: getScreenHeight(context),
-          width: getScreenWidth(context),
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(background),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(top: 9.h),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    height: 82.h,
-                    width: getScreenWidth(context),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 7,
-                          offset: const Offset(0, 0),
+                height: getScreenHeight(context),
+                width: getScreenWidth(context),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(background),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 9.h),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 82.h,
+                          width: getScreenWidth(context),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 7,
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20)),
+                            color: backgroundColor,
+                          ),
+                          child: Stack(children: [
+                            _channel != null
+                                ? StreamBuilder(
+                                    stream: _channel!.stream,
+                                    builder: (context, snapshot) {
+                                      print(snapshot.connectionState);
+                                      if (snapshot.hasData == true) {
+                                        var data = json
+                                            .decode(snapshot.data.toString());
+                                        print('=========================');
+                                        print(data);
+                                        print('=========================');
+                                        if (data['positions'] != null) {
+                                          // todo
+                                          if (data['positions'][0]
+                                                  ['deviceId'] ==
+                                              deviceNumb) {
+                                            // if (data['positions'][0]['deviceId'] == 248) {
+                                            print(
+                                                '--------------------------------');
+                                            lat = data['positions'][0]
+                                                ['latitude'];
+                                            lng = data['positions'][0]
+                                                ['longitude'];
+                                            course =
+                                                data['positions'][0]['course'];
+                                            latLngList.add(LatLng(lat, lng));
+                                            updatePolyline();
+                                            updateMainPolyline(lat, lng);
+                                            //todo
+                                            getLocationApi(
+                                                lat.toString(),
+                                                lng.toString(),
+                                                deviceNumb.toString());
+
+                                            //todo
+                                            // if (isInDomain == false) {
+                                            //   // check if its in 4 km to arrive
+                                            //   checkDistanceToDestination(lat, lng,
+                                            //       double.parse(widget.dropLatitude),
+                                            //       double.parse(widget.dropLongitude));
+                                            // }
+                                          }
+                                        }
+                                      } else {
+                                        print('no data');
+                                      }
+                                      return Text('');
+                                    },
+                                  )
+                                : Container(),
+                            Container(
+                              height: 82.h,
+                              width: getScreenWidth(context),
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 7,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20)),
+                                color: backgroundColor,
+                              ),
+                              child: GoogleMap(
+                                mapType: MapType.normal,
+                                zoomControlsEnabled: true,
+                                zoomGesturesEnabled: true,
+                                scrollGesturesEnabled: true,
+                                markers: Set.of((marker3 != null)
+                                    ? [marker, marker2, marker3]
+                                    : []),
+                                circles:
+                                    Set.of((circle != null) ? [circle!] : []),
+                                polylines: {
+                                  Polyline(
+                                    polylineId: PolylineId('route'),
+                                    points: polylineCoordinates,
+                                    color: primaryBlue,
+                                    width: 5,
+                                  ),
+                                },
+                                initialCameraPosition: _kGooglePlex!,
+                                onMapCreated: (GoogleMapController controller) {
+                                  gmc = controller;
+                                },
+                                onTap: (latlng) {},
+                              ),
+                            ),
+                            Positioned(
+                                bottom: 2.h,
+                                left: 30.w,
+                                right: 30.w,
+                                child: ContainerWidget(
+                                    text: 'end'.tr(),
+                                    h: 7.h,
+                                    w: 50.w,
+                                    onTap: () {
+                                      DateTime t = DateTime.now();
+                                      String end_time =
+                                          '${t.hour}:${t.minute}:${t.second}';
+                                      getDistance(
+                                        double.parse(widget.pickupLatitude),
+                                        double.parse(widget.pickupLongitude),
+                                        double.parse(widget.dropLatitude),
+                                        double.parse(widget.dropLongitude),
+                                      );
+                                      endTripApi(widget.tripId, end_time,
+                                          finalDistance.toString());
+                                    }))
+                          ]),
                         ),
                       ],
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                      color: backgroundColor,
                     ),
-                    child: Stack(children: [
-                      StreamBuilder(
-                        stream: _channel.stream,
-                        builder: (context, snapshot) {
-                          print(snapshot.connectionState);
-                          if (snapshot.hasData == true) {
-                            var data =
-                            json.decode(snapshot.data.toString());
-                            print('=========================');
-                            print(data);
-                            print('=========================');
-                            if (data['positions'] != null) {
-                              // todo
-                              if (data['positions'][0]['deviceId'] == deviceNumb) {
-                              // if (data['positions'][0]['deviceId'] == 248) {
-                                print('--------------------------------');
-                                lat = data['positions'][0]['latitude'];
-                                lng = data['positions'][0]['longitude'];
-                                course = data['positions'][0]['course'];
-                                latLngList.add(LatLng(lat, lng));
-                                updatePolyline();
-                                updateMainPolyline(lat, lng);
-                                //todo
-                                getLocationApi(
-                                    lat.toString(),
-                                    lng.toString(),
-                                    deviceNumb.toString());
-
-                                //todo
-                                // if (isInDomain == false) {
-                                //   // check if its in 4 km to arrive
-                                //   checkDistanceToDestination(lat, lng,
-                                //       double.parse(widget.dropLatitude),
-                                //       double.parse(widget.dropLongitude));
-                                // }
-                              }
-                            }
-                          } else {
-                            print('no data');
-                          }
-                          return Text('');
-                        },
-                      ),
-                      Container(
-                        height: 82.h,
-                        width: getScreenWidth(context),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 7,
-                              offset: const Offset(0, 0),
-                            ),
-                          ],
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20)),
-                          color: backgroundColor,
-                        ),
-                        child: GoogleMap(
-                          mapType: MapType.normal,
-                          zoomControlsEnabled: true,
-                          zoomGesturesEnabled: true,
-                          scrollGesturesEnabled: true,
-                          markers: Set.of((marker3 != null) ? [marker, marker2, marker3] : []),
-                          circles: Set.of((circle != null) ? [circle!] : []),
-                          polylines: {
-                            Polyline(
-                              polylineId: PolylineId('route'),
-                              points: polylineCoordinates,
-                              color: primaryBlue,
-                              width: 5,
-                            ),
-                          },
-                          initialCameraPosition: _kGooglePlex!,
-                          onMapCreated:
-                              (GoogleMapController controller) {
-                            gmc = controller;
-                          },
-                          onTap: (latlng) {},
-                        ),
-                      ),
-                      Positioned(
-                          bottom: 2.h,
-                          left: 30.w,
-                          right: 30.w,
-                          child: ContainerWidget(
-                              text: 'end'.tr(),
-                              h: 7.h,
-                              w: 50.w,
-                              onTap: () {
-                                DateTime t = DateTime.now();
-                                String end_time = '${t.hour}:${t.minute}:${t.second}';
-                                getDistance(
-                                  double.parse(widget.pickupLatitude),
-                                  double.parse(widget.pickupLongitude),
-                                  double.parse(widget.dropLatitude),
-                                  double.parse(widget.dropLongitude),
-                                );
-                                endTripApi(widget.tripId, end_time, finalDistance.toString());
-                              }))
-                    ]),
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

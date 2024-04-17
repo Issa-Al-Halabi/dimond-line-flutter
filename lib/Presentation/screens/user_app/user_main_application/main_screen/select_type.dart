@@ -1,6 +1,8 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
@@ -141,7 +143,7 @@ class _SelectTypeState extends State<SelectType> {
                                     );
                                   },
                                   transitionDuration:
-                                  Duration(milliseconds: 500),
+                                      Duration(milliseconds: 500),
                                 ),
                               );
                             },
@@ -175,7 +177,7 @@ class _SelectTypeState extends State<SelectType> {
                                     );
                                   },
                                   transitionDuration:
-                                  Duration(milliseconds: 500),
+                                      Duration(milliseconds: 500),
                                 ),
                               );
                             },

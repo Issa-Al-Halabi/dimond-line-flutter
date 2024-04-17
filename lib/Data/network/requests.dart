@@ -23,6 +23,7 @@ import 'package:diamond_line/Data/Models/User_Models/update_profile_foreigner_mo
 import 'package:diamond_line/Data/Models/User_Models/update_profile_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_email_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
@@ -76,7 +77,6 @@ class AppRequests {
           "phone": phone,
           "password": password,
           "device_token": fcm_token,
-          // "user_type": "user"
           "user_type": user_type
         });
     if (response.statusCode == 200) {
@@ -180,15 +180,33 @@ class AppRequests {
       [File? imageFile]) async {
     print("UserRegisterRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    fcm_token = prefs.getString('fcm_token') ?? '';
+
+    await FirebaseMessaging.instance.getToken().then((value) {
+      fcm_token = value;
+      prefs.setString('fcm_token', fcm_token!);
+    });
+
     //TODO
     // String? token = prefs.getString('token') ?? '';
-    String? token = 'StAX3iQry3U9hwYMFoyjpW6IZJoV8a7DNI0VS4aQtlkfSzL1DG3fMEzTjNZY';
+    String? token =
+        'StAX3iQry3U9hwYMFoyjpW6IZJoV8a7DNI0VS4aQtlkfSzL1DG3fMEzTjNZY';
     print("start send");
     print(token);
+    print("$BaseUrl/api/user1-registration");
     var req = http.MultipartRequest(
         'POST', Uri.parse('$BaseUrl/api/user1-registration'));
-    print("afterrrrrr");
+    print({
+      'first_name': fname,
+      'last_name': lname,
+      'mother_name': mother_name,
+      'father_name': father_name,
+      'phone': phone,
+      'password': password,
+      'email': email,
+      'place_of_birth': place_of_birth,
+      'date_of_birth': date_of_birth,
+      'device_token': fcm_token!,
+    });
     req.fields['first_name'] = fname;
     req.fields['last_name'] = lname;
     req.fields['mother_name'] = mother_name;
@@ -222,7 +240,7 @@ class AppRequests {
     var response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 200) {
-      print(response.statusCode.toString() + response.body);
+      print(response.statusCode.toString() + " " + response.body);
       print("fetchServices status 200");
 
       if (UerRegisterModel.fromJson(json.decode(response.body)).error ==
@@ -376,14 +394,15 @@ class AppRequests {
           "password": pass,
           "confirm_password": confirmPass,
           "device_token": fcm_token,
-          "user_type" : user_type
+          "user_type": user_type
         });
     print(mobile);
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
       print("fetchServices status 200");
       print(ForgetPasswordModel.fromJson(json.decode(response.body)).message);
-      if (ForgetPasswordModel.fromJson(json.decode(response.body)).error == false) {
+      if (ForgetPasswordModel.fromJson(json.decode(response.body)).error ==
+          false) {
         user_id = ForgetPasswordModel.fromJson(json.decode(response.body))
             .data!
             .id
@@ -459,7 +478,8 @@ class AppRequests {
   }
 
   ///send otp code
-  static Future<SendOtpModel> sendOtpRequest(String mobile, String request_from, bool isUser) async {
+  static Future<SendOtpModel> sendOtpRequest(
+      String mobile, String request_from, bool isUser) async {
     print("otp fetch mobile :" + mobile.toString());
     print("SendOtpRequest");
     String user_type = '';
@@ -471,12 +491,14 @@ class AppRequests {
     }
     print('*********************************');
     print(user_type);
-    final response = await client
-        .request(requestType: RequestType.POST, path: "api/otp", parameter: {
-      "phone": mobile,
-      "request_from": request_from,
-      "user_type" : user_type
-    });
+    final response = await client.request(
+        requestType: RequestType.POST,
+        path: "api/otp",
+        parameter: {
+          "phone": mobile,
+          "request_from": request_from,
+          "user_type": user_type
+        });
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
       print("fetch Services status 200");
@@ -666,7 +688,8 @@ class AppRequests {
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
       print("fetchServices status 200");
-      if (UpdateProfileModel.fromJson(json.decode(response.body)).error == false) {
+      if (UpdateProfileModel.fromJson(json.decode(response.body)).error ==
+          false) {
         return UpdateProfileModel.fromJson(json.decode(response.body));
       } else {
         return UpdateProfileModel.fromJson(json.decode(response.body));
@@ -676,14 +699,9 @@ class AppRequests {
     }
   }
 
-
   //update profile driver
-  static Future<UpdateProfileModel> UpdateProfilDriverRequest(
-      String first_name,
-      String last_name,
-      String phone,
-      String email,
-      String date_of_birth,
+  static Future<UpdateProfileModel> UpdateProfilDriverRequest(String first_name,
+      String last_name, String phone, String email, String date_of_birth,
       [File? imageFile]) async {
     print("UpdateProfileRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -724,7 +742,8 @@ class AppRequests {
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
       print("fetchServices status 200");
-      if (UpdateProfileModel.fromJson(json.decode(response.body)).error == false) {
+      if (UpdateProfileModel.fromJson(json.decode(response.body)).error ==
+          false) {
         return UpdateProfileModel.fromJson(json.decode(response.body));
       } else {
         return UpdateProfileModel.fromJson(json.decode(response.body));
@@ -900,13 +919,13 @@ class AppRequests {
 
   // get filter vechile api
   static Future<FilterVechileModel> getFilterVechilesCategoryRequest(
-      String category_id,
-      String subcategory_id,
-      String seats,
-      String bags,
-      String distance,
-      String time,
-      ) async {
+    String category_id,
+    String subcategory_id,
+    String seats,
+    String bags,
+    String distance,
+    String time,
+  ) async {
     print("FilterVechileRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
@@ -922,9 +941,9 @@ class AppRequests {
           "subcategory_id": subcategory_id,
           "seats": seats,
           "bags": bags,
-          "km" : distance,
-          "min" : time,
-          "user_id" : user_id
+          "km": distance,
+          "min": time,
+          "user_id": user_id
         });
     print(response.body);
     if (response.statusCode == 200) {
@@ -1094,9 +1113,7 @@ class AppRequests {
         requestType: RequestType.POST,
         path: "api/get_mytrip",
         token: token,
-        parameter: {
-          "user_id": user_id
-        });
+        parameter: {"user_id": user_id});
     print(response.body);
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
@@ -1119,9 +1136,7 @@ class AppRequests {
         requestType: RequestType.POST,
         path: "api/accepted-trip",
         token: token,
-        parameter: {
-          "user_id": user_id
-        });
+        parameter: {"user_id": user_id});
     print(response.body);
     if (response.statusCode == 200) {
       // print(response.statusCode.toString() + response.body);
@@ -1251,7 +1266,25 @@ class AppRequests {
       String type_id,
       List option_id,
       String order_time) async {
-    print("bookNowRequest");
+    print("bookNowRequest====================================================");
+    print({
+      "latitude": latitude,
+      "longitude": longitude,
+      "category_id": "1",
+      "km": km,
+      "minutes": minutes,
+      "user_id": user_id,
+      "status": "pending",
+      "pickup_addr": pickup_addr,
+      "dest_addr": dest_addr,
+      "cost": cost,
+      "type_id": type_id,
+      "request_type": "moment",
+      "option_id": option_id,
+      "drop_latitude": drop_latitude,
+      "drop_longitude": drop_longitude,
+      "order_time": order_time
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
     user_id = prefs.getString('user_id') ?? '';
@@ -1275,10 +1308,11 @@ class AppRequests {
           "request_type": "moment",
           "option_id": option_id,
           "drop_latitude": drop_latitude,
-          "drop_longitude" : drop_longitude,
-          "order_time" : order_time
+          "drop_longitude": drop_longitude,
+          "order_time": order_time
         });
     print(response.body);
+    print("=====================================");
     return response.body;
   }
 
@@ -1337,11 +1371,30 @@ class AppRequests {
       String date,
       String time,
       List option_id) async {
-    print("bookNowDelayedRequest");
+    print("bookNowDelayedRequest===============");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
     user_id = prefs.getString('user_id') ?? '';
     print(token);
+    print({
+      "latitude": latitude,
+      "longitude": longitude,
+      "category_id": "1",
+      "km": km,
+      "minutes": minutes,
+      "user_id": user_id,
+      "status": "pending",
+      "pickup_addr": pickup_addr,
+      "dest_addr": dest_addr,
+      "cost": cost,
+      "type_id": type_id,
+      "request_type": "delayed",
+      "date": date,
+      "time": time,
+      "option_id": option_id,
+      "drop_latitude": drop_latitude,
+      "drop_longitude": drop_longitude
+    });
     final response = await client.requesttoken(
         requestType: RequestType.POST,
         path: "api/book-now-delayed",
@@ -1363,7 +1416,7 @@ class AppRequests {
           "time": time,
           "option_id": option_id,
           "drop_latitude": drop_latitude,
-          "drop_longitude" : drop_longitude
+          "drop_longitude": drop_longitude
         });
     print(response.body);
     return response.body;
@@ -1386,7 +1439,7 @@ class AppRequests {
           "user_id": user_id,
           "review_text": review_text,
           "ratings": ratings,
-          "type" : "user"
+          "type": "user"
         });
     print(response.body);
     return response.body;
@@ -1608,6 +1661,7 @@ class AppRequests {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
     user_id = prefs.getString('user_id') ?? '';
+    print(user_id);
     print(token);
     final response = await client.requesttoken(
         requestType: RequestType.POST,
@@ -1617,6 +1671,7 @@ class AppRequests {
           "driver_id": user_id,
         });
     print(response.body);
+    print("driver-status ==================================");
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
       print("fetchServices status 200");
@@ -1705,7 +1760,7 @@ class AppRequests {
         parameter: {
           "trip_id": trip_id,
           "driver_id": user_id,
-          "device_number" : device_number
+          "device_number": device_number
         });
     print(response.body);
     return response.body;
@@ -1774,7 +1829,7 @@ class AppRequests {
           "user_id": user_id,
           "review_text": review_text,
           "ratings": ratings,
-          "type" : "driver"
+          "type": "driver"
         });
     print(response.body);
     return response.body;
@@ -1806,7 +1861,8 @@ class AppRequests {
   /// tripPaymentRequest
   static Future<TripPaymentModel> tripPaymentRequest(
       // String trip_id,
-      String method, String amount) async {
+      String method,
+      String amount) async {
     print("tripPaymentRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
@@ -1835,7 +1891,9 @@ class AppRequests {
   /// tripPaymentTransferRequest
   static Future<TripPaymentModel> tripPaymentTransferRequest(
       // String trip_id,
-      String method, String amount, File imageFile) async {
+      String method,
+      String amount,
+      File imageFile) async {
     print("tripPaymentTransferRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
@@ -1904,11 +1962,14 @@ class AppRequests {
         token: token,
         parameter: {"driver_id": user_id});
     print(response.body);
+    print(response.headers);
+    print("diver wallet");
     return response.body;
   }
 
   /// chargeWalletRequest
-  static Future<ChargeWalletModel> chargeWalletRequest(String method, String new_amount) async {
+  static Future<ChargeWalletModel> chargeWalletRequest(
+      String method, String new_amount) async {
     print("chargeWalletRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
@@ -1934,7 +1995,8 @@ class AppRequests {
   }
 
   /// chargeWalletTransferRequest
-  static Future<ChargeWalletModel> chargeWalletTransferRequest(String method, String amount, File imageFile) async {
+  static Future<ChargeWalletModel> chargeWalletTransferRequest(
+      String method, String amount, File imageFile) async {
     print("chargeWalletTransferRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token') ?? '';
@@ -1946,7 +2008,7 @@ class AppRequests {
     print(user_id);
     print("start send");
     var req =
-    http.MultipartRequest('POST', Uri.parse('$BaseUrl/api/charge-wallet'));
+        http.MultipartRequest('POST', Uri.parse('$BaseUrl/api/charge-wallet'));
     print("afterrrrrr");
     req.fields['driver_id'] = user_id!;
     req.fields['method'] = method;
@@ -2058,7 +2120,6 @@ class AppRequests {
     }
   }
 
-
   /// arriveDriver api
   static Future arriveDriverRequest(String trip_id) async {
     print("arriveDriverRequest");
@@ -2072,13 +2133,12 @@ class AppRequests {
         path: "api/driver-notification",
         token: token,
         parameter: {
-          "driver_id" : user_id,
+          "driver_id": user_id,
           "trip_id": trip_id,
         });
     print(response.body);
     return response.body;
   }
-
 
   /// mtn api
   static Future mtnRequest(String phone, String code) async {
@@ -2088,13 +2148,11 @@ class AppRequests {
     user_id = prefs.getString('user_id') ?? '';
     print(token);
     print(user_id);
-    final response = await client.request(
-        requestType: RequestType.POST,
-        path: "api/MTN",
-        parameter: {
-          "otp" : code,
-          "mobile" : phone,
-        });
+    final response = await client
+        .request(requestType: RequestType.POST, path: "api/MTN", parameter: {
+      "otp": code,
+      "mobile": phone,
+    });
 
     // Response response = await post(Uri.parse("$_baseUrl" + "mtn"),
     //   body: {
@@ -2108,7 +2166,8 @@ class AppRequests {
   }
 
   /// driver delete account api
-  static Future driverDeleteAccountRequest(String phone, String password) async {
+  static Future driverDeleteAccountRequest(
+      String phone, String password) async {
     print("driverDeleteAccountRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
@@ -2120,14 +2179,13 @@ class AppRequests {
         path: "api/delete_driver",
         token: token,
         parameter: {
-          "phone" : phone,
-          "password" : password,
-          "driver_id" : user_id
+          "phone": phone,
+          "password": password,
+          "driver_id": user_id
         });
     print(response.body);
     return response.body;
   }
-
 
   /// user delete account api
   static Future userDeleteAccountRequest(String phone, String password) async {
@@ -2144,17 +2202,17 @@ class AppRequests {
         path: "api/delete_rider",
         token: token,
         parameter: {
-          "user_id" : user_id,
-          "phone" : phone,
-          "password" : password,
+          "user_id": user_id,
+          "phone": phone,
+          "password": password,
         });
     print('response.body ${response.body}');
     return response.body;
   }
 
-
   /// createPaymentIdRequest
-  static Future<CreatePaymentIdModel> createPaymentIdRequest(String amount) async {
+  static Future<CreatePaymentIdModel> createPaymentIdRequest(
+      String amount) async {
     print("createPaymentIdRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
@@ -2165,10 +2223,7 @@ class AppRequests {
         requestType: RequestType.POST,
         path: "api/create-orderid",
         token: token,
-        parameter: {
-          "driver_id": user_id,
-          "amount" : amount
-        });
+        parameter: {"driver_id": user_id, "amount": amount});
     print(response.body);
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
@@ -2180,7 +2235,8 @@ class AppRequests {
   }
 
   /// getEcashPaymentStatusRequest
-  static Future<CheckPaymentStatusModel> getEcashPaymentStatusRequest(String payment_id) async {
+  static Future<CheckPaymentStatusModel> getEcashPaymentStatusRequest(
+      String payment_id) async {
     print("getEcashPaymentStatusRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
@@ -2189,9 +2245,7 @@ class AppRequests {
         requestType: RequestType.POST,
         path: "api/check-status",
         token: token,
-        parameter: {
-          "order_id": payment_id
-        });
+        parameter: {"order_id": payment_id});
     print(response.body);
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
@@ -2212,9 +2266,7 @@ class AppRequests {
         requestType: RequestType.POST,
         path: "api/delete_order",
         token: token,
-        parameter: {
-          "order_id" : payment_id
-        });
+        parameter: {"order_id": payment_id});
     print('response.body ${response.body}');
     return response.body;
   }
@@ -2223,15 +2275,15 @@ class AppRequests {
   static Future termsRequest() async {
     print("termsRequest");
     final response = await client.request(
-    requestType: RequestType.GET,
-    path: "api/terms",
-  );
+      requestType: RequestType.GET,
+      path: "api/terms",
+    );
     return response.body;
   }
 
-
   /// nearestCarMapRequest
-  static Future<NearestCarsMapModel> nearestCarMapRequest(String lat, String lng) async {
+  static Future<NearestCarsMapModel> nearestCarMapRequest(
+      String lat, String lng) async {
     print("nearestCarMapRequest");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
@@ -2240,10 +2292,7 @@ class AppRequests {
         requestType: RequestType.POST,
         path: "api/map_cars",
         token: token,
-        parameter: {
-          "pickup_latitude": lat,
-          "pickup_longitude": lng
-        });
+        parameter: {"pickup_latitude": lat, "pickup_longitude": lng});
     print(response.body);
     if (response.statusCode == 200) {
       print(response.statusCode.toString() + response.body);
@@ -2253,7 +2302,6 @@ class AppRequests {
       return NearestCarsMapModel.fromJson(json.decode(response.body));
     }
   }
-
 
   /// getInitUserTripsRequest
   static Future<InitUserTripsModel> getInitUserTripsRequest() async {
@@ -2304,7 +2352,6 @@ class AppRequests {
     token = prefs.getString('token') ?? '';
     print(token);
   }
-
 
 // // delete account api
 //   Future<void> deleteAccount(String mobile, String password) async {
@@ -3674,5 +3721,4 @@ class AppRequests {
 //       // return GetTripCategoryModel.fromJson(json.decode(response.body));
 //     }
 //   }
-
 }

@@ -52,21 +52,19 @@ class _OutDriverMainScreennState extends State<OutDriverMainScreen> {
     super.initState();
   }
 
-
   Future initShared() async {
     prefs = await SharedPreferences.getInstance();
-    deviceNumber = prefs.getString('deviceNumber') ?? '';
+    deviceNumber = prefs.getString('deviceNumber') ?? '0';
     print('deviceNumber');
     print(deviceNumber);
-    deviceNumb = int.parse(deviceNumber);
+    deviceNumb = int.parse(deviceNumber.toString());
     print(deviceNumb);
   }
 
   callApi() async {
-      await init();
-      getLatAndLong();
+    await init();
+    getLatAndLong();
   }
-
 
   /////////////////////////get lat long api //////////////////////////////////
   Future<void> getLatAndLong() async {
@@ -232,18 +230,19 @@ class _OutDriverMainScreennState extends State<OutDriverMainScreen> {
                               key: _refreshIndicatorKey,
                               onRefresh: init,
                               child: Center(
-                                  child:
-                              Column(
+                                  child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(msg,
+                                  Text(
+                                    msg,
                                     textAlign: TextAlign.center,
                                     maxLines: 2,
-                                  style: TextStyle(
-                                    fontSize: 5.sp,
-                                    color: primaryBlue,
-                                  ),),
+                                    style: TextStyle(
+                                      fontSize: 5.sp,
+                                      color: primaryBlue,
+                                    ),
+                                  ),
                                   TextButton(
                                     onPressed: init,
                                     child: myText(
@@ -254,8 +253,7 @@ class _OutDriverMainScreennState extends State<OutDriverMainScreen> {
                                     ),
                                   ),
                                 ],
-                              )
-                              ))
+                              )))
                           : SingleChildScrollView(
                               child: Column(
                                 children: [

@@ -6,7 +6,8 @@ class FilterVechileModel {
   FilterVechileModel({
     bool? error,
     String? message,
-    List<Data>? data,}){
+    List<Data>? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -25,13 +26,16 @@ class FilterVechileModel {
   bool? _error;
   String? _message;
   List<Data>? _data;
-  FilterVechileModel copyWith({  bool? error,
+  FilterVechileModel copyWith({
+    bool? error,
     String? message,
     List<Data>? data,
-  }) => FilterVechileModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      FilterVechileModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   List<Data>? get data => _data;
@@ -45,7 +49,6 @@ class FilterVechileModel {
     }
     return map;
   }
-
 }
 
 /// id : 58
@@ -120,7 +123,8 @@ class Data {
     String? vehicletype,
     int? baseKm,
     int? baseTime,
-    dynamic cost,}){
+    dynamic cost,
+  }) {
     _id = id;
     _categoryId = categoryId;
     _subcategoryId = subcategoryId;
@@ -230,7 +234,8 @@ class Data {
   int? _baseKm;
   int? _baseTime;
   dynamic _cost;
-  Data copyWith({  int? id,
+  Data copyWith({
+    int? id,
     int? categoryId,
     int? subcategoryId,
     dynamic makeId,
@@ -265,42 +270,44 @@ class Data {
     int? baseKm,
     int? baseTime,
     dynamic cost,
-  }) => Data(  id: id ?? _id,
-    categoryId: categoryId ?? _categoryId,
-    subcategoryId: subcategoryId ?? _subcategoryId,
-    makeId: makeId ?? _makeId,
-    modelId: modelId ?? _modelId,
-    classId: classId ?? _classId,
-    colorId: colorId ?? _colorId,
-    year: year ?? _year,
-    groupId: groupId ?? _groupId,
-    licExpDate: licExpDate ?? _licExpDate,
-    regExpDate: regExpDate ?? _regExpDate,
-    vehicleImage: vehicleImage ?? _vehicleImage,
-    color: color ?? _color,
-    type: type ?? _type,
-    deviceNumber: deviceNumber ?? _deviceNumber,
-    engineType: engineType ?? _engineType,
-    carNumber: carNumber ?? _carNumber,
-    carModel: carModel ?? _carModel,
-    horsePower: horsePower ?? _horsePower,
-    vin: vin ?? _vin,
-    licensePlate: licensePlate ?? _licensePlate,
-    mileage: mileage ?? _mileage,
-    inService: inService ?? _inService,
-    userId: userId ?? _userId,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-    intMileage: intMileage ?? _intMileage,
-    typeId: typeId ?? _typeId,
-    seats: seats ?? _seats,
-    bags: bags ?? _bags,
-    vehicletype: vehicletype ?? _vehicletype,
-    baseKm: baseKm ?? _baseKm,
-    baseTime: baseTime ?? _baseTime,
-    cost: cost ?? _cost,
-  );
+  }) =>
+      Data(
+        id: id ?? _id,
+        categoryId: categoryId ?? _categoryId,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        makeId: makeId ?? _makeId,
+        modelId: modelId ?? _modelId,
+        classId: classId ?? _classId,
+        colorId: colorId ?? _colorId,
+        year: year ?? _year,
+        groupId: groupId ?? _groupId,
+        licExpDate: licExpDate ?? _licExpDate,
+        regExpDate: regExpDate ?? _regExpDate,
+        vehicleImage: vehicleImage ?? _vehicleImage,
+        color: color ?? _color,
+        type: type ?? _type,
+        deviceNumber: deviceNumber ?? _deviceNumber,
+        engineType: engineType ?? _engineType,
+        carNumber: carNumber ?? _carNumber,
+        carModel: carModel ?? _carModel,
+        horsePower: horsePower ?? _horsePower,
+        vin: vin ?? _vin,
+        licensePlate: licensePlate ?? _licensePlate,
+        mileage: mileage ?? _mileage,
+        inService: inService ?? _inService,
+        userId: userId ?? _userId,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        intMileage: intMileage ?? _intMileage,
+        typeId: typeId ?? _typeId,
+        seats: seats ?? _seats,
+        bags: bags ?? _bags,
+        vehicletype: vehicletype ?? _vehicletype,
+        baseKm: baseKm ?? _baseKm,
+        baseTime: baseTime ?? _baseTime,
+        cost: cost ?? _cost,
+      );
   int? get id => _id;
   int? get categoryId => _categoryId;
   int? get subcategoryId => _subcategoryId;
@@ -376,5 +383,4 @@ class Data {
     map['cost'] = _cost;
     return map;
   }
-
 }

@@ -13,6 +13,7 @@ class ContainerWithTextField extends StatefulWidget {
       this.txtController,
       this.icon,
       this.validateFunction,
+      this.isPassword = false,
       Key? key})
       : super(key: key);
 
@@ -25,6 +26,7 @@ class ContainerWithTextField extends StatefulWidget {
   String? Function(String?)? validateFunction;
 
   Icon? icon;
+  bool isPassword;
 
   Function()? onTap;
 
@@ -54,7 +56,7 @@ class _ContainerWithTextFieldState extends State<ContainerWithTextField> {
         padding: EdgeInsets.only(left: 3.w, right: 3.w),
         child: TextFormField(
           controller: widget.txtController,
-          // obscureText: true,
+          obscureText: widget.isPassword,
           decoration: InputDecoration(
             errorStyle: TextStyle(fontSize: 4.sp, height: 0.01.h),
             fillColor: Colors.white,
@@ -70,7 +72,6 @@ class _ContainerWithTextFieldState extends State<ContainerWithTextField> {
           validator: widget.validateFunction,
         ),
       ),
-   
     );
   }
 }

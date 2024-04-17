@@ -317,7 +317,8 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                               ),
                               child: SingleChildScrollView(
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 3.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 3.w),
                                   child: Column(
                                     children: [
                                       SizedBox(
@@ -325,7 +326,8 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                       ),
                                       Center(
                                         child: myText(
-                                            text: 'choose the charge wallet'.tr(),
+                                            text:
+                                                'choose the charge wallet'.tr(),
                                             fontSize: 5.sp,
                                             color: primaryBlue,
                                             fontWeight: FontWeight.w600),
@@ -339,8 +341,9 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                           width: 70.w,
                                           decoration: BoxDecoration(
                                             color: lightBlue2,
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(20)),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(20)),
                                           ),
                                         ),
                                       ),
@@ -362,8 +365,6 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                       //     });
                                       //   },
                                       // ),
-
-
 
                                       // TODO
                                       RadioListTile(
@@ -409,7 +410,8 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                             keyboardType: TextInputType.number,
                                             decoration: InputDecoration(
                                               errorStyle: TextStyle(
-                                                  fontSize: 4.sp, height: 0.01.h),
+                                                  fontSize: 4.sp,
+                                                  height: 0.01.h),
                                               fillColor: Colors.white,
                                               hintStyle: TextStyle(
                                                 color: Colors.grey,
@@ -438,7 +440,8 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                         decoration: BoxDecoration(
                                           boxShadow: [
                                             BoxShadow(
-                                              color: primaryBlue.withOpacity(0.3),
+                                              color:
+                                                  primaryBlue.withOpacity(0.3),
                                               spreadRadius: 2,
                                               blurRadius: 7,
                                               offset: const Offset(0, 0),
@@ -474,31 +477,53 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                                                   // getDialog();
 
                                                   bool isAndroid13 = false;
-                                                  final androidInfo = await DeviceInfoPlugin().androidInfo;
-                                                  if (androidInfo.version.sdkInt! <= 32) {
+                                                  final androidInfo =
+                                                      await DeviceInfoPlugin()
+                                                          .androidInfo;
+                                                  if (androidInfo
+                                                          .version.sdkInt! <=
+                                                      32) {
                                                     isAndroid13 = false;
-                                                  }  else {
+                                                  } else {
                                                     isAndroid13 = true;
                                                   }
-                                                  var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                                                  if (res) { var im = await picker.pickImage(source: ImageSource.gallery);
-                                                  if (im != null) {
-                                                    setState(() {
-                                                      imageFile = File(im.path);
-                                                    });
-                                                    print(imageFile);
-                                                    var creat = Provider.of<ChargeWalletProvider>(context,
-                                                        listen: false);
-                                                    chargeWalletTransferApi(
-                                                        type, amountController.text, imageFile!, creat);
+                                                  var res = isAndroid13 == true
+                                                      ? await Permission.photos
+                                                          .request()
+                                                          .isGranted
+                                                      : await Permission.storage
+                                                          .request()
+                                                          .isGranted;
+                                                  if (res) {
+                                                    var im =
+                                                        await picker.pickImage(
+                                                            source: ImageSource
+                                                                .gallery);
+                                                    if (im != null) {
+                                                      setState(() {
+                                                        imageFile =
+                                                            File(im.path);
+                                                      });
+                                                      print(imageFile);
+                                                      var creat = Provider.of<
+                                                              ChargeWalletProvider>(
+                                                          context,
+                                                          listen: false);
+                                                      chargeWalletTransferApi(
+                                                          type,
+                                                          amountController.text,
+                                                          imageFile!,
+                                                          creat);
+                                                    } else {
+                                                      setSnackbar(
+                                                          'please select image'
+                                                              .tr(),
+                                                          context);
+                                                    }
                                                   } else {
-                                                    setSnackbar('please select image'.tr(), context);
+                                                    showWarningGalleryDialog(
+                                                        context);
                                                   }
-                                                  }
-                                                  else{
-                                                    showWarningGalleryDialog(context);
-                                                  }
-
                                                 }
                                                 // else {
                                                 //   var creat =
@@ -554,7 +579,8 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
     // String MerchantId = '4K1L3P';
     String MerchantId = 'T26REL';
     // String MerchantSecret = 'OX7JBF77DJECOVTA5R9HIZG019UUAHP3DOLUEM3U5IA0P1UXOQIYWCGE2Q7EG1NS';
-    String MerchantSecret = '6VFDA69N466ZZ8KAOVO081J2VG0CKG8BSRLUN3NIFAB13PU3S50P6VGBRPG3A3A8';
+    String MerchantSecret =
+        '6VFDA69N466ZZ8KAOVO081J2VG0CKG8BSRLUN3NIFAB13PU3S50P6VGBRPG3A3A8';
     // String TerminalKey = 'LX94AO';
     String TerminalKey = 'ZPALC4';
     // String Amount = '1500';
@@ -569,15 +595,16 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
     VerificationCode = VerificationCode.toUpperCase();
     print('VerificationCode after crypto and uppercase ' + VerificationCode);
 
-    String redirectUrl = 'https%3a%2f%2fdiamond-line.com.sy/https%3a%2f%2fdiamond-line.com.sy%2fapi%2fecash-payment/';
+    String redirectUrl =
+        'https%3a%2f%2fdiamond-line.com.sy/https%3a%2f%2fdiamond-line.com.sy%2fapi%2fecash-payment/';
 
     // String url = '$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN/$paymentRef/$RedirectUrl/$CallBackUrl';
     // String url ='$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN/$paymentRef';
     // String url ='$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN';
     // String url ='https://checkout.ecash-pay.co/Checkout/Card/LX94AO/4K1L3P/DFD9E15A637C52DB1A7C7C671530090C/SYP/1000/EN/1/https%3a%2f%2fdiamond-line.com.sy/https%3a%2f%2fdiamond-line.com.sy%2fapi%2fecash-payment/';
 
-
-    String url ='$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN/$paymentRef/$redirectUrl';
+    String url =
+        '$baseUrl/Checkout/Card/$TerminalKey/$MerchantId/$VerificationCode/SYP/$Amount/EN/$paymentRef/$redirectUrl';
 
     print('this url\n');
     print(url);
@@ -594,9 +621,9 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
   void getDialog() {
     AwesomeDialog(
       context: context,
-      animType: AnimType.SCALE,
+      animType: AnimType.scale,
       btnOkColor: primaryBlue,
-      dialogType: DialogType.NO_HEADER,
+      dialogType: DialogType.noHeader,
       padding: const EdgeInsets.all(10),
       body: StatefulBuilder(
         builder: (context, setState) {
@@ -614,30 +641,32 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                     final androidInfo = await DeviceInfoPlugin().androidInfo;
                     if (androidInfo.version.sdkInt! <= 32) {
                       isAndroid13 = false;
-                    }  else {
+                    } else {
                       isAndroid13 = true;
                     }
-                    var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                    if (res) { var im = await picker.pickImage(source: ImageSource.camera);
-                    if (im != null) {
-                      setState(() {
-                        imageFile = File(im.path);
-                      });
-                      print(imageFile);
-                      print(type);
-                      print(amountController.text);
-                      var creat = Provider.of<ChargeWalletProvider>(context,
-                          listen: false);
-                      chargeWalletTransferApi(
-                          type, amountController.text, imageFile!, creat);
+                    var res = isAndroid13 == true
+                        ? await Permission.photos.request().isGranted
+                        : await Permission.storage.request().isGranted;
+                    if (res) {
+                      var im =
+                          await picker.pickImage(source: ImageSource.camera);
+                      if (im != null) {
+                        setState(() {
+                          imageFile = File(im.path);
+                        });
+                        print(imageFile);
+                        print(type);
+                        print(amountController.text);
+                        var creat = Provider.of<ChargeWalletProvider>(context,
+                            listen: false);
+                        chargeWalletTransferApi(
+                            type, amountController.text, imageFile!, creat);
+                      } else {
+                        setSnackbar('please select image'.tr(), context);
+                      }
                     } else {
-                      setSnackbar('please select image'.tr(), context);
-                    }
-                    }
-                    else{
                       showWarningGalleryDialog(context);
                     }
-
                   }),
               SizedBox(
                 height: 2.h,
@@ -651,29 +680,30 @@ class _ChargeWalletScreenState extends State<ChargeWalletScreen> {
                     final androidInfo = await DeviceInfoPlugin().androidInfo;
                     if (androidInfo.version.sdkInt! <= 32) {
                       isAndroid13 = false;
-                    }  else {
+                    } else {
                       isAndroid13 = true;
                     }
-                    var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                    if (res) { var im =
-                    await picker.pickImage(source: ImageSource.gallery);
-                    if (im != null) {
-                      setState(() {
-                        imageFile = File(im.path);
-                      });
-                      print(imageFile);
-                      var creat = Provider.of<ChargeWalletProvider>(context,
-                          listen: false);
-                      chargeWalletTransferApi(
-                          type, amountController.text, imageFile!, creat);
+                    var res = isAndroid13 == true
+                        ? await Permission.photos.request().isGranted
+                        : await Permission.storage.request().isGranted;
+                    if (res) {
+                      var im =
+                          await picker.pickImage(source: ImageSource.gallery);
+                      if (im != null) {
+                        setState(() {
+                          imageFile = File(im.path);
+                        });
+                        print(imageFile);
+                        var creat = Provider.of<ChargeWalletProvider>(context,
+                            listen: false);
+                        chargeWalletTransferApi(
+                            type, amountController.text, imageFile!, creat);
+                      } else {
+                        setSnackbar('please select image'.tr(), context);
+                      }
                     } else {
-                      setSnackbar('please select image'.tr(), context);
-                    }
-                    }
-                    else{
                       showWarningGalleryDialog(context);
                     }
-
                   }),
               SizedBox(
                 height: 2.h,

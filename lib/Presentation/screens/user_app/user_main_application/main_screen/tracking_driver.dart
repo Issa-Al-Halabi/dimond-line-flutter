@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Data/network/network_client.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../../widgets/loader_widget.dart';
@@ -55,11 +56,7 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
   Marker marker3 = Marker(markerId: MarkerId("to"));
   Circle? circle;
 
-  var _channel = IOWebSocketChannel.connect(
-    Uri.parse(
-      'ws://mycar.ssc-security.net:8080/api/socket',
-    ),
-  );
+  IOWebSocketChannel? _channel;
 
   @override
   void initState() {
@@ -78,21 +75,26 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
 
   @override
   void dispose() {
-    _channel.sink.close();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
+
     super.dispose();
   }
 
   Future<void> getCookie() async {
-    Map<String, String> co = {};
-    Response response = await get(Uri.parse(
-      'http://mycar.ssc-security.net:8080/api/session?token=oqBN0XE1usgfA25X465NJs24XHtNs20S',
-    ));
-    co.addAll({"Cookie": response.headers['set-cookie'].toString()});
-    _channel = IOWebSocketChannel.connect(
-        Uri.parse(
-          'ws://mycar.ssc-security.net:8080/api/socket',
-        ),
-        headers: co);
+    try {
+      Map<String, String> co = {};
+      Response response =
+          await get(Uri.parse(network_client.mycarSscSecurity_URL));
+      co.addAll({"Cookie": response.headers['set-cookie'].toString()});
+      print(co);
+      _channel = IOWebSocketChannel.connect(
+          Uri.parse(network_client.mycarSscSecurity_SOCKET),
+          headers: co);
+    } catch (e) {
+      setSnackbar(e.toString(), context);
+    }
   }
 
   getpoly() async {
@@ -326,41 +328,53 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
                         child: Padding(
                             padding: EdgeInsets.all(2.w),
                             child: Stack(children: [
-                              StreamBuilder(
-                                stream: _channel.stream,
-                                builder: (context, snapshot) {
-                                  print(snapshot.data);
-                                  print(snapshot.connectionState);
-                                  if (snapshot.hasData == true) {
-                                    var data =
-                                        json.decode(snapshot.data.toString());
-                                    print('--------------------------------');
-                                    if (data['positions'] != null) {
-                                      if (data['positions'][0]['deviceId'] ==
-                                          // TODO
-                                          deviceNumb) {
-                                          // 204) {
-                                        print('course me');
-                                        print(data['positions'][0]['course']);
-                                        lat = data['positions'][0]['latitude'];
-                                        lng = data['positions'][0]['longitude'];
-                                        course = data['positions'][0]['course'];
-                                        if (latLngList.last.latitude != lat &&
-                                            latLngList.last.longitude != lng) {
-                                          print('lats and longs isnt equal');
-                                          latLngList.add(LatLng(lat, lng));
-                                          updatePolyline();
-                                          getLocationApi(
-                                              lat.toString(),
-                                              lng.toString(),
-                                              deviceNumb.toString());
-                                        }
-                                      }
-                                    }
-                                  } else {}
-                                  return Text('');
-                                },
-                              ),
+                              _channel != null
+                                  ? StreamBuilder(
+                                      stream: _channel!.stream,
+                                      builder: (context, snapshot) {
+                                        print(snapshot.data);
+                                        print(snapshot.connectionState);
+                                        if (snapshot.hasData == true) {
+                                          var data = json
+                                              .decode(snapshot.data.toString());
+                                          print(
+                                              '--------------------------------');
+                                          if (data['positions'] != null) {
+                                            if (data['positions'][0]
+                                                    ['deviceId'] ==
+                                                // TODO
+                                                deviceNumb) {
+                                              // 204) {
+                                              print('course me');
+                                              print(data['positions'][0]
+                                                  ['course']);
+                                              lat = data['positions'][0]
+                                                  ['latitude'];
+                                              lng = data['positions'][0]
+                                                  ['longitude'];
+                                              course = data['positions'][0]
+                                                  ['course'];
+                                              if (latLngList.last.latitude !=
+                                                      lat &&
+                                                  latLngList.last.longitude !=
+                                                      lng) {
+                                                print(
+                                                    'lats and longs isnt equal');
+                                                latLngList
+                                                    .add(LatLng(lat, lng));
+                                                updatePolyline();
+                                                getLocationApi(
+                                                    lat.toString(),
+                                                    lng.toString(),
+                                                    deviceNumb.toString());
+                                              }
+                                            }
+                                          }
+                                        } else {}
+                                        return Text('');
+                                      },
+                                    )
+                                  : Container(),
                               Container(
                                 height: 82.h,
                                 width: getScreenWidth(context),

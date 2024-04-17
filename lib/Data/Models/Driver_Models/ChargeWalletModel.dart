@@ -4,13 +4,14 @@
 
 class ChargeWalletModel {
   ChargeWalletModel({
-      bool? error, 
-      String? message, 
-      Data? data,}){
+    bool? error,
+    String? message,
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
-}
+  }
 
   ChargeWalletModel.fromJson(dynamic json) {
     _error = json['error'];
@@ -20,13 +21,16 @@ class ChargeWalletModel {
   bool? _error;
   String? _message;
   Data? _data;
-ChargeWalletModel copyWith({  bool? error,
-  String? message,
-  Data? data,
-}) => ChargeWalletModel(  error: error ?? _error,
-  message: message ?? _message,
-  data: data ?? _data,
-);
+  ChargeWalletModel copyWith({
+    bool? error,
+    String? message,
+    Data? data,
+  }) =>
+      ChargeWalletModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ ChargeWalletModel copyWith({  bool? error,
     }
     return map;
   }
-
 }
 
 /// id : 3
@@ -54,14 +57,15 @@ ChargeWalletModel copyWith({  bool? error,
 
 class Data {
   Data({
-      int? id, 
-      String? driverId, 
-      int? amount, 
-      String? newAmount, 
-      String? method, 
-      String? transfareImage, 
-      String? createdAt, 
-      String? updatedAt,}){
+    int? id,
+    String? driverId,
+    int? amount,
+    String? newAmount,
+    String? method,
+    String? transfareImage,
+    String? createdAt,
+    String? updatedAt,
+  }) {
     _id = id;
     _driverId = driverId;
     _amount = amount;
@@ -70,7 +74,7 @@ class Data {
     _transfareImage = transfareImage;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _id = json['id'];
@@ -90,23 +94,26 @@ class Data {
   String? _transfareImage;
   String? _createdAt;
   String? _updatedAt;
-Data copyWith({  int? id,
-  String? driverId,
-  int? amount,
-  String? newAmount,
-  String? method,
-  String? transfareImage,
-  String? createdAt,
-  String? updatedAt,
-}) => Data(  id: id ?? _id,
-  driverId: driverId ?? _driverId,
-  amount: amount ?? _amount,
-  newAmount: newAmount ?? _newAmount,
-  method: method ?? _method,
-  transfareImage: transfareImage ?? _transfareImage,
-  createdAt: createdAt ?? _createdAt,
-  updatedAt: updatedAt ?? _updatedAt,
-);
+  Data copyWith({
+    int? id,
+    String? driverId,
+    int? amount,
+    String? newAmount,
+    String? method,
+    String? transfareImage,
+    String? createdAt,
+    String? updatedAt,
+  }) =>
+      Data(
+        id: id ?? _id,
+        driverId: driverId ?? _driverId,
+        amount: amount ?? _amount,
+        newAmount: newAmount ?? _newAmount,
+        method: method ?? _method,
+        transfareImage: transfareImage ?? _transfareImage,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+      );
   int? get id => _id;
   String? get driverId => _driverId;
   int? get amount => _amount;
@@ -128,5 +135,4 @@ Data copyWith({  int? id,
     map['updated_at'] = _updatedAt;
     return map;
   }
-
 }

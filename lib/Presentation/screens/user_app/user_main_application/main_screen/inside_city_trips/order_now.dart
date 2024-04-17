@@ -86,35 +86,40 @@ class _OrderNowState extends State<OrderNow> {
     print(widget.sourceAddress.toString());
     String apiurl =
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$long&key=$APIKEY";
-    http.Response response =
-        await http.get(Uri.parse(apiurl)); //send get request to API URL
-    // Response response = await http.get(apiurl); //send get request to API URL
-    if (response.statusCode == 200) {
-      //if connection is successful
-      var data = json.decode(response.body);
-      // Map data = response.data; //get response data
-      if (data["status"] == "OK") {
-        //if status is "OK" returned from REST API
-        if (data["results"].length > 0) {
-          //if there is atleast one address
-          widget.sourceAddress = data["results"][0]["address_components"][2]
-                  ["long_name"] +
-              "," +
-              data["results"][0]["address_components"][1]
-                  ["long_name"]; // f there is atleast one address
-          print("address" + widget.sourceAddress);
-          //you can use the JSON data to get address in your own format
-          setState(() {
-            //refresh UI
-            controllerFrom = TextEditingController(text: widget.sourceAddress);
-            print(widget.sourceAddress);
-          });
+    try {
+      http.Response response =
+          await http.get(Uri.parse(apiurl)); //send get request to API URL
+      // Response response = await http.get(apiurl); //send get request to API URL
+      if (response.statusCode == 200) {
+        //if connection is successful
+        var data = json.decode(response.body);
+        // Map data = response.data; //get response data
+        if (data["status"] == "OK") {
+          //if status is "OK" returned from REST API
+          if (data["results"].length > 0) {
+            //if there is atleast one address
+            widget.sourceAddress = data["results"][0]["address_components"][2]
+                    ["long_name"] +
+                "," +
+                data["results"][0]["address_components"][1]
+                    ["long_name"]; // f there is atleast one address
+            print("address" + widget.sourceAddress);
+            //you can use the JSON data to get address in your own format
+            setState(() {
+              //refresh UI
+              controllerFrom =
+                  TextEditingController(text: widget.sourceAddress);
+              print(widget.sourceAddress);
+            });
+          }
+        } else {
+          print(data["error_message"]);
         }
       } else {
-        print(data["error_message"]);
+        print("error while fetching geoconding data");
       }
-    } else {
-      print("error while fetching geoconding data");
+    } catch (e) {
+      setSnackbar("Error While Connecting Please Check your Internet", context);
     }
   }
 
@@ -391,16 +396,21 @@ class _OrderNowState extends State<OrderNow> {
     String url =
         "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$latcurrent,$lancurrent&destinations=$lat,$lng&key=AIzaSyCPsxZeXKcSYK1XXw0O0RbrZiI_Ekou5DY";
     print(url);
-    Response response = await dio.get(url);
-    print('time is :');
-    int t = response.data["rows"][0]["elements"][0]["duration"]["value"];
-    double t2 = t / 60;
-    timeOfTrip = t2.toString();
-    print(timeOfTrip);
-    if (mounted) {
-      setState(() {});
+    try {
+      Response response = await dio.get(url);
+
+      print('time is :');
+      int t = response.data["rows"][0]["elements"][0]["duration"]["value"];
+      double t2 = t / 60;
+      timeOfTrip = t2.toString();
+      print(timeOfTrip);
+      if (mounted) {
+        setState(() {});
+      }
+      return timeOfTrip;
+    } catch (e) {
+      setSnackbar("Error while Connecting", context);
     }
-    return timeOfTrip;
   }
 
   @override
@@ -509,7 +519,7 @@ class _OrderNowState extends State<OrderNow> {
                                               widget.fromLon.toString());
                                         },
                                         // this callback is called when isLatLngRequired is true
-                                        itmClick: (prediction) {
+                                        itemClick: (prediction) {
                                           setState(() {
                                             controllerFrom.text =
                                                 prediction.description!;
@@ -617,7 +627,7 @@ class _OrderNowState extends State<OrderNow> {
                                               widget.toLon.toString());
                                         },
                                         // this callback is called when isLatLngRequired is true
-                                        itmClick: (prediction) {
+                                        itemClick: (prediction) {
                                           setState(() {
                                             controllerTo.text =
                                                 prediction.description!;
@@ -665,7 +675,8 @@ class _OrderNowState extends State<OrderNow> {
                                               toLat: widget.toLat,
                                               fromLon: widget.fromLon,
                                               toLon: widget.toLon,
-                                              sourceAddress: widget.sourceAddress,
+                                              sourceAddress:
+                                                  widget.sourceAddress,
                                               destinationAddress:
                                                   widget.destAddress,
                                               laterOrder: widget.laterOrder,
@@ -832,10 +843,10 @@ class _OrderNowState extends State<OrderNow> {
                                             }
                                             print(timeOfTrip);
                                             Loader.hide();
-                                            var getSourceDist = await Provider.of<
-                                                    SourceDestinationProvider>(
-                                                context,
-                                                listen: false);
+                                            var getSourceDist = await Provider
+                                                .of<SourceDestinationProvider>(
+                                                    context,
+                                                    listen: false);
                                             sourceDistApi(
                                                 widget.fromLat.toString(),
                                                 widget.fromLon.toString(),

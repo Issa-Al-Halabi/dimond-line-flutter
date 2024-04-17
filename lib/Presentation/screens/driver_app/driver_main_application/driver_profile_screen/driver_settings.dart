@@ -347,9 +347,9 @@ class _DriverSettingsState extends State<DriverSettings> {
                               checkLang(context);
                               AwesomeDialog(
                                       context: context,
-                                      animType: AnimType.SCALE,
+                                      animType: AnimType.scale,
                                       btnOkColor: primaryBlue,
-                                      dialogType: DialogType.NO_HEADER,
+                                      dialogType: DialogType.noHeader,
                                       padding: const EdgeInsets.all(10),
                                       body: StatefulBuilder(
                                         builder: (context, setState) {

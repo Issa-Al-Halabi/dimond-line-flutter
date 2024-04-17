@@ -3,11 +3,12 @@
 
 class StartedInsideTripsModel {
   StartedInsideTripsModel({
-      bool? error, 
-      List<Data>? data,}){
+    bool? error,
+    List<Data>? data,
+  }) {
     _error = error;
     _data = data;
-}
+  }
 
   StartedInsideTripsModel.fromJson(dynamic json) {
     _error = json['error'];
@@ -20,11 +21,14 @@ class StartedInsideTripsModel {
   }
   bool? _error;
   List<Data>? _data;
-StartedInsideTripsModel copyWith({  bool? error,
-  List<Data>? data,
-}) => StartedInsideTripsModel(  error: error ?? _error,
-  data: data ?? _data,
-);
+  StartedInsideTripsModel copyWith({
+    bool? error,
+    List<Data>? data,
+  }) =>
+      StartedInsideTripsModel(
+        error: error ?? _error,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   List<Data>? get data => _data;
 
@@ -36,7 +40,6 @@ StartedInsideTripsModel copyWith({  bool? error,
     }
     return map;
   }
-
 }
 
 /// id : 183
@@ -48,19 +51,20 @@ StartedInsideTripsModel copyWith({  bool? error,
 
 class Data {
   Data({
-      int? id, 
-      String? status, 
-      String? pickupLatitude, 
-      String? pickupLongitude, 
-      String? dropLatitude, 
-      String? dropLongitude,}){
+    int? id,
+    String? status,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+  }) {
     _id = id;
     _status = status;
     _pickupLatitude = pickupLatitude;
     _pickupLongitude = pickupLongitude;
     _dropLatitude = dropLatitude;
     _dropLongitude = dropLongitude;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _id = json['id'];
@@ -76,19 +80,22 @@ class Data {
   String? _pickupLongitude;
   String? _dropLatitude;
   String? _dropLongitude;
-Data copyWith({  int? id,
-  String? status,
-  String? pickupLatitude,
-  String? pickupLongitude,
-  String? dropLatitude,
-  String? dropLongitude,
-}) => Data(  id: id ?? _id,
-  status: status ?? _status,
-  pickupLatitude: pickupLatitude ?? _pickupLatitude,
-  pickupLongitude: pickupLongitude ?? _pickupLongitude,
-  dropLatitude: dropLatitude ?? _dropLatitude,
-  dropLongitude: dropLongitude ?? _dropLongitude,
-);
+  Data copyWith({
+    int? id,
+    String? status,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+  }) =>
+      Data(
+        id: id ?? _id,
+        status: status ?? _status,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+      );
   int? get id => _id;
   String? get status => _status;
   String? get pickupLatitude => _pickupLatitude;
@@ -106,5 +113,4 @@ Data copyWith({  int? id,
     map['drop_longitude'] = _dropLongitude;
     return map;
   }
-
 }

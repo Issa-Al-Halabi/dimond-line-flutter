@@ -17,9 +17,8 @@ import 'internal_driver_screen.dart';
 class DriverDashboard extends StatefulWidget {
   int index = 2;
 
-  DriverDashboard({required this.driverType,
-    this.index = 2,
-    Key? key}) : super(key: key);
+  DriverDashboard({required this.driverType, this.index = 2, Key? key})
+      : super(key: key);
 
   String driverType;
 
@@ -30,7 +29,7 @@ class DriverDashboard extends StatefulWidget {
 class _DriverDashboardState extends State<DriverDashboard> {
   DateTime timeback = DateTime.now();
   var _bottomNavIndex = 2;
-  final iconList=<String>[
+  final iconList = <String>[
     choices,
     trips,
   ];
@@ -39,15 +38,17 @@ class _DriverDashboardState extends State<DriverDashboard> {
   bool isTrip = false;
   String tripId = '';
   String status = '';
-  String pickupLatitude = '', pickupLongitude= '', dropLatitude= '', dropLongitude= '';
+  String pickupLatitude = '',
+      pickupLongitude = '',
+      dropLatitude = '',
+      dropLongitude = '';
 
   buildScreens() {
     screens.add(DriverSettings());
     screens.add(EfficientDriverTrips());
-    widget.driverType == 'external_driver' ?
-    screens.add(OutDriverMainScreen())
-    :
-    screens.add(InDriverMainScreen());
+    widget.driverType == 'external_driver'
+        ? screens.add(OutDriverMainScreen())
+        : screens.add(InDriverMainScreen());
   }
 
   @override
@@ -63,11 +64,11 @@ class _DriverDashboardState extends State<DriverDashboard> {
     super.initState();
   }
 
-
   ////////////////////////////////////////////////////////
   void getTrips() async {
     print('ssssssssssssssssssssssss');
-    var getTrips = await Provider.of<StartedInsideTripsProvider>(context, listen: false);
+    var getTrips =
+        await Provider.of<StartedInsideTripsProvider>(context, listen: false);
     getTripsApi(getTrips);
   }
 
@@ -82,10 +83,10 @@ class _DriverDashboardState extends State<DriverDashboard> {
         print(creat.data.data);
         print('length');
         print(length);
-        if(length != 0){
+        if (length != 0) {
           isTrip = true;
 
-          for(int i =0; i< creat.data.data!.length; i++){
+          for (int i = 0; i < creat.data.data!.length; i++) {
             tripId = creat.data.data![i].id.toString();
             status = creat.data.data![i].status!;
             pickupLatitude = creat.data.data![i].pickupLatitude!;
@@ -102,34 +103,34 @@ class _DriverDashboardState extends State<DriverDashboard> {
   }
 
   void startNavigate() async {
-        if(isTrip == true){
-          Navigator.of(context).pushReplacement(
-            PageRouteBuilder(
-              pageBuilder: (BuildContext context, Animation<double> animation,
-                  Animation<double> secondaryAnimation) {
-                return TrackingScreen(
-                    pickupLatitude: pickupLatitude,
-                    pickupLongitude: pickupLongitude,
-                    dropLongitude: dropLongitude,
-                    dropLatitude: dropLatitude,
-                    tripId: tripId,
-                  );
-              },
-              transitionsBuilder: (BuildContext context,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                  Widget child) {
-                return Align(
-                  child: SizeTransition(
-                    sizeFactor: animation,
-                    child: child,
-                  ),
-                );
-              },
-              transitionDuration: Duration(milliseconds: 500),
-            ),
-          );
-        }
+    if (isTrip == true) {
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (BuildContext context, Animation<double> animation,
+              Animation<double> secondaryAnimation) {
+            return TrackingScreen(
+              pickupLatitude: pickupLatitude,
+              pickupLongitude: pickupLongitude,
+              dropLongitude: dropLongitude,
+              dropLatitude: dropLatitude,
+              tripId: tripId,
+            );
+          },
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            return Align(
+              child: SizeTransition(
+                sizeFactor: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: Duration(milliseconds: 500),
+        ),
+      );
+    }
   }
 
   Future<bool> isNetworkAvailable() async {
@@ -155,31 +156,30 @@ class _DriverDashboardState extends State<DriverDashboard> {
     ));
   }
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         // if(widget.index == 2){
-          final differance = DateTime.now().difference(timeback);
-          final isExitWarning = differance >= Duration(seconds: 2);
-          timeback = DateTime.now();
-          if (isExitWarning) {
-            final Message = "Press back agin to Exit".tr();
-            Fluttertoast.showToast(
-                msg: Message,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIosWeb: 1,
-                backgroundColor: white,
-                textColor: primaryBlue,
-                fontSize: 5.sp);
-            return false;
-          } else {
-            Fluttertoast.cancel();
-            SystemNavigator.pop();
-            return true;
-          }
+        final differance = DateTime.now().difference(timeback);
+        final isExitWarning = differance >= Duration(seconds: 2);
+        timeback = DateTime.now();
+        if (isExitWarning) {
+          final Message = "Press back agin to Exit".tr();
+          Fluttertoast.showToast(
+              msg: Message,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: white,
+              textColor: primaryBlue,
+              fontSize: 5.sp);
+          return false;
+        } else {
+          Fluttertoast.cancel();
+          SystemNavigator.pop();
+          return true;
+        }
         // }
         // else{
         //   widget.index = 2;
@@ -215,10 +215,12 @@ class _DriverDashboardState extends State<DriverDashboard> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Image.asset( iconList[index],
+                Image.asset(
+                  iconList[index],
                   height: 6.h,
                   width: 7.w,
-                  color: color,),
+                  color: color,
+                ),
               ],
             );
           },
@@ -233,8 +235,7 @@ class _DriverDashboardState extends State<DriverDashboard> {
           elevation: 0.0,
           // leftCornerRadius: 32,
           // rightCornerRadius: 32,
-          onTap: (index) =>
-          setState(() {
+          onTap: (index) => setState(() {
             widget.index = index;
             _bottomNavIndex = index;
           }),

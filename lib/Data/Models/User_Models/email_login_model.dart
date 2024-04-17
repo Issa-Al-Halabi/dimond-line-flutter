@@ -6,7 +6,8 @@ class EmailLoginModel {
   EmailLoginModel({
     bool? error,
     String? message,
-    Data? data,}){
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -20,13 +21,16 @@ class EmailLoginModel {
   bool? _error;
   String? _message;
   Data? _data;
-  EmailLoginModel copyWith({  bool? error,
+  EmailLoginModel copyWith({
+    bool? error,
     String? message,
     Data? data,
-  }) => EmailLoginModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      EmailLoginModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ class EmailLoginModel {
     }
     return map;
   }
-
 }
 
 /// api_token : "PWSvsQnv7KbKtSL8WpJthN8DacV1TxR8AO95FXvawfGVKtfgpYesXgWYn4jf"
@@ -53,7 +56,8 @@ class Data {
     String? apiToken,
     int? id,
     String? userType,
-    String? deviceToken,}){
+    String? deviceToken,
+  }) {
     _apiToken = apiToken;
     _id = id;
     _userType = userType;
@@ -70,15 +74,18 @@ class Data {
   int? _id;
   String? _userType;
   String? _deviceToken;
-  Data copyWith({  String? apiToken,
+  Data copyWith({
+    String? apiToken,
     int? id,
     String? userType,
     String? deviceToken,
-  }) => Data(  apiToken: apiToken ?? _apiToken,
-    id: id ?? _id,
-    userType: userType ?? _userType,
-    deviceToken: deviceToken ?? _deviceToken,
-  );
+  }) =>
+      Data(
+        apiToken: apiToken ?? _apiToken,
+        id: id ?? _id,
+        userType: userType ?? _userType,
+        deviceToken: deviceToken ?? _deviceToken,
+      );
   String? get apiToken => _apiToken;
   int? get id => _id;
   String? get userType => _userType;
@@ -92,5 +99,4 @@ class Data {
     map['device_token'] = _deviceToken;
     return map;
   }
-
 }

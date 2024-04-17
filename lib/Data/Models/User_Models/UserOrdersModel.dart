@@ -4,13 +4,14 @@
 
 class UserOrdersModel {
   UserOrdersModel({
-      bool? error, 
-      String? message, 
-      Data? data,}){
+    bool? error,
+    String? message,
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
-}
+  }
 
   UserOrdersModel.fromJson(dynamic json) {
     _error = json['error'];
@@ -20,13 +21,16 @@ class UserOrdersModel {
   bool? _error;
   String? _message;
   Data? _data;
-UserOrdersModel copyWith({  bool? error,
-  String? message,
-  Data? data,
-}) => UserOrdersModel(  error: error ?? _error,
-  message: message ?? _message,
-  data: data ?? _data,
-);
+  UserOrdersModel copyWith({
+    bool? error,
+    String? message,
+    Data? data,
+  }) =>
+      UserOrdersModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ UserOrdersModel copyWith({  bool? error,
     }
     return map;
   }
-
 }
 
 /// insid_trips : [{"id":707,"user_id":360,"vehicle_id":66,"driver_id":242,"status":"pending","request_type":"delayed","pickup_latitude":"37.502755","pickup_longitude":"-122.0160033","drop_latitude":"37.676884112868436","drop_longitude":"-122.10664808750153","category_id":"1","from":null,"to":null,"dest_addr":"Hayward,Blossom Court","pickup_addr":"Alameda County,Newark","driver":{"id":242,"first_name":"fadi","last_name":"alayyas","phone":"956320147","profile_image":"https://diamond-line.com.sy/uploads/c93ad207-6573-4776-afbf-bdcf4951241e.jpg"},"vehicle":{"id":66,"color":"Black","car_model":"Sedan","vehicle_image":"https://diamond-line.com.sy/uploads/e33b9109-4cdb-4787-ba17-6692c98eacb7.jpeg","device_number":712}}]
@@ -48,11 +51,12 @@ UserOrdersModel copyWith({  bool? error,
 
 class Data {
   Data({
-      List<InsidTrips>? insidTrips, 
-      List<OutsideTrips>? outsideTrips,}){
+    List<InsidTrips>? insidTrips,
+    List<OutsideTrips>? outsideTrips,
+  }) {
     _insidTrips = insidTrips;
     _outsideTrips = outsideTrips;
-}
+  }
 
   Data.fromJson(dynamic json) {
     if (json['insid_trips'] != null) {
@@ -70,11 +74,14 @@ class Data {
   }
   List<InsidTrips>? _insidTrips;
   List<OutsideTrips>? _outsideTrips;
-Data copyWith({  List<InsidTrips>? insidTrips,
-  List<OutsideTrips>? outsideTrips,
-}) => Data(  insidTrips: insidTrips ?? _insidTrips,
-  outsideTrips: outsideTrips ?? _outsideTrips,
-);
+  Data copyWith({
+    List<InsidTrips>? insidTrips,
+    List<OutsideTrips>? outsideTrips,
+  }) =>
+      Data(
+        insidTrips: insidTrips ?? _insidTrips,
+        outsideTrips: outsideTrips ?? _outsideTrips,
+      );
   List<InsidTrips>? get insidTrips => _insidTrips;
   List<OutsideTrips>? get outsideTrips => _outsideTrips;
 
@@ -88,7 +95,6 @@ Data copyWith({  List<InsidTrips>? insidTrips,
     }
     return map;
   }
-
 }
 
 /// id : 710
@@ -111,23 +117,24 @@ Data copyWith({  List<InsidTrips>? insidTrips,
 
 class OutsideTrips {
   OutsideTrips({
-      int? id, 
-      int? userId, 
-      int? vehicleId, 
-      int? driverId, 
-      String? status, 
-      dynamic requestType, 
-      String? pickupLatitude, 
-      String? pickupLongitude, 
-      String? dropLatitude, 
-      String? dropLongitude, 
-      String? categoryId, 
-      dynamic from, 
-      dynamic to, 
-      String? destAddr, 
-      String? pickupAddr, 
-      Driver? driver, 
-      Vehicle? vehicle,}){
+    int? id,
+    int? userId,
+    int? vehicleId,
+    int? driverId,
+    String? status,
+    dynamic requestType,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? categoryId,
+    dynamic from,
+    dynamic to,
+    String? destAddr,
+    String? pickupAddr,
+    Driver? driver,
+    Vehicle? vehicle,
+  }) {
     _id = id;
     _userId = userId;
     _vehicleId = vehicleId;
@@ -145,7 +152,7 @@ class OutsideTrips {
     _pickupAddr = pickupAddr;
     _driver = driver;
     _vehicle = vehicle;
-}
+  }
 
   OutsideTrips.fromJson(dynamic json) {
     _id = json['id'];
@@ -164,7 +171,8 @@ class OutsideTrips {
     _destAddr = json['dest_addr'];
     _pickupAddr = json['pickup_addr'];
     _driver = json['driver'] != null ? Driver.fromJson(json['driver']) : null;
-    _vehicle = json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null;
+    _vehicle =
+        json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null;
   }
   int? _id;
   int? _userId;
@@ -183,41 +191,44 @@ class OutsideTrips {
   String? _pickupAddr;
   Driver? _driver;
   Vehicle? _vehicle;
-OutsideTrips copyWith({  int? id,
-  int? userId,
-  int? vehicleId,
-  int? driverId,
-  String? status,
-  dynamic requestType,
-  String? pickupLatitude,
-  String? pickupLongitude,
-  String? dropLatitude,
-  String? dropLongitude,
-  String? categoryId,
-  dynamic from,
-  dynamic to,
-  String? destAddr,
-  String? pickupAddr,
-  Driver? driver,
-  Vehicle? vehicle,
-}) => OutsideTrips(  id: id ?? _id,
-  userId: userId ?? _userId,
-  vehicleId: vehicleId ?? _vehicleId,
-  driverId: driverId ?? _driverId,
-  status: status ?? _status,
-  requestType: requestType ?? _requestType,
-  pickupLatitude: pickupLatitude ?? _pickupLatitude,
-  pickupLongitude: pickupLongitude ?? _pickupLongitude,
-  dropLatitude: dropLatitude ?? _dropLatitude,
-  dropLongitude: dropLongitude ?? _dropLongitude,
-  categoryId: categoryId ?? _categoryId,
-  from: from ?? _from,
-  to: to ?? _to,
-  destAddr: destAddr ?? _destAddr,
-  pickupAddr: pickupAddr ?? _pickupAddr,
-  driver: driver ?? _driver,
-  vehicle: vehicle ?? _vehicle,
-);
+  OutsideTrips copyWith({
+    int? id,
+    int? userId,
+    int? vehicleId,
+    int? driverId,
+    String? status,
+    dynamic requestType,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? categoryId,
+    dynamic from,
+    dynamic to,
+    String? destAddr,
+    String? pickupAddr,
+    Driver? driver,
+    Vehicle? vehicle,
+  }) =>
+      OutsideTrips(
+        id: id ?? _id,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        driverId: driverId ?? _driverId,
+        status: status ?? _status,
+        requestType: requestType ?? _requestType,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        categoryId: categoryId ?? _categoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        destAddr: destAddr ?? _destAddr,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        driver: driver ?? _driver,
+        vehicle: vehicle ?? _vehicle,
+      );
   int? get id => _id;
   int? get userId => _userId;
   int? get vehicleId => _vehicleId;
@@ -261,7 +272,6 @@ OutsideTrips copyWith({  int? id,
     }
     return map;
   }
-
 }
 
 /// id : 66
@@ -272,17 +282,18 @@ OutsideTrips copyWith({  int? id,
 
 class Vehicle {
   Vehicle({
-      int? id, 
-      String? color, 
-      String? carModel, 
-      String? vehicleImage, 
-      int? deviceNumber,}){
+    int? id,
+    String? color,
+    String? carModel,
+    String? vehicleImage,
+    int? deviceNumber,
+  }) {
     _id = id;
     _color = color;
     _carModel = carModel;
     _vehicleImage = vehicleImage;
     _deviceNumber = deviceNumber;
-}
+  }
 
   Vehicle.fromJson(dynamic json) {
     _id = json['id'];
@@ -296,17 +307,20 @@ class Vehicle {
   String? _carModel;
   String? _vehicleImage;
   int? _deviceNumber;
-Vehicle copyWith({  int? id,
-  String? color,
-  String? carModel,
-  String? vehicleImage,
-  int? deviceNumber,
-}) => Vehicle(  id: id ?? _id,
-  color: color ?? _color,
-  carModel: carModel ?? _carModel,
-  vehicleImage: vehicleImage ?? _vehicleImage,
-  deviceNumber: deviceNumber ?? _deviceNumber,
-);
+  Vehicle copyWith({
+    int? id,
+    String? color,
+    String? carModel,
+    String? vehicleImage,
+    int? deviceNumber,
+  }) =>
+      Vehicle(
+        id: id ?? _id,
+        color: color ?? _color,
+        carModel: carModel ?? _carModel,
+        vehicleImage: vehicleImage ?? _vehicleImage,
+        deviceNumber: deviceNumber ?? _deviceNumber,
+      );
   int? get id => _id;
   String? get color => _color;
   String? get carModel => _carModel;
@@ -322,7 +336,6 @@ Vehicle copyWith({  int? id,
     map['device_number'] = _deviceNumber;
     return map;
   }
-
 }
 
 /// id : 242
@@ -333,17 +346,18 @@ Vehicle copyWith({  int? id,
 
 class Driver {
   Driver({
-      int? id, 
-      String? firstName, 
-      String? lastName, 
-      String? phone, 
-      String? profileImage,}){
+    int? id,
+    String? firstName,
+    String? lastName,
+    String? phone,
+    String? profileImage,
+  }) {
     _id = id;
     _firstName = firstName;
     _lastName = lastName;
     _phone = phone;
     _profileImage = profileImage;
-}
+  }
 
   Driver.fromJson(dynamic json) {
     _id = json['id'];
@@ -357,17 +371,20 @@ class Driver {
   String? _lastName;
   String? _phone;
   String? _profileImage;
-Driver copyWith({  int? id,
-  String? firstName,
-  String? lastName,
-  String? phone,
-  String? profileImage,
-}) => Driver(  id: id ?? _id,
-  firstName: firstName ?? _firstName,
-  lastName: lastName ?? _lastName,
-  phone: phone ?? _phone,
-  profileImage: profileImage ?? _profileImage,
-);
+  Driver copyWith({
+    int? id,
+    String? firstName,
+    String? lastName,
+    String? phone,
+    String? profileImage,
+  }) =>
+      Driver(
+        id: id ?? _id,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        phone: phone ?? _phone,
+        profileImage: profileImage ?? _profileImage,
+      );
   int? get id => _id;
   String? get firstName => _firstName;
   String? get lastName => _lastName;
@@ -383,7 +400,6 @@ Driver copyWith({  int? id,
     map['profile_image'] = _profileImage;
     return map;
   }
-
 }
 
 /// id : 707
@@ -406,23 +422,24 @@ Driver copyWith({  int? id,
 
 class InsidTrips {
   InsidTrips({
-      int? id, 
-      int? userId, 
-      int? vehicleId, 
-      int? driverId, 
-      String? status, 
-      String? requestType, 
-      String? pickupLatitude, 
-      String? pickupLongitude, 
-      String? dropLatitude, 
-      String? dropLongitude, 
-      String? categoryId, 
-      dynamic from, 
-      dynamic to, 
-      String? destAddr, 
-      String? pickupAddr, 
-      Driver? driver, 
-      Vehicle? vehicle,}){
+    int? id,
+    int? userId,
+    int? vehicleId,
+    int? driverId,
+    String? status,
+    String? requestType,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? categoryId,
+    dynamic from,
+    dynamic to,
+    String? destAddr,
+    String? pickupAddr,
+    Driver? driver,
+    Vehicle? vehicle,
+  }) {
     _id = id;
     _userId = userId;
     _vehicleId = vehicleId;
@@ -440,7 +457,7 @@ class InsidTrips {
     _pickupAddr = pickupAddr;
     _driver = driver;
     _vehicle = vehicle;
-}
+  }
 
   InsidTrips.fromJson(dynamic json) {
     _id = json['id'];
@@ -459,7 +476,8 @@ class InsidTrips {
     _destAddr = json['dest_addr'];
     _pickupAddr = json['pickup_addr'];
     _driver = json['driver'] != null ? Driver.fromJson(json['driver']) : null;
-    _vehicle = json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null;
+    _vehicle =
+        json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null;
   }
   int? _id;
   int? _userId;
@@ -478,41 +496,44 @@ class InsidTrips {
   String? _pickupAddr;
   Driver? _driver;
   Vehicle? _vehicle;
-InsidTrips copyWith({  int? id,
-  int? userId,
-  int? vehicleId,
-  int? driverId,
-  String? status,
-  String? requestType,
-  String? pickupLatitude,
-  String? pickupLongitude,
-  String? dropLatitude,
-  String? dropLongitude,
-  String? categoryId,
-  dynamic from,
-  dynamic to,
-  String? destAddr,
-  String? pickupAddr,
-  Driver? driver,
-  Vehicle? vehicle,
-}) => InsidTrips(  id: id ?? _id,
-  userId: userId ?? _userId,
-  vehicleId: vehicleId ?? _vehicleId,
-  driverId: driverId ?? _driverId,
-  status: status ?? _status,
-  requestType: requestType ?? _requestType,
-  pickupLatitude: pickupLatitude ?? _pickupLatitude,
-  pickupLongitude: pickupLongitude ?? _pickupLongitude,
-  dropLatitude: dropLatitude ?? _dropLatitude,
-  dropLongitude: dropLongitude ?? _dropLongitude,
-  categoryId: categoryId ?? _categoryId,
-  from: from ?? _from,
-  to: to ?? _to,
-  destAddr: destAddr ?? _destAddr,
-  pickupAddr: pickupAddr ?? _pickupAddr,
-  driver: driver ?? _driver,
-  vehicle: vehicle ?? _vehicle,
-);
+  InsidTrips copyWith({
+    int? id,
+    int? userId,
+    int? vehicleId,
+    int? driverId,
+    String? status,
+    String? requestType,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    String? categoryId,
+    dynamic from,
+    dynamic to,
+    String? destAddr,
+    String? pickupAddr,
+    Driver? driver,
+    Vehicle? vehicle,
+  }) =>
+      InsidTrips(
+        id: id ?? _id,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        driverId: driverId ?? _driverId,
+        status: status ?? _status,
+        requestType: requestType ?? _requestType,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        categoryId: categoryId ?? _categoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        destAddr: destAddr ?? _destAddr,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        driver: driver ?? _driver,
+        vehicle: vehicle ?? _vehicle,
+      );
   int? get id => _id;
   int? get userId => _userId;
   int? get vehicleId => _vehicleId;
@@ -556,7 +577,6 @@ InsidTrips copyWith({  int? id,
     }
     return map;
   }
-
 }
 
 // /// id : 66

@@ -6,7 +6,8 @@ class GetDriverTripsModel {
   GetDriverTripsModel({
     bool? error,
     String? message,
-    Data? data,}){
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
@@ -20,13 +21,16 @@ class GetDriverTripsModel {
   bool? _error;
   String? _message;
   Data? _data;
-  GetDriverTripsModel copyWith({  bool? error,
+  GetDriverTripsModel copyWith({
+    bool? error,
     String? message,
     Data? data,
-  }) => GetDriverTripsModel(  error: error ?? _error,
-    message: message ?? _message,
-    data: data ?? _data,
-  );
+  }) =>
+      GetDriverTripsModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ class GetDriverTripsModel {
     }
     return map;
   }
-
 }
 
 /// nearest_trips : [{"id":394,"customer_id":null,"user_id":241,"vehicle_id":null,"type_id":13,"option_id":["[]"],"driver_id":null,"category_id":"1","request_type":"delayed","subcategory_id":"","from":null,"to":null,"direction":null,"date":"2023-04-26","bags":0,"time":"6:16 PM","pickup":null,"dropoff":null,"duration":null,"pickup_addr":"Mountain View,Amphitheatre Parkway","dest_addr":"Santa Clara County,San Jose","note":null,"travellers":1,"status":"pending","payment":0,"pickup_latitude":"37.4219983","pickup_longitude":"-122.084","drop_latitude":"37.43728825055041","drop_longitude":"-122.01809763908388","km":6,"minutes":15,"cost":17693,"start_time":null,"end_time":null,"created_at":"2023-04-09 10:17:11","updated_at":"2023-04-09 10:17:11","deleted_at":null,"first_name":"ليان","last_name":"هدروس","phone":"935681347","profile_image":"https://diamond-line.com.sy/uploads/ef973acf-96eb-4ecb-b903-d3597f6d28a2.jpg","distance":0,"options":"Yes"}]
@@ -51,7 +54,8 @@ class Data {
   Data({
     List<NearestTrips>? nearestTrips,
     List<TripsOutcity>? tripsOutcity,
-    List<AllTrips>? allTrips,}){
+    List<AllTrips>? allTrips,
+  }) {
     _nearestTrips = nearestTrips;
     _tripsOutcity = tripsOutcity;
     _allTrips = allTrips;
@@ -80,13 +84,16 @@ class Data {
   List<NearestTrips>? _nearestTrips;
   List<TripsOutcity>? _tripsOutcity;
   List<AllTrips>? _allTrips;
-  Data copyWith({  List<NearestTrips>? nearestTrips,
+  Data copyWith({
+    List<NearestTrips>? nearestTrips,
     List<TripsOutcity>? tripsOutcity,
     List<AllTrips>? allTrips,
-  }) => Data(  nearestTrips: nearestTrips ?? _nearestTrips,
-    tripsOutcity: tripsOutcity ?? _tripsOutcity,
-    allTrips: allTrips ?? _allTrips,
-  );
+  }) =>
+      Data(
+        nearestTrips: nearestTrips ?? _nearestTrips,
+        tripsOutcity: tripsOutcity ?? _tripsOutcity,
+        allTrips: allTrips ?? _allTrips,
+      );
   List<NearestTrips>? get nearestTrips => _nearestTrips;
   List<TripsOutcity>? get tripsOutcity => _tripsOutcity;
   List<AllTrips>? get allTrips => _allTrips;
@@ -104,7 +111,6 @@ class Data {
     }
     return map;
   }
-
 }
 
 /// id : 364
@@ -183,7 +189,8 @@ class AllTrips {
     String? endTime,
     String? createdAt,
     String? updatedAt,
-    dynamic deletedAt,}){
+    dynamic deletedAt,
+  }) {
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -299,7 +306,8 @@ class AllTrips {
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
-  AllTrips copyWith({  int? id,
+  AllTrips copyWith({
+    int? id,
     dynamic customerId,
     int? userId,
     int? vehicleId,
@@ -336,44 +344,46 @@ class AllTrips {
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
-  }) => AllTrips(  id: id ?? _id,
-    customerId: customerId ?? _customerId,
-    userId: userId ?? _userId,
-    vehicleId: vehicleId ?? _vehicleId,
-    typeId: typeId ?? _typeId,
-    optionId: optionId ?? _optionId,
-    driverId: driverId ?? _driverId,
-    categoryId: categoryId ?? _categoryId,
-    requestType: requestType ?? _requestType,
-    subcategoryId: subcategoryId ?? _subcategoryId,
-    from: from ?? _from,
-    to: to ?? _to,
-    direction: direction ?? _direction,
-    date: date ?? _date,
-    bags: bags ?? _bags,
-    time: time ?? _time,
-    pickup: pickup ?? _pickup,
-    dropoff: dropoff ?? _dropoff,
-    duration: duration ?? _duration,
-    pickupAddr: pickupAddr ?? _pickupAddr,
-    destAddr: destAddr ?? _destAddr,
-    note: note ?? _note,
-    travellers: travellers ?? _travellers,
-    status: status ?? _status,
-    payment: payment ?? _payment,
-    pickupLatitude: pickupLatitude ?? _pickupLatitude,
-    pickupLongitude: pickupLongitude ?? _pickupLongitude,
-    dropLatitude: dropLatitude ?? _dropLatitude,
-    dropLongitude: dropLongitude ?? _dropLongitude,
-    km: km ?? _km,
-    minutes: minutes ?? _minutes,
-    cost: cost ?? _cost,
-    startTime: startTime ?? _startTime,
-    endTime: endTime ?? _endTime,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-  );
+  }) =>
+      AllTrips(
+        id: id ?? _id,
+        customerId: customerId ?? _customerId,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        typeId: typeId ?? _typeId,
+        optionId: optionId ?? _optionId,
+        driverId: driverId ?? _driverId,
+        categoryId: categoryId ?? _categoryId,
+        requestType: requestType ?? _requestType,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        direction: direction ?? _direction,
+        date: date ?? _date,
+        bags: bags ?? _bags,
+        time: time ?? _time,
+        pickup: pickup ?? _pickup,
+        dropoff: dropoff ?? _dropoff,
+        duration: duration ?? _duration,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        destAddr: destAddr ?? _destAddr,
+        note: note ?? _note,
+        travellers: travellers ?? _travellers,
+        status: status ?? _status,
+        payment: payment ?? _payment,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        km: km ?? _km,
+        minutes: minutes ?? _minutes,
+        cost: cost ?? _cost,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+      );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
@@ -453,7 +463,6 @@ class AllTrips {
     map['deleted_at'] = _deletedAt;
     return map;
   }
-
 }
 
 /// id : 363
@@ -548,7 +557,8 @@ class TripsOutcity {
     String? isTour,
     List<TourDetail>? tourDetail,
     String? hasExpense,
-    List<ExpenseDetail>? expenseDetail,}){
+    List<ExpenseDetail>? expenseDetail,
+  }) {
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -698,7 +708,8 @@ class TripsOutcity {
   List<TourDetail>? _tourDetail;
   String? _hasExpense;
   List<ExpenseDetail>? _expenseDetail;
-  TripsOutcity copyWith({  int? id,
+  TripsOutcity copyWith({
+    int? id,
     dynamic customerId,
     int? userId,
     int? vehicleId,
@@ -743,52 +754,54 @@ class TripsOutcity {
     List<TourDetail>? tourDetail,
     String? hasExpense,
     List<ExpenseDetail>? expenseDetail,
-  }) => TripsOutcity(  id: id ?? _id,
-    customerId: customerId ?? _customerId,
-    userId: userId ?? _userId,
-    vehicleId: vehicleId ?? _vehicleId,
-    typeId: typeId ?? _typeId,
-    optionId: optionId ?? _optionId,
-    driverId: driverId ?? _driverId,
-    categoryId: categoryId ?? _categoryId,
-    requestType: requestType ?? _requestType,
-    subcategoryId: subcategoryId ?? _subcategoryId,
-    from: from ?? _from,
-    to: to ?? _to,
-    direction: direction ?? _direction,
-    date: date ?? _date,
-    bags: bags ?? _bags,
-    time: time ?? _time,
-    pickup: pickup ?? _pickup,
-    dropoff: dropoff ?? _dropoff,
-    duration: duration ?? _duration,
-    pickupAddr: pickupAddr ?? _pickupAddr,
-    destAddr: destAddr ?? _destAddr,
-    note: note ?? _note,
-    travellers: travellers ?? _travellers,
-    status: status ?? _status,
-    payment: payment ?? _payment,
-    pickupLatitude: pickupLatitude ?? _pickupLatitude,
-    pickupLongitude: pickupLongitude ?? _pickupLongitude,
-    dropLatitude: dropLatitude ?? _dropLatitude,
-    dropLongitude: dropLongitude ?? _dropLongitude,
-    km: km ?? _km,
-    minutes: minutes ?? _minutes,
-    cost: cost ?? _cost,
-    startTime: startTime ?? _startTime,
-    endTime: endTime ?? _endTime,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-    firstName: firstName ?? _firstName,
-    lastName: lastName ?? _lastName,
-    phone: phone ?? _phone,
-    profileImage: profileImage ?? _profileImage,
-    isTour: isTour ?? _isTour,
-    tourDetail: tourDetail ?? _tourDetail,
-    hasExpense: hasExpense ?? _hasExpense,
-    expenseDetail: expenseDetail ?? _expenseDetail,
-  );
+  }) =>
+      TripsOutcity(
+        id: id ?? _id,
+        customerId: customerId ?? _customerId,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        typeId: typeId ?? _typeId,
+        optionId: optionId ?? _optionId,
+        driverId: driverId ?? _driverId,
+        categoryId: categoryId ?? _categoryId,
+        requestType: requestType ?? _requestType,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        direction: direction ?? _direction,
+        date: date ?? _date,
+        bags: bags ?? _bags,
+        time: time ?? _time,
+        pickup: pickup ?? _pickup,
+        dropoff: dropoff ?? _dropoff,
+        duration: duration ?? _duration,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        destAddr: destAddr ?? _destAddr,
+        note: note ?? _note,
+        travellers: travellers ?? _travellers,
+        status: status ?? _status,
+        payment: payment ?? _payment,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        km: km ?? _km,
+        minutes: minutes ?? _minutes,
+        cost: cost ?? _cost,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        phone: phone ?? _phone,
+        profileImage: profileImage ?? _profileImage,
+        isTour: isTour ?? _isTour,
+        tourDetail: tourDetail ?? _tourDetail,
+        hasExpense: hasExpense ?? _hasExpense,
+        expenseDetail: expenseDetail ?? _expenseDetail,
+      );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
@@ -888,7 +901,6 @@ class TripsOutcity {
     }
     return map;
   }
-
 }
 
 /// id : 52
@@ -927,7 +939,8 @@ class ExpenseDetail {
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
-    dynamic vendorId,}){
+    dynamic vendorId,
+  }) {
     _id = id;
     _vehicleId = vehicleId;
     _expId = expId;
@@ -983,7 +996,8 @@ class ExpenseDetail {
   String? _updatedAt;
   dynamic _deletedAt;
   dynamic _vendorId;
-  ExpenseDetail copyWith({  int? id,
+  ExpenseDetail copyWith({
+    int? id,
     dynamic vehicleId,
     dynamic expId,
     List<String>? type,
@@ -1000,24 +1014,26 @@ class ExpenseDetail {
     String? updatedAt,
     dynamic deletedAt,
     dynamic vendorId,
-  }) => ExpenseDetail(  id: id ?? _id,
-    vehicleId: vehicleId ?? _vehicleId,
-    expId: expId ?? _expId,
-    type: type ?? _type,
-    tripId: tripId ?? _tripId,
-    price: price ?? _price,
-    status: status ?? _status,
-    amount: amount ?? _amount,
-    driverAmount: driverAmount ?? _driverAmount,
-    driverId: driverId ?? _driverId,
-    expenseType: expenseType ?? _expenseType,
-    comment: comment ?? _comment,
-    date: date ?? _date,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-    vendorId: vendorId ?? _vendorId,
-  );
+  }) =>
+      ExpenseDetail(
+        id: id ?? _id,
+        vehicleId: vehicleId ?? _vehicleId,
+        expId: expId ?? _expId,
+        type: type ?? _type,
+        tripId: tripId ?? _tripId,
+        price: price ?? _price,
+        status: status ?? _status,
+        amount: amount ?? _amount,
+        driverAmount: driverAmount ?? _driverAmount,
+        driverId: driverId ?? _driverId,
+        expenseType: expenseType ?? _expenseType,
+        comment: comment ?? _comment,
+        date: date ?? _date,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        vendorId: vendorId ?? _vendorId,
+      );
   int? get id => _id;
   dynamic get vehicleId => _vehicleId;
   dynamic get expId => _expId;
@@ -1057,7 +1073,6 @@ class ExpenseDetail {
     map['vendor_id'] = _vendorId;
     return map;
   }
-
 }
 
 /// id : 42
@@ -1080,7 +1095,8 @@ class TourDetail {
     int? cost,
     String? createdAt,
     String? updatedAt,
-    dynamic deletedAt,}){
+    dynamic deletedAt,
+  }) {
     _id = id;
     _tripId = tripId;
     _startTime = startTime;
@@ -1112,7 +1128,8 @@ class TourDetail {
   String? _createdAt;
   String? _updatedAt;
   dynamic _deletedAt;
-  TourDetail copyWith({  int? id,
+  TourDetail copyWith({
+    int? id,
     int? tripId,
     String? startTime,
     String? endTime,
@@ -1121,16 +1138,18 @@ class TourDetail {
     String? createdAt,
     String? updatedAt,
     dynamic deletedAt,
-  }) => TourDetail(  id: id ?? _id,
-    tripId: tripId ?? _tripId,
-    startTime: startTime ?? _startTime,
-    endTime: endTime ?? _endTime,
-    status: status ?? _status,
-    cost: cost ?? _cost,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-  );
+  }) =>
+      TourDetail(
+        id: id ?? _id,
+        tripId: tripId ?? _tripId,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        status: status ?? _status,
+        cost: cost ?? _cost,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+      );
   int? get id => _id;
   int? get tripId => _tripId;
   String? get startTime => _startTime;
@@ -1154,7 +1173,6 @@ class TourDetail {
     map['deleted_at'] = _deletedAt;
     return map;
   }
-
 }
 
 /// id : 394
@@ -1245,7 +1263,8 @@ class NearestTrips {
     String? phone,
     String? profileImage,
     dynamic distance,
-    dynamic options,}){
+    dynamic options,
+  }) {
     _id = id;
     _customerId = customerId;
     _userId = userId;
@@ -1297,7 +1316,8 @@ class NearestTrips {
     _userId = json['user_id'];
     _vehicleId = json['vehicle_id'];
     _typeId = json['type_id'];
-    _optionId = json['option_id'] != null ? json['option_id'].cast<String>() : [];
+    _optionId =
+        json['option_id'] != null ? json['option_id'].cast<String>() : [];
     _driverId = json['driver_id'];
     _categoryId = json['category_id'];
     _requestType = json['request_type'];
@@ -1379,7 +1399,8 @@ class NearestTrips {
   String? _profileImage;
   dynamic _distance;
   dynamic _options;
-  NearestTrips copyWith({  int? id,
+  NearestTrips copyWith({
+    int? id,
     dynamic customerId,
     int? userId,
     dynamic vehicleId,
@@ -1422,50 +1443,52 @@ class NearestTrips {
     String? profileImage,
     dynamic distance,
     dynamic options,
-  }) => NearestTrips(  id: id ?? _id,
-    customerId: customerId ?? _customerId,
-    userId: userId ?? _userId,
-    vehicleId: vehicleId ?? _vehicleId,
-    typeId: typeId ?? _typeId,
-    optionId: optionId ?? _optionId,
-    driverId: driverId ?? _driverId,
-    categoryId: categoryId ?? _categoryId,
-    requestType: requestType ?? _requestType,
-    subcategoryId: subcategoryId ?? _subcategoryId,
-    from: from ?? _from,
-    to: to ?? _to,
-    direction: direction ?? _direction,
-    date: date ?? _date,
-    bags: bags ?? _bags,
-    time: time ?? _time,
-    pickup: pickup ?? _pickup,
-    dropoff: dropoff ?? _dropoff,
-    duration: duration ?? _duration,
-    pickupAddr: pickupAddr ?? _pickupAddr,
-    destAddr: destAddr ?? _destAddr,
-    note: note ?? _note,
-    travellers: travellers ?? _travellers,
-    status: status ?? _status,
-    payment: payment ?? _payment,
-    pickupLatitude: pickupLatitude ?? _pickupLatitude,
-    pickupLongitude: pickupLongitude ?? _pickupLongitude,
-    dropLatitude: dropLatitude ?? _dropLatitude,
-    dropLongitude: dropLongitude ?? _dropLongitude,
-    km: km ?? _km,
-    minutes: minutes ?? _minutes,
-    cost: cost ?? _cost,
-    startTime: startTime ?? _startTime,
-    endTime: endTime ?? _endTime,
-    createdAt: createdAt ?? _createdAt,
-    updatedAt: updatedAt ?? _updatedAt,
-    deletedAt: deletedAt ?? _deletedAt,
-    firstName: firstName ?? _firstName,
-    lastName: lastName ?? _lastName,
-    phone: phone ?? _phone,
-    profileImage: profileImage ?? _profileImage,
-    distance: distance ?? _distance,
-    options: options ?? _options,
-  );
+  }) =>
+      NearestTrips(
+        id: id ?? _id,
+        customerId: customerId ?? _customerId,
+        userId: userId ?? _userId,
+        vehicleId: vehicleId ?? _vehicleId,
+        typeId: typeId ?? _typeId,
+        optionId: optionId ?? _optionId,
+        driverId: driverId ?? _driverId,
+        categoryId: categoryId ?? _categoryId,
+        requestType: requestType ?? _requestType,
+        subcategoryId: subcategoryId ?? _subcategoryId,
+        from: from ?? _from,
+        to: to ?? _to,
+        direction: direction ?? _direction,
+        date: date ?? _date,
+        bags: bags ?? _bags,
+        time: time ?? _time,
+        pickup: pickup ?? _pickup,
+        dropoff: dropoff ?? _dropoff,
+        duration: duration ?? _duration,
+        pickupAddr: pickupAddr ?? _pickupAddr,
+        destAddr: destAddr ?? _destAddr,
+        note: note ?? _note,
+        travellers: travellers ?? _travellers,
+        status: status ?? _status,
+        payment: payment ?? _payment,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        km: km ?? _km,
+        minutes: minutes ?? _minutes,
+        cost: cost ?? _cost,
+        startTime: startTime ?? _startTime,
+        endTime: endTime ?? _endTime,
+        createdAt: createdAt ?? _createdAt,
+        updatedAt: updatedAt ?? _updatedAt,
+        deletedAt: deletedAt ?? _deletedAt,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        phone: phone ?? _phone,
+        profileImage: profileImage ?? _profileImage,
+        distance: distance ?? _distance,
+        options: options ?? _options,
+      );
   int? get id => _id;
   dynamic get customerId => _customerId;
   int? get userId => _userId;
@@ -1557,5 +1580,4 @@ class NearestTrips {
     map['options'] = _options;
     return map;
   }
-
 }

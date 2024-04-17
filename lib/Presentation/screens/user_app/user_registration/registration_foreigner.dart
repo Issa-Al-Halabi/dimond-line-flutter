@@ -78,7 +78,8 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25)),
                 color: backgroundColor,
               ),
               child: SingleChildScrollView(
@@ -108,30 +109,35 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
                         child: imageFile == null
                             ? TextButton(
                                 onPressed: () async {
-
                                   bool isAndroid13 = false;
-                                  final androidInfo = await DeviceInfoPlugin().androidInfo;
+                                  final androidInfo =
+                                      await DeviceInfoPlugin().androidInfo;
                                   if (androidInfo.version.sdkInt! <= 32) {
                                     isAndroid13 = false;
-                                  }  else {
+                                  } else {
                                     isAndroid13 = true;
                                   }
-                                  var res = isAndroid13 == true ? await Permission.photos.request().isGranted : await Permission.storage.request().isGranted;
-                                  if (res) {  var im = await picker.pickImage(
-                                      source: ImageSource.gallery);
-                                  // setState(() {
-                                  //   imageFile = File(im!.path);
-                                  // });
-                                  if (im != null) {
-                                    setState(() {
-                                      imageFile = File(im.path);
-                                    });
-                                  }
-                                  }
-                                  else{
+                                  var res = isAndroid13 == true
+                                      ? await Permission.photos
+                                          .request()
+                                          .isGranted
+                                      : await Permission.storage
+                                          .request()
+                                          .isGranted;
+                                  if (res) {
+                                    var im = await picker.pickImage(
+                                        source: ImageSource.gallery);
+                                    // setState(() {
+                                    //   imageFile = File(im!.path);
+                                    // });
+                                    if (im != null) {
+                                      setState(() {
+                                        imageFile = File(im.path);
+                                      });
+                                    }
+                                  } else {
                                     showWarningGalleryDialog(context);
                                   }
-
                                 },
                                 child: Center(
                                     child: myText(
@@ -236,22 +242,24 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
-                        child: RaisedButton(
-                          disabledColor: grey,
-                          color: primaryBlue,
+                        child: ElevatedButton(
+                          // disabledColor: grey,
+                          // color: primaryBlue,
                           child: Text(
                             "done".tr(),
-                            style: TextStyle(fontSize: 8.sp, color: Colors.white),
+                            style:
+                                TextStyle(fontSize: 8.sp, color: Colors.white),
                           ),
                           onPressed: isAgree
                               ? () async {
-                                  if (formKey.currentState?.validate() == true) {
-                                    _isNetworkAvail = await isNetworkAvailable();
+                                  if (formKey.currentState?.validate() ==
+                                      true) {
+                                    _isNetworkAvail =
+                                        await isNetworkAvailable();
                                     if (_isNetworkAvail) {
                                       print("There is internet");
                                       Loader.show(context,
-                                          progressIndicator:
-                                              LoaderWidget());
+                                          progressIndicator: LoaderWidget());
                                       var creat = await Provider.of<
                                               EmailRegisterProvider>(context,
                                           listen: false);
@@ -283,17 +291,18 @@ class _RegistrationForeignerState extends State<RegistrationForeigner> {
                                           Future.delayed(
                                                   const Duration(seconds: 1))
                                               .then((_) async {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
                                                     builder: (context) =>
                                                         // SelectType()));
-                                                    UserDashboard()));
+                                                        UserDashboard()));
                                           });
                                         });
                                       } else {
                                         Loader.hide();
                                         print(creat.data.message);
-                                        setSnackbar(creat.data.message.toString(),
+                                        setSnackbar(
+                                            creat.data.message.toString(),
                                             context);
                                       }
                                     } else {

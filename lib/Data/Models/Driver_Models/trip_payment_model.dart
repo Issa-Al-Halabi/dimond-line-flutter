@@ -4,13 +4,14 @@
 
 class TripPaymentModel {
   TripPaymentModel({
-      bool? error, 
-      String? message, 
-      Data? data,}){
+    bool? error,
+    String? message,
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
-}
+  }
 
   TripPaymentModel.fromJson(dynamic json) {
     _error = json['error'];
@@ -20,13 +21,16 @@ class TripPaymentModel {
   bool? _error;
   String? _message;
   Data? _data;
-TripPaymentModel copyWith({  bool? error,
-  String? message,
-  Data? data,
-}) => TripPaymentModel(  error: error ?? _error,
-  message: message ?? _message,
-  data: data ?? _data,
-);
+  TripPaymentModel copyWith({
+    bool? error,
+    String? message,
+    Data? data,
+  }) =>
+      TripPaymentModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ TripPaymentModel copyWith({  bool? error,
     }
     return map;
   }
-
 }
 
 /// method : "cash"
@@ -54,14 +57,15 @@ TripPaymentModel copyWith({  bool? error,
 
 class Data {
   Data({
-      String? method, 
-      String? bookingId, 
-      String? driverId, 
-      String? amount, 
-      String? paymentStatus, 
-      String? updatedAt, 
-      String? createdAt, 
-      int? id,}){
+    String? method,
+    String? bookingId,
+    String? driverId,
+    String? amount,
+    String? paymentStatus,
+    String? updatedAt,
+    String? createdAt,
+    int? id,
+  }) {
     _method = method;
     _bookingId = bookingId;
     _driverId = driverId;
@@ -70,7 +74,7 @@ class Data {
     _updatedAt = updatedAt;
     _createdAt = createdAt;
     _id = id;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _method = json['method'];
@@ -90,23 +94,26 @@ class Data {
   String? _updatedAt;
   String? _createdAt;
   int? _id;
-Data copyWith({  String? method,
-  String? bookingId,
-  String? driverId,
-  String? amount,
-  String? paymentStatus,
-  String? updatedAt,
-  String? createdAt,
-  int? id,
-}) => Data(  method: method ?? _method,
-  bookingId: bookingId ?? _bookingId,
-  driverId: driverId ?? _driverId,
-  amount: amount ?? _amount,
-  paymentStatus: paymentStatus ?? _paymentStatus,
-  updatedAt: updatedAt ?? _updatedAt,
-  createdAt: createdAt ?? _createdAt,
-  id: id ?? _id,
-);
+  Data copyWith({
+    String? method,
+    String? bookingId,
+    String? driverId,
+    String? amount,
+    String? paymentStatus,
+    String? updatedAt,
+    String? createdAt,
+    int? id,
+  }) =>
+      Data(
+        method: method ?? _method,
+        bookingId: bookingId ?? _bookingId,
+        driverId: driverId ?? _driverId,
+        amount: amount ?? _amount,
+        paymentStatus: paymentStatus ?? _paymentStatus,
+        updatedAt: updatedAt ?? _updatedAt,
+        createdAt: createdAt ?? _createdAt,
+        id: id ?? _id,
+      );
   String? get method => _method;
   String? get bookingId => _bookingId;
   String? get driverId => _driverId;
@@ -128,5 +135,4 @@ Data copyWith({  String? method,
     map['id'] = _id;
     return map;
   }
-
 }

@@ -4,13 +4,14 @@
 
 class CreatePaymentIdModel {
   CreatePaymentIdModel({
-      bool? error, 
-      String? message, 
-      Data? data,}){
+    bool? error,
+    String? message,
+    Data? data,
+  }) {
     _error = error;
     _message = message;
     _data = data;
-}
+  }
 
   CreatePaymentIdModel.fromJson(dynamic json) {
     _error = json['error'];
@@ -20,13 +21,16 @@ class CreatePaymentIdModel {
   bool? _error;
   String? _message;
   Data? _data;
-CreatePaymentIdModel copyWith({  bool? error,
-  String? message,
-  Data? data,
-}) => CreatePaymentIdModel(  error: error ?? _error,
-  message: message ?? _message,
-  data: data ?? _data,
-);
+  CreatePaymentIdModel copyWith({
+    bool? error,
+    String? message,
+    Data? data,
+  }) =>
+      CreatePaymentIdModel(
+        error: error ?? _error,
+        message: message ?? _message,
+        data: data ?? _data,
+      );
   bool? get error => _error;
   String? get message => _message;
   Data? get data => _data;
@@ -40,7 +44,6 @@ CreatePaymentIdModel copyWith({  bool? error,
     }
     return map;
   }
-
 }
 
 /// driver_id : "242"
@@ -51,17 +54,18 @@ CreatePaymentIdModel copyWith({  bool? error,
 
 class Data {
   Data({
-      String? driverId, 
-      String? amount, 
-      String? updatedAt, 
-      String? createdAt, 
-      int? id,}){
+    String? driverId,
+    String? amount,
+    String? updatedAt,
+    String? createdAt,
+    int? id,
+  }) {
     _driverId = driverId;
     _amount = amount;
     _updatedAt = updatedAt;
     _createdAt = createdAt;
     _id = id;
-}
+  }
 
   Data.fromJson(dynamic json) {
     _driverId = json['driver_id'];
@@ -75,17 +79,20 @@ class Data {
   String? _updatedAt;
   String? _createdAt;
   int? _id;
-Data copyWith({  String? driverId,
-  String? amount,
-  String? updatedAt,
-  String? createdAt,
-  int? id,
-}) => Data(  driverId: driverId ?? _driverId,
-  amount: amount ?? _amount,
-  updatedAt: updatedAt ?? _updatedAt,
-  createdAt: createdAt ?? _createdAt,
-  id: id ?? _id,
-);
+  Data copyWith({
+    String? driverId,
+    String? amount,
+    String? updatedAt,
+    String? createdAt,
+    int? id,
+  }) =>
+      Data(
+        driverId: driverId ?? _driverId,
+        amount: amount ?? _amount,
+        updatedAt: updatedAt ?? _updatedAt,
+        createdAt: createdAt ?? _createdAt,
+        id: id ?? _id,
+      );
   String? get driverId => _driverId;
   String? get amount => _amount;
   String? get updatedAt => _updatedAt;
@@ -101,5 +108,4 @@ Data copyWith({  String? driverId,
     map['id'] = _id;
     return map;
   }
-
 }

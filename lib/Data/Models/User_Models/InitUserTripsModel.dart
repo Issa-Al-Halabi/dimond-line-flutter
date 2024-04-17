@@ -3,11 +3,12 @@
 
 class InitUserTripsModel {
   InitUserTripsModel({
-      bool? success, 
-      List<Data>? data,}){
+    bool? success,
+    List<Data>? data,
+  }) {
     _success = success;
     _data = data;
-}
+  }
 
   InitUserTripsModel.fromJson(dynamic json) {
     _success = json['success'];
@@ -20,11 +21,14 @@ class InitUserTripsModel {
   }
   bool? _success;
   List<Data>? _data;
-InitUserTripsModel copyWith({  bool? success,
-  List<Data>? data,
-}) => InitUserTripsModel(  success: success ?? _success,
-  data: data ?? _data,
-);
+  InitUserTripsModel copyWith({
+    bool? success,
+    List<Data>? data,
+  }) =>
+      InitUserTripsModel(
+        success: success ?? _success,
+        data: data ?? _data,
+      );
   bool? get success => _success;
   List<Data>? get data => _data;
 
@@ -36,7 +40,6 @@ InitUserTripsModel copyWith({  bool? success,
     }
     return map;
   }
-
 }
 
 /// id : 672
@@ -53,17 +56,18 @@ InitUserTripsModel copyWith({  bool? success,
 
 class Data {
   Data({
-      int? id, 
-      String? status, 
-      String? requestType, 
-      String? pickupLatitude, 
-      String? pickupLongitude, 
-      String? dropLatitude, 
-      String? dropLongitude, 
-      int? vehicleId, 
-      int? driverId, 
-      Vehicle? vehicle, 
-      Driver? driver,}){
+    int? id,
+    String? status,
+    String? requestType,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    int? vehicleId,
+    int? driverId,
+    Vehicle? vehicle,
+    Driver? driver,
+  }) {
     _id = id;
     _status = status;
     _requestType = requestType;
@@ -75,7 +79,7 @@ class Data {
     _driverId = driverId;
     _vehicle = vehicle;
     _driver = driver;
-}
+  }
 
   set status(String? value) {
     _status = value;
@@ -91,7 +95,8 @@ class Data {
     _dropLongitude = json['drop_longitude'];
     _vehicleId = json['vehicle_id'];
     _driverId = json['driver_id'];
-    _vehicle = json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null;
+    _vehicle =
+        json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null;
     _driver = json['driver'] != null ? Driver.fromJson(json['driver']) : null;
   }
   int? _id;
@@ -105,29 +110,32 @@ class Data {
   int? _driverId;
   Vehicle? _vehicle;
   Driver? _driver;
-Data copyWith({  int? id,
-  String? status,
-  String? requestType,
-  String? pickupLatitude,
-  String? pickupLongitude,
-  String? dropLatitude,
-  String? dropLongitude,
-  int? vehicleId,
-  int? driverId,
-  Vehicle? vehicle,
-  Driver? driver,
-}) => Data(  id: id ?? _id,
-  status: status ?? _status,
-  requestType: requestType ?? _requestType,
-  pickupLatitude: pickupLatitude ?? _pickupLatitude,
-  pickupLongitude: pickupLongitude ?? _pickupLongitude,
-  dropLatitude: dropLatitude ?? _dropLatitude,
-  dropLongitude: dropLongitude ?? _dropLongitude,
-  vehicleId: vehicleId ?? _vehicleId,
-  driverId: driverId ?? _driverId,
-  vehicle: vehicle ?? _vehicle,
-  driver: driver ?? _driver,
-);
+  Data copyWith({
+    int? id,
+    String? status,
+    String? requestType,
+    String? pickupLatitude,
+    String? pickupLongitude,
+    String? dropLatitude,
+    String? dropLongitude,
+    int? vehicleId,
+    int? driverId,
+    Vehicle? vehicle,
+    Driver? driver,
+  }) =>
+      Data(
+        id: id ?? _id,
+        status: status ?? _status,
+        requestType: requestType ?? _requestType,
+        pickupLatitude: pickupLatitude ?? _pickupLatitude,
+        pickupLongitude: pickupLongitude ?? _pickupLongitude,
+        dropLatitude: dropLatitude ?? _dropLatitude,
+        dropLongitude: dropLongitude ?? _dropLongitude,
+        vehicleId: vehicleId ?? _vehicleId,
+        driverId: driverId ?? _driverId,
+        vehicle: vehicle ?? _vehicle,
+        driver: driver ?? _driver,
+      );
   int? get id => _id;
   String? get status => _status;
   String? get requestType => _requestType;
@@ -159,7 +167,6 @@ Data copyWith({  int? id,
     }
     return map;
   }
-
 }
 
 /// id : 242
@@ -170,17 +177,18 @@ Data copyWith({  int? id,
 
 class Driver {
   Driver({
-      int? id, 
-      String? firstName, 
-      String? lastName, 
-      String? phone, 
-      String? profileImage,}){
+    int? id,
+    String? firstName,
+    String? lastName,
+    String? phone,
+    String? profileImage,
+  }) {
     _id = id;
     _firstName = firstName;
     _lastName = lastName;
     _phone = phone;
     _profileImage = profileImage;
-}
+  }
 
   set firstName(String? value) {
     _firstName = value;
@@ -198,17 +206,20 @@ class Driver {
   String? _lastName;
   String? _phone;
   String? _profileImage;
-Driver copyWith({  int? id,
-  String? firstName,
-  String? lastName,
-  String? phone,
-  String? profileImage,
-}) => Driver(  id: id ?? _id,
-  firstName: firstName ?? _firstName,
-  lastName: lastName ?? _lastName,
-  phone: phone ?? _phone,
-  profileImage: profileImage ?? _profileImage,
-);
+  Driver copyWith({
+    int? id,
+    String? firstName,
+    String? lastName,
+    String? phone,
+    String? profileImage,
+  }) =>
+      Driver(
+        id: id ?? _id,
+        firstName: firstName ?? _firstName,
+        lastName: lastName ?? _lastName,
+        phone: phone ?? _phone,
+        profileImage: profileImage ?? _profileImage,
+      );
   int? get id => _id;
   String? get firstName => _firstName;
   String? get lastName => _lastName;
@@ -246,17 +257,18 @@ Driver copyWith({  int? id,
 
 class Vehicle {
   Vehicle({
-      int? id, 
-      String? vehicleImage, 
-      String? color, 
-      int? deviceNumber, 
-      String? carModel,}){
+    int? id,
+    String? vehicleImage,
+    String? color,
+    int? deviceNumber,
+    String? carModel,
+  }) {
     _id = id;
     _vehicleImage = vehicleImage;
     _color = color;
     _deviceNumber = deviceNumber;
     _carModel = carModel;
-}
+  }
 
   set vehicleImage(String? value) {
     _vehicleImage = value;
@@ -274,17 +286,20 @@ class Vehicle {
   String? _color;
   int? _deviceNumber;
   String? _carModel;
-Vehicle copyWith({  int? id,
-  String? vehicleImage,
-  String? color,
-  int? deviceNumber,
-  String? carModel,
-}) => Vehicle(  id: id ?? _id,
-  vehicleImage: vehicleImage ?? _vehicleImage,
-  color: color ?? _color,
-  deviceNumber: deviceNumber ?? _deviceNumber,
-  carModel: carModel ?? _carModel,
-);
+  Vehicle copyWith({
+    int? id,
+    String? vehicleImage,
+    String? color,
+    int? deviceNumber,
+    String? carModel,
+  }) =>
+      Vehicle(
+        id: id ?? _id,
+        vehicleImage: vehicleImage ?? _vehicleImage,
+        color: color ?? _color,
+        deviceNumber: deviceNumber ?? _deviceNumber,
+        carModel: carModel ?? _carModel,
+      );
   int? get id => _id;
   String? get vehicleImage => _vehicleImage;
   String? get color => _color;

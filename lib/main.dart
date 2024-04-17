@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
+import 'package:diamond_line/Presentation/Functions/firebase_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/get_profile_provider.dart';
@@ -47,12 +49,10 @@ import 'Buisness_logic/provider/User_Provider/verify_otp_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'Presentation/Functions/notifications.dart';
-import 'Presentation/screens/test_pusher.dart';
 import 'Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/in_trip_screen.dart';
 import 'Presentation/screens/welcoming_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -82,62 +82,66 @@ void main() async {
     print('*******');
   });
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  var androidPlatformChannelSpecifics = new
-  AndroidNotificationDetails(
-      // 'com.example.diamondline', 'Updates',
-      'com.abydos.diamondline', 'Updates',
-      channelDescription: 'Receive updates about new features and bug fixes',
-      playSound: true,
-      importance: Importance.max, priority: Priority.high);
-  var platformChannelSpecifics = new NotificationDetails(
-    android: androidPlatformChannelSpecifics,
-    // iOSPlatformChannelSpecifics
-  );
-//   await flutterLocalNotificationsPlugin.show(
-//       0, 'layan', 'eias', platformChannelSpecifics,
-//       payload: 'item x');
+  await FirebaseNotificationsHandler().init();
 
-//   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(badge: true, alert: true, sound: true);
+//   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//       FlutterLocalNotificationsPlugin();
+//   var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+//       // 'com.example.diamondline', 'Updates',
+//       'com.abydos.diamondline',
+//       'Updates',
+//       channelDescription: 'Receive updates about new features and bug fixes',
+//       playSound: true,
+//       importance: Importance.max,
+//       priority: Priority.high);
+//   var platformChannelSpecifics = new NotificationDetails(
+//     android: androidPlatformChannelSpecifics,
+//     // iOSPlatformChannelSpecifics
+//   );
+// //   await flutterLocalNotificationsPlugin.show(
+// //       0, 'layan', 'eias', platformChannelSpecifics,
+// //       payload: 'item x');
+
+// //   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(badge: true, alert: true, sound: true);
+// //   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+// //   FirebaseMessaging.onBackgroundMessage(myForgroundMessageHandler);
+
+//   var initializationSettingsAndroid =
+//       new AndroidInitializationSettings('@mipmap/ic_launcher');
+//   // new AndroidInitializationSettings('app_icon');
+//   // var initializationSettingsIOS = new IOSInitializationSettings();
+//   var initializationSettings = new InitializationSettings(
+//     android: initializationSettingsAndroid,
+//     // initializationSettingsIOS
+//   );
+//   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+//   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+//     print('Got a message whilst in the foreground!');
+//     print('Message ${message}');
+//     print('Message data: ${message.data}');
+//     print('Message data: ${message.data.toString()}');
+//     print('Message data: ${message.notification}');
+//     print('Message data: ${message.notification.toString()}');
+//     print('Message data: ${message.notification?.body.toString()}');
+//     print('Message data: ${message.notification?.title.toString()}');
+//     print('Message data: ${message.messageType.toString()}');
+// //    if (message.notification != null) {
+//     if (message != null) {
+//       print(
+//           'Message also contained a notification: ${message.notification.toString()}');
+//       await flutterLocalNotificationsPlugin.show(
+//           0,
+//           message.notification?.title.toString(),
+//           message.notification?.body.toString(),
+//           platformChannelSpecifics,
+//           payload: 'item x');
+//     }
+//   });
+
 //   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
-//   FirebaseMessaging.onBackgroundMessage(myForgroundMessageHandler);
 
-  var initializationSettingsAndroid =
-  new AndroidInitializationSettings('@mipmap/ic_launcher');
-  // new AndroidInitializationSettings('app_icon');
-  // var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(
-      android: initializationSettingsAndroid,
-      // initializationSettingsIOS
-  );
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    print('Got a message whilst in the foreground!');
-    print('Message ${message}');
-    print('Message data: ${message.data}');
-    print('Message data: ${message.data.toString()}');
-    print('Message data: ${message.notification}');
-    print('Message data: ${message.notification.toString()}');
-    print('Message data: ${message.notification?.body.toString()}');
-    print('Message data: ${message.notification?.title.toString()}');
-    print('Message data: ${message.messageType.toString()}');
-//    if (message.notification != null) {
-    if (message != null) {
-      print(
-          'Message also contained a notification: ${message.notification.toString()}');
-        await flutterLocalNotificationsPlugin.show(
-      0, message.notification?.title.toString(), message.notification?.body.toString(),
-            platformChannelSpecifics,
-      payload: 'item x');
-    }
-  });
-
-  FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
-
-//   FirebaseMessaging.onBackgroundMessage((RemoteMessage message)async {
+//   FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
 //     print('Got a message whilst in the background!');
 //     print('Message ${message}');
 //     print('Message data: ${message.data}');
@@ -152,7 +156,9 @@ void main() async {
 //       print(
 //           'Message also contained a notification: ${message.notification.toString()}');
 //       await flutterLocalNotificationsPlugin.show(
-//           0, message.notification?.title.toString(), message.notification?.body.toString(),
+//           0,
+//           message.notification?.title.toString(),
+//           message.notification?.body.toString(),
 //           platformChannelSpecifics,
 //           payload: 'item x');
 //     }
@@ -164,7 +170,6 @@ void main() async {
     print(Locale.fromSubtags(languageCode: deviceLocale.split('_')[0]));
     return Locale.fromSubtags(languageCode: deviceLocale.split('_')[0]);
   }
-
 
   // to prevent device orientation changes
   SystemChrome.setPreferredOrientations([
@@ -186,7 +191,8 @@ void main() async {
     await Permission.notification.request();
   }
 
-  runApp(EasyLocalization(
+  runApp(
+    EasyLocalization(
       // supportedLocales: [Locale('en', 'US'), Locale('ar', 'AR'),],
       supportedLocales: [
         Locale('en', 'US'),
@@ -200,7 +206,8 @@ void main() async {
       // startLocale: Locale('ar'),
       useOnlyLangCode: true,
       child: MyApp(),
-    ),);
+    ),
+  );
 
   // runApp(
   //   EasyLocalization(
@@ -248,6 +255,8 @@ class _MyAppState extends State<MyApp> // with WidgetsBindingObserver
                 //     create: (context) => IdRegisterProvider()),
                 // ChangeNotifierProvider<PassportNumberRegisterProvider>(
                 //     create: (context) => PassportNumberRegisterProvider()),
+                ChangeNotifierProvider<InTripProvider>(
+                    create: (context) => InTripProvider()),
                 ChangeNotifierProvider<UserRegisterProvider>(
                     create: (context) => UserRegisterProvider()),
                 ChangeNotifierProvider<EmailRegisterProvider>(
@@ -332,7 +341,6 @@ class _MyAppState extends State<MyApp> // with WidgetsBindingObserver
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
                 home: WelcomingScreen(),
-                // home: TestPusher(),
                 // home: TripSocketScreen(tripId: '167', pickupLatitude: '12.15', dropLatitude: '598.2', dropLongitude: '10', pickupLongitude: '264.5',),
                 debugShowCheckedModeBanner: false,
                 routes: routes,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Data/network/network_client.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../../widgets/loader_widget.dart';
@@ -59,24 +60,21 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
   Marker? marker3;
   Circle? circle;
 
-  var _channel = IOWebSocketChannel.connect(
-    Uri.parse(
-      'ws://mycar.ssc-security.net:8080/api/socket',
-    ),
-  );
+  IOWebSocketChannel? _channel;
 
   Future<void> getCookie() async {
-    Map<String, String> co = {};
-    Response response = await get(Uri.parse(
-      'http://mycar.ssc-security.net:8080/api/session?token=oqBN0XE1usgfA25X465NJs24XHtNs20S',
-    ));
-    co.addAll({"Cookie": response.headers['set-cookie'].toString()});
-
-    _channel = IOWebSocketChannel.connect(
-        Uri.parse(
-          'ws://mycar.ssc-security.net:8080/api/socket',
-        ),
-        headers: co);
+    try {
+      Map<String, String> co = {};
+      Response response =
+          await get(Uri.parse(network_client.mycarSscSecurity_URL));
+      co.addAll({"Cookie": response.headers['set-cookie'].toString()});
+      print(co);
+      _channel = IOWebSocketChannel.connect(
+          Uri.parse(network_client.mycarSscSecurity_SOCKET),
+          headers: co);
+    } catch (e) {
+      setSnackbar(e.toString(), context);
+    }
   }
 
   @override
@@ -132,7 +130,9 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
 
   @override
   void dispose() {
-    _channel.sink.close();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
     super.dispose();
   }
 
@@ -273,7 +273,6 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     marker2 = Marker(markerId: MarkerId("from"));
   }
 
-
   /// رسم المسار الاساسي
   Future getPolyPoints() async {
     polylineCoordinates.clear();
@@ -340,7 +339,9 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
       print(data);
       data = json.decode(data);
       if (data["error"] == false) {
-        _channel.sink.close();
+        if (_channel != null) {
+          _channel!.sink.close();
+        }
         Loader.hide();
         setSnackbar(data["message"].toString(), context);
         setState(() {
@@ -447,78 +448,90 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                             color: backgroundColor,
                           ),
                           child: Stack(children: [
-                            StreamBuilder(
-                              stream: _channel.stream,
-                              builder: (context, snapshot) {
-                                print(snapshot.data);
-                                print(snapshot.connectionState);
-                                if (snapshot.hasData == true) {
-                                  var data =
-                                      json.decode(snapshot.data.toString());
-                                  print('--------------------------------');
-                                  if (data['positions'] != null) {
-                                    // if (data['positions'][0]['deviceId'] == 252) {
-                                    //TODO
-                                    // if (data['positions'][0]['deviceId'] ==
-                                    //     274) {
-                                      if (data['positions'][0]['deviceId'] == deviceNumb) {
-                                      print('////////////////////////////');
-                                      // print(data['positions'][0]['deviceId']);
-                                      // print(data['positions'][0]['latitude']);
-                                      // print(data['positions'][0]['longitude']);
-                                      print('course me');
-                                      print(data['positions'][0]['course']);
-                                      lat = data['positions'][0]['latitude'];
-                                      lng = data['positions'][0]['longitude'];
-                                      course = data['positions'][0]['course'];
-                                      if (latList.last != lat &&
-                                          lngList.last != lng) {
-                                        print('lats and longs isnt equal');
-                                        latList.add(lat);
-                                        lngList.add(lng);
-                                        List<String> strList = latList
-                                            .map((i) => i.toString())
-                                            .toList();
-                                        prefs.setStringList(
-                                            "latList", strList);
-                                        List<String> strList2 = lngList
-                                            .map((i) => i.toString())
-                                            .toList();
-                                        prefs.setStringList("lngList", strList2);
-                                        // for (int i = 0;
-                                        //     i < latList.length;
-                                        //     i++) {
-                                        //   points.add(
-                                        //       LatLng(latList[i], lngList[i]));
-                                        // }
-                                        points.add(LatLng(lat, lng));
-                                        // print(points);
-                                        updatePolyline();
-                                        updateMainPolyline(lat, lng);
-                                        getLocationApi(
-                                            lat.toString(),
-                                            lng.toString(),
-                                            deviceNumb.toString());
-                                      }
-                                      //   latList.add(lat);
-                                      //   lngList.add(lng);
-                                      //   List<String> strList = latList.map((i) => i.toString()).toList();
-                                      //   prefs.setStringList("latList", strList);
-                                      //   List<String> strList2 = lngList.map((i) => i.toString()).toList();
-                                      //   prefs.setStringList("lngList", strList2);
-                                    //  //   for (int i = 0 ; i < latList.length; i++){
-                                   //   //     points.add(LatLng(latList[i],lngList[i]));
-                                   //   //   };
-                                      // points.add(LatLng(lat, lng));
-                                      //   // print(points);
-                                      //   updatePolyline();
-                                      //   getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
-                                    }
-                                  }
-                                } else {}
-                                return Text('');
-                              },
-                            ),
+                            _channel != null
+                                ? StreamBuilder(
+                                    stream: _channel!.stream,
+                                    builder: (context, snapshot) {
+                                      print(snapshot.data);
+                                      print(snapshot.connectionState);
+                                      if (snapshot.hasData == true) {
+                                        var data = json
+                                            .decode(snapshot.data.toString());
+                                        print(
+                                            '--------------------------------');
+                                        if (data['positions'] != null) {
+                                          // if (data['positions'][0]['deviceId'] == 252) {
+                                          //TODO
+                                          // if (data['positions'][0]['deviceId'] ==
+                                          //     274) {
+                                          if (data['positions'][0]
+                                                  ['deviceId'] ==
+                                              deviceNumb) {
+                                            print(
+                                                '////////////////////////////');
+                                            // print(data['positions'][0]['deviceId']);
+                                            // print(data['positions'][0]['latitude']);
+                                            // print(data['positions'][0]['longitude']);
+                                            print('course me');
+                                            print(
+                                                data['positions'][0]['course']);
+                                            lat = data['positions'][0]
+                                                ['latitude'];
+                                            lng = data['positions'][0]
+                                                ['longitude'];
+                                            course =
+                                                data['positions'][0]['course'];
+                                            if (latList.last != lat &&
+                                                lngList.last != lng) {
+                                              print(
+                                                  'lats and longs isnt equal');
+                                              latList.add(lat);
+                                              lngList.add(lng);
+                                              List<String> strList = latList
+                                                  .map((i) => i.toString())
+                                                  .toList();
+                                              prefs.setStringList(
+                                                  "latList", strList);
+                                              List<String> strList2 = lngList
+                                                  .map((i) => i.toString())
+                                                  .toList();
+                                              prefs.setStringList(
+                                                  "lngList", strList2);
+                                              // for (int i = 0;
+                                              //     i < latList.length;
+                                              //     i++) {
+                                              //   points.add(
+                                              //       LatLng(latList[i], lngList[i]));
+                                              // }
+                                              points.add(LatLng(lat, lng));
+                                              // print(points);
+                                              updatePolyline();
+                                              updateMainPolyline(lat, lng);
+                                              getLocationApi(
+                                                  lat.toString(),
+                                                  lng.toString(),
+                                                  deviceNumb.toString());
+                                            }
+                                            //   latList.add(lat);
+                                            //   lngList.add(lng);
+                                            //   List<String> strList = latList.map((i) => i.toString()).toList();
+                                            //   prefs.setStringList("latList", strList);
+                                            //   List<String> strList2 = lngList.map((i) => i.toString()).toList();
+                                            //   prefs.setStringList("lngList", strList2);
+                                            //  //   for (int i = 0 ; i < latList.length; i++){
+                                            //   //     points.add(LatLng(latList[i],lngList[i]));
+                                            //   //   };
+                                            // points.add(LatLng(lat, lng));
+                                            //   // print(points);
+                                            //   updatePolyline();
+                                            //   getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
+                                          }
+                                        }
+                                      } else {}
+                                      return Text('');
+                                    },
+                                  )
+                                : Container(),
                             Container(
                               height: 82.h,
                               width: getScreenWidth(context),
@@ -534,7 +547,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                 borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(20),
                                     topRight: Radius.circular(20)),
-                                 color: backgroundColor,
+                                color: backgroundColor,
                               ),
                               child: GoogleMap(
                                 mapType: MapType.normal,
@@ -557,7 +570,6 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                     width: 5,
                                   ),
                                 },
-
 
                                 // /// مع المسار الاساسي
                                 // polylines: {
@@ -583,8 +595,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                 // polylines: pathPolyline,
 
                                 initialCameraPosition: _kGooglePlex!,
-                                onMapCreated:
-                                    (GoogleMapController controller) {
+                                onMapCreated: (GoogleMapController controller) {
                                   gmc = controller;
                                 },
                                 onTap: (latlng) {},
@@ -610,11 +621,8 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                       print(latList.last);
                                       print(lngList.first);
                                       print(lngList.last);
-                                      getDistance(
-                                          latList.first,
-                                          lngList.first,
-                                          latList.last,
-                                          lngList.last);
+                                      getDistance(latList.first, lngList.first,
+                                          latList.last, lngList.last);
                                       print(widget.tripId);
                                       print(end_time);
                                       print(finalDistance.toString());
@@ -622,9 +630,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                       lngList = [];
                                       prefs.remove('latList');
                                       prefs.remove('lngList');
-                                      for (int i = 0;
-                                          i < latList.length;
-                                          i++) {
+                                      for (int i = 0; i < latList.length; i++) {
                                         points.add(
                                             LatLng(latList[i], lngList[i]));
                                       }
