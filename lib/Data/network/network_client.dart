@@ -14,7 +14,7 @@ class network_client {
   static const String mycarSscSecurity_URL =
       "https://mycar.ssc-security.net:8085/api/session?token=${mycarSscSecurity_TOKEN}";
   static const String mycarSscSecurity_SOCKET =
-      "ws://mycar.ssc-security.net:8080/api/socket";
+      "ws://mycar.ssc-security.net:8085/api/socket";
   ////  ---------------------------------
 
   static String Url = "https://diamond-line.com.sy";
@@ -65,7 +65,8 @@ class network_client {
       required String path,
       String? token,
       dynamic parameter = Nothing}) async {
-    print(_baseUrl);
+    print(_baseUrl + "/" + path);
+    print(parameter);
     switch (requestType) {
       case RequestType.GET:
         // if (AppLocale().token != null)
