@@ -847,14 +847,32 @@ class _OrderNowState extends State<OrderNow> {
                                                 .of<SourceDestinationProvider>(
                                                     context,
                                                     listen: false);
-                                            sourceDistApi(
-                                                widget.fromLat.toString(),
-                                                widget.fromLon.toString(),
-                                                widget.toLat.toString(),
-                                                widget.toLon.toString(),
-                                                distance.toString(),
-                                                timeOfTrip,
-                                                getSourceDist);
+
+                                            print({
+                                              "fewefw",
+                                              widget.fromLat.toString(),
+                                              widget.fromLon.toString(),
+                                              widget.toLat.toString(),
+                                              widget.toLon.toString(),
+                                              distance.toString(),
+                                              timeOfTrip,
+                                              getSourceDist
+                                            });
+                                            if (widget.toLat.toString() !=
+                                                    '0.0' &&
+                                                widget.toLat.toString() !=
+                                                    '0.0') {
+                                              sourceDistApi(
+                                                  widget.fromLat.toString(),
+                                                  widget.fromLon.toString(),
+                                                  widget.toLat.toString(),
+                                                  widget.toLat.toString(),
+                                                  distance.toString(),
+                                                  timeOfTrip,
+                                                  getSourceDist);
+                                            } else {
+                                              print("else else else else ");
+                                            }
                                           },
                                         ),
                                       )

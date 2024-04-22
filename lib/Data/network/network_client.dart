@@ -20,6 +20,7 @@ class network_client {
   static String Url = "https://diamond-line.com.sy";
   // static String Url = "https://diamondline.peaklink.site";
   static String _baseUrl = Url;
+  // static String _baseUrl = "http://192.168.1.112:8000";
 
   final Client _client;
 
@@ -29,6 +30,8 @@ class network_client {
       {required RequestType requestType,
       required String path,
       dynamic parameter = Nothing}) async {
+    print(_baseUrl + "/" + path);
+    print(parameter);
     switch (requestType) {
       case RequestType.GET:
         // if (AppLocale().token != null)
