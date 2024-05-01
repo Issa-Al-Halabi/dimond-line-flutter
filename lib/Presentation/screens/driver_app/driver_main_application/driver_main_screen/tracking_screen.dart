@@ -639,6 +639,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_wait_for_payment_driver.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../../widgets/loader_widget.dart';
@@ -703,7 +704,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
 
   @override
   void initState() {
-    getCookie();
+    // getCookie();
     markerOfMainWay();
     initShared();
     getLatAndLong();
@@ -972,6 +973,67 @@ class _TrackingScreenState extends State<TrackingScreen> {
     }
   }
 
+  /////////////////////////wait For Payment api //////////////////////////////////
+  Future<void> waitForPaymentApi(
+      String trip_id, String end_time, String finalDistance) async {
+    _isNetworkAvail = await isNetworkAvailable();
+    if (_isNetworkAvail) {
+      Loader.show(context, progressIndicator: LoaderWidget());
+      var data = await AppRequests.tripWaitForPaymentRequest(
+        trip_id: trip_id,
+        end_time: end_time,
+        km: finalDistance,
+      );
+      print(data);
+
+      if (data != null) {
+        if (_channel != null) {
+          _channel!.sink.close();
+        }
+        Loader.hide();
+        setSnackbar(data["message"].toString(), context);
+        setState(() {
+          Future.delayed(const Duration(seconds: 3)).then((_) async {
+            totalPrice = data["data"]["new_cost"].toString();
+            adminFare = data["data"]["admin_fare"].toString();
+            // Navigator.of(context).push(
+            Navigator.of(context).pushReplacement(
+              PageRouteBuilder(
+                pageBuilder: (BuildContext context, Animation<double> animation,
+                    Animation<double> secondaryAnimation) {
+                  return TripWaitForPaymentDriverScreen(
+                    tripId: widget.tripId,
+                    finalCost: totalPrice.toString(),
+                    adminFare: adminFare.toString(),
+                    endTime: end_time.toString(),
+                    finalDistance: finalDistance.toString(),
+                  );
+                },
+                transitionsBuilder: (BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    Widget child) {
+                  return Align(
+                    child: SizeTransition(
+                      sizeFactor: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                transitionDuration: Duration(milliseconds: 500),
+              ),
+            );
+          });
+        });
+      } else {
+        Loader.hide();
+        setSnackbar("حدث خطأ ما", context);
+      }
+    } else {
+      setSnackbar("nointernet".tr(), context);
+    }
+  }
+
   // ////////////////// in domain api //////////////////////////
   // Future<void> inDomainApi() async {
   //   _isNetworkAvail = await isNetworkAvailable();
@@ -1177,7 +1239,9 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                         double.parse(widget.dropLatitude),
                                         double.parse(widget.dropLongitude),
                                       );
-                                      endTripApi(widget.tripId, end_time,
+                                      // endTripApi(widget.tripId, end_time,
+                                      //     finalDistance.toString());
+                                      waitForPaymentApi(widget.tripId, end_time,
                                           finalDistance.toString());
                                     }))
                           ]),

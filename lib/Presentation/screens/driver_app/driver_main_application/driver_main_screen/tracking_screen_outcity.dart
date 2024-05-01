@@ -79,7 +79,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
 
   @override
   void initState() {
-    getCookie();
+    // getCookie();
     markerOfMainWay();
     getLatAndLong();
     initShared();

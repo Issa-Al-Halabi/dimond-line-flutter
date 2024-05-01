@@ -6,6 +6,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_ended.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_wait_for_payment.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +86,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     Provider.of<InTripProvider>(context, listen: false).tripStatus = "";
 
     getUserId();
-    getCookie();
+    // getCookie();
     // connectSocket();
     markerOfMainWay();
     getLatAndLong();
@@ -388,7 +389,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => TripEndedUserScreen(
+            builder: (context) => TripWaitForPaymentUserScreen(
                   finalCost: finalCost,
                   tripId: widget.momentTripModel.id.toString(),
                 )),

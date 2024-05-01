@@ -6,6 +6,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_ended.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_wait_for_payment.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _InTripScreenState extends State<InTripScreen> {
   void initState() {
     Provider.of<InTripProvider>(context, listen: false).tripStatus = "";
     getUserId();
-    getCookie();
+    // getCookie();
     // connectSocket();
     markerOfMainWay();
     getLatAndLong();
@@ -398,7 +399,7 @@ class _InTripScreenState extends State<InTripScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => TripEndedUserScreen(
+            builder: (context) => TripWaitForPaymentUserScreen(
                   finalCost: finalCost,
                   tripId: widget.tripId,
                 )),
@@ -710,6 +711,15 @@ class _InTripScreenState extends State<InTripScreen> {
                               if (provider.tripStatus != "") {
                                 Map<String, dynamic> data = provider.tripData;
                                 int id = int.parse(data['id']);
+                                print(
+                                    "==========================================");
+                                print(data);
+                                print(data['status']);
+                                print(widget.tripId);
+                                print(id);
+                                print(id.toString() == widget.tripId);
+                                print(
+                                    "==========================================");
                                 // setState(() {
                                 //   id = data['data']['id'];
                                 //   print('id is: $id');
@@ -737,6 +747,12 @@ class _InTripScreenState extends State<InTripScreen> {
                                     convertStart();
                                     // convertBoolean(isStartTrip);
                                   }
+                                  if (status == 'wait for payment') {
+                                    finalCost = data['cost'];
+                                    // print(finalCost);
+                                    provider.reset();
+                                    navigate();
+                                  }
                                   if (status == 'ended') {
                                     finalCost = data['cost'];
                                     // print(finalCost);
@@ -755,6 +771,7 @@ class _InTripScreenState extends State<InTripScreen> {
                                   print(statusDelayed);
                                   print(data['id']);
                                 }
+                                print("status:" + status);
                                 return Row(
                                   children: [
                                     status == 'accepted'

@@ -60,7 +60,7 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
 
   @override
   void initState() {
-    getCookie();
+    // getCookie();
     deviceNumb = int.parse(widget.driverDeviceNumb);
     print('deviceNumb');
     print(deviceNumb);

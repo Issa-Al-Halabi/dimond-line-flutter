@@ -229,16 +229,20 @@ class _InDriverMainScreenState extends State<InDriverMainScreen> {
                                 children: [
                                   Center(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(msg,
+                                        Text(
+                                          msg,
                                           textAlign: TextAlign.center,
                                           maxLines: 2,
                                           style: TextStyle(
                                             fontSize: 5.sp,
                                             color: primaryBlue,
-                                          ),),
+                                          ),
+                                        ),
                                         TextButton(
                                           onPressed: init,
                                           child: myText(

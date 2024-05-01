@@ -1,3 +1,4 @@
+import 'package:diamond_line/Buisness_logic/provider/Driver_Provider/wait_for_payment_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -37,6 +38,7 @@ class FirebaseNotificationsHandler {
   RemoteMessage? newMessage;
   BuildContext? context;
   InTripProvider inTripProvider = new InTripProvider();
+  WaitForPaymentProvider waitForPaymentProvider = new WaitForPaymentProvider();
   String idVacation = "0";
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -87,9 +89,17 @@ class FirebaseNotificationsHandler {
         print(message.data["status"]);
       }
 
+      if (context != null &&
+          (message.data["payment_method"] != null ||
+              message.data["payment_status"] != null)) {
+        waitForPaymentProvider.setData(message.data);
+        print("message.data message.data message.data message.data ");
+        print(message.data);
+      }
+
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
-      if (notification != null && message.data["status"] == null) {
+      if (notification != null) {
         flutterLocalNotificationsPlugin
             .show(
                 notification.hashCode,

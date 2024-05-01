@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class myText extends StatefulWidget {
   myText({
     this.color = Colors.black,
+    this.align = null,
     this.fontWeight = FontWeight.normal,
     required this.text,
     required this.fontSize,
@@ -14,6 +15,7 @@ class myText extends StatefulWidget {
   String? text;
   double? fontSize;
   Color? color;
+  TextAlign? align;
   FontWeight? fontWeight;
 
   @override
@@ -30,6 +32,7 @@ class _myTextState extends State<myText> {
           fontSize: widget.fontSize!,
           fontWeight: widget.fontWeight!,
           fontFamily: 'assets/fonts/Almarai-Regular'),
+      textAlign: widget.align,
     );
   }
 }

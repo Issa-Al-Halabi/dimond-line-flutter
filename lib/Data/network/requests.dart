@@ -1787,6 +1787,34 @@ class AppRequests {
     return response.body;
   }
 
+  /// trip wait For Payment api
+  static Future tripWaitForPaymentRequest(
+      {required String trip_id,
+      required String end_time,
+      required String km}) async {
+    print("tripWaitForPaymentRequest");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? '';
+    user_id = prefs.getString('user_id') ?? '';
+    print(token);
+    print(user_id);
+    final response = await client.requesttoken(
+        requestType: RequestType.POST,
+        path: "api/trip-waiting-for-payment",
+        token: token,
+        parameter: {
+          "trip_id": trip_id,
+          "end_time": end_time,
+          "km": km,
+        });
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      return null;
+    }
+  }
+
   /// end trip api
   static Future endTripRequest(
       String trip_id, String end_time, String km) async {
@@ -2351,6 +2379,49 @@ class AppRequests {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') ?? '';
     print(token);
+  }
+
+  //fatora payment
+  static Future<dynamic> createFatoraPaymentRequest(
+      {required String booking_id, required String amount}) async {
+    print("nearestCarMapRequest");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? '';
+    user_id = prefs.getString('user_id') ?? '';
+    final response = await client.requesttoken(
+        requestType: RequestType.POST,
+        path: "api/create-payment",
+        token: token,
+        parameter: {"booking_id": booking_id, "amount": amount});
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      return null;
+    }
+  }
+
+  //pay In Cash
+  static Future<dynamic> choosePaymentMethodRequest(
+      {required String booking_id, required String payment_method}) async {
+    print("nearestCarMapRequest");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? '';
+    user_id = prefs.getString('user_id') ?? '';
+    final response = await client.requesttoken(
+        requestType: RequestType.POST,
+        path: "api/trip-user-choosed-payment-method",
+        token: token,
+        parameter: {
+          "trip_id": booking_id,
+          "payment_method": payment_method
+        }); // payment_method : [cash , e_payment]
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      return null;
+    }
   }
 
 // // delete account api

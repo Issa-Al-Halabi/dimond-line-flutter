@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:diamond_line/Buisness_logic/provider/Driver_Provider/wait_for_payment_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:diamond_line/Presentation/Functions/firebase_notification.dart';
 import 'package:flutter/material.dart';
@@ -335,6 +336,8 @@ class _MyAppState extends State<MyApp> // with WidgetsBindingObserver
                     create: (context) => InitUserTripsProvider()),
                 ChangeNotifierProvider<StartedInsideTripsProvider>(
                     create: (context) => StartedInsideTripsProvider()),
+                ChangeNotifierProvider<WaitForPaymentProvider>(
+                    create: (context) => WaitForPaymentProvider()),
               ],
               child: MaterialApp(
                 localizationsDelegates: context.localizationDelegates,
