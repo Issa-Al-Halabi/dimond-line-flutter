@@ -197,7 +197,7 @@ class Data {
     _vehicletype = json['vehicletype'];
     _baseKm = json['base_km'];
     _baseTime = json['base_time'];
-    _cost = json['cost'];
+    _cost = json['meta_data']["cost"];
   }
   int? _id;
   int? _categoryId;

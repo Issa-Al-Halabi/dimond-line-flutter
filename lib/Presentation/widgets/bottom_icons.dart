@@ -3,7 +3,6 @@ import 'package:diamond_line/Presentation/screens/user_app/user_main_application
 import '../../constants.dart';
 import '../screens/user_app/user_main_application/main_screen/select_type.dart';
 import '../screens/user_app/user_main_application/main_screen/user_orders.dart';
-import '../screens/user_app/user_main_application/profile_screen/user_profile_settings.dart';
 
 class BottomIcons extends StatefulWidget {
   BottomIcons({

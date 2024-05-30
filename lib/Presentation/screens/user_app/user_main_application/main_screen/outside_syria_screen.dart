@@ -1,7 +1,6 @@
 // import 'package:connectivity/connectivity.dart';
 // import 'package:easy_localization/src/public_ext.dart';
 // import 'package:flutter/material.dart';
-import '../../../../widgets/loader_widget.dart';
 // import 'package:diamond_line/Buisness_logic/provider/User_Provider/filter_vechile_provider.dart';
 // import 'package:diamond_line/Presentation/widgets/bottom_icons.dart';
 // import 'package:diamond_line/Presentation/widgets/container_widget.dart';

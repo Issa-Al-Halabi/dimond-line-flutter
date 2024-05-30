@@ -188,19 +188,21 @@ class _SelectFeaturesState extends State<SelectFeatures> {
     if (_isNetworkAvail) {
       print("There is internet");
       var data = await AppRequests.bookNowDelayedRequest(
-          latitude,
-          longitude,
-          tolat,
-          tolng,
-          km,
-          minutes,
-          pickup_addr,
-          dest_addr,
-          cost,
-          type_id,
-          date,
-          time,
-          optionsId);
+        latitude,
+        longitude,
+        tolat,
+        tolng,
+        km,
+        minutes,
+        pickup_addr,
+        dest_addr,
+        cost,
+        type_id,
+        date,
+        time,
+        optionsId,
+      );
+
       data = json.decode(data);
       if (data["error"] == false) {
         Loader.hide();

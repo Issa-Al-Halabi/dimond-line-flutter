@@ -581,7 +581,8 @@ class _OrderNowState extends State<OrderNow> {
                                     child: GooglePlaceAutoCompleteTextField(
                                         textEditingController: controllerTo,
                                         googleAPIKey: APIKEY,
-                                        inputDecoration: const InputDecoration(border: InputBorder.none),
+                                        inputDecoration: const InputDecoration(
+                                            border: InputBorder.none),
                                         countries: const ["sy", "sy"],
                                         // optional by default null is set
                                         isLatLngRequired: true,

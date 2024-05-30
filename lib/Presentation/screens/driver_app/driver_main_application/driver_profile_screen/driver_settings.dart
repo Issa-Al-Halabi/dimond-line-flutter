@@ -14,13 +14,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../Data/network/requests.dart';
 import '../../../../../constants.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import '../../../../../main.dart';
 import '../../../../Functions/helper.dart';
 import '../../../user_app/user_main_application/profile_screen/web_view.dart';
 import '../../../user_app/user_registration/are_you.dart';
 import '../../driver_registration/driver_login.dart';
 import '../driver_main_screen/charge_wallet_screen.dart';
-import '../driver_main_screen/driver_dashboard.dart';
 import 'driver_profile_settings.dart';
 import 'driver_trips.dart';
 

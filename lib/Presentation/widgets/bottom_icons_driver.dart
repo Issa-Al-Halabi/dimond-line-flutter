@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../screens/driver_app/driver_main_application/driver_main_screen/driver_efficient_trips.dart';
 import '../screens/driver_app/driver_main_application/driver_profile_screen/driver_settings.dart';
-import '../screens/driver_app/driver_main_application/driver_profile_screen/driver_trips.dart';
 
 class BottomIconsDriver extends StatefulWidget {
   BottomIconsDriver({

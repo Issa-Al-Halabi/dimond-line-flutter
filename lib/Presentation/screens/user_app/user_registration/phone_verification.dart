@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
-import 'package:diamond_line/Presentation/screens/driver_app/driver_registration/driver_register.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/loader_widget.dart';
@@ -8,7 +7,6 @@ import 'package:diamond_line/Buisness_logic/provider/User_Provider/send_otp_prov
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/verify_otp_provider.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_registration/registration.dart';
-import 'package:diamond_line/Presentation/screens/user_app/user_registration/sign_in_sign_up.dart';
 import 'package:diamond_line/Presentation/widgets/code_verification.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
@@ -19,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../constants.dart';
 import '../../../Functions/helper.dart';
 import '../../driver_app/driver_main_application/driver_main_screen/driver_dashboard.dart';
-import '../../driver_app/driver_registration/driver_login.dart';
 import 'forget_password.dart';
 
 class PhoneVerification extends StatefulWidget {

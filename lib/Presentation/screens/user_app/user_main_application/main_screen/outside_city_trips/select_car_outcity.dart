@@ -920,10 +920,9 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                                         ),
                                                         Text(
                                                           formatter
-                                                                  .format(double
-                                                                      .parse(widget
-                                                                              .priceList[
-                                                                          index]))
+                                                                  .format(
+                                                                      widget.priceList[
+                                                                          index])
                                                                   .toString() +
                                                               'sp'.tr(),
                                                           style: TextStyle(

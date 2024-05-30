@@ -59,49 +59,56 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
   int filteredLength = 0;
 
   ///////////////////////// filter vechiles api //////////////////////////////////
-  Future<void> checkNetwork(String category_id, String subcategory_id,
-      String seats, String bags, filterVechileProvider creat) async {
+  Future<void> checkNetwork(String category_id, String subcategory_id, String seats, String bags, filterVechileProvider creat) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
       Loader.show(context, progressIndicator: LoaderWidget());
-      await creat.getFilterVechilesCategory(category_id, subcategory_id, seats,
-          bags, widget.distance.toString(), widget.timeOfTrip.toString());
+      await creat.getFilterVechilesCategory(category_id, subcategory_id, seats, bags, widget.distance.toString(), widget.timeOfTrip.toString());
       if (creat.data.error == false) {
         Loader.hide();
+        print('@@@@@@@@@@@@@');
+        print(creat.data.data!.length);
+        print('@@@@@@@@@@@@@');
+
         for (int i = 0; i < creat.data.data!.length; i++) {
+
           setState(() {
             vechileImage.add(creat.data.data![i].vehicleImage);
             vechileType.add(creat.data.data![i].vehicletype);
             vechileId.add(creat.data.data![i].id.toString());
             carModel.add(creat.data.data![i].carModel);
-            priceList.add(creat.data.data![i].cost.toString());
+            priceList.add(creat.data.data![i].cost);
           });
         }
         filteredLength = creat.data.data!.length;
         setState(() {
           Future.delayed(const Duration(seconds: 1)).then((_) async {
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context).push(
+              MaterialPageRoute(
                 builder: (context) => SelectCarOutCity(
-                    vechileImage: vechileImage,
-                    vechileType: vechileType,
-                    carModel: carModel,
-                    seats: seats,
-                    bags: bags,
-                    filteredLength: filteredLength,
-                    date: getDate(),
-                    time: getTime(selectedTime),
-                    to: widget.to!,
-                    categoryId: widget.categoryId!,
-                    subCategoryId: widget.subCategoryId!,
-                    vechileId: vechileId,
-                    fromLat: widget.fromLat,
-                    fromLon: widget.fromLon,
-                    distance: widget.distance,
-                    timeOfTrip: widget.timeOfTrip,
-                    toLat: widget.toLat,
-                    toLon: widget.toLon,
-                    priceList: priceList)));
+                  vechileImage: vechileImage,
+                  vechileType: vechileType,
+                  carModel: carModel,
+                  seats: seats,
+                  bags: bags,
+                  filteredLength: filteredLength,
+                  date: getDate(),
+                  time: getTime(selectedTime),
+                  to: widget.to!,
+                  categoryId: widget.categoryId!,
+                  subCategoryId: widget.subCategoryId!,
+                  vechileId: vechileId,
+                  fromLat: widget.fromLat,
+                  fromLon: widget.fromLon,
+                  distance: widget.distance,
+                  timeOfTrip: widget.timeOfTrip,
+                  toLat: widget.toLat,
+                  toLon: widget.toLon,
+                  priceList: priceList,
+                ),
+              ),
+            );
           });
         });
       } else {
@@ -254,8 +261,8 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                     offset: Offset(0, 0),
                                   ),
                                 ],
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(100)),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(100)),
                                 color: backgroundColor,
                               ),
                               child: DropdownButton(
@@ -266,7 +273,8 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                   padding: EdgeInsets.only(left: 5.w),
                                   child: Text(
                                     'person'.tr(),
-                                    style: TextStyle(color: grey, fontSize: 4.sp),
+                                    style:
+                                        TextStyle(color: grey, fontSize: 4.sp),
                                   ),
                                 ),
                                 value: dropDownValue,
@@ -304,8 +312,8 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                     offset: const Offset(0, 0),
                                   ),
                                 ],
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(100)),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(100)),
                                 color: backgroundColor,
                               ),
                               child: DropdownButton(
@@ -316,7 +324,8 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                   padding: EdgeInsets.only(left: 5.w),
                                   child: Text(
                                     'bags'.tr(),
-                                    style: TextStyle(color: grey, fontSize: 4.sp),
+                                    style:
+                                        TextStyle(color: grey, fontSize: 4.sp),
                                   ),
                                 ),
                                 value: dropDownValue2,
@@ -339,18 +348,14 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                 },
                               ),
                             ),
-                            SizedBox(
-                              height: 2.h,
-                            ),
+                            SizedBox(height: 2.h),
                             const Divider(
                               color: lightBlue2,
                               thickness: 7,
                               indent: 35,
                               endIndent: 45,
                             ),
-                            SizedBox(
-                              height: 2.h,
-                            ),
+                            SizedBox(height: 2.h),
                             ContainerWidget2(
                               text: 'select date'.tr(),
                               h: 6.h,
@@ -400,9 +405,7 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                     color: primaryBlue,
                                   ))
                                 : const SizedBox(),
-                            SizedBox(
-                              height: 5.h,
-                            ),
+                            SizedBox(height: 5.h),
                             ContainerWidget(
                               text: 'done'.tr(),
                               h: 6.h,
@@ -415,16 +418,16 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                     selectedDate != DateTime.now() &&
                                     dropDownValue != null &&
                                     dropDownValue2 != null) {
-                                  var creat =
-                                      await Provider.of<filterVechileProvider>(
-                                          context,
-                                          listen: false);
+                                  var creat = await Provider.of<filterVechileProvider>(context, listen: false);
+
+
                                   checkNetwork(
-                                      widget.categoryId!,
-                                      widget.subCategoryId!,
-                                      dropDownValue.toString(),
-                                      dropDownValue2.toString(),
-                                      creat);
+                                    widget.categoryId!,
+                                    widget.subCategoryId!,
+                                    dropDownValue.toString(),
+                                    dropDownValue2.toString(),
+                                    creat,
+                                  );
                                 } else {
                                   setSnackbar(
                                       'please enter all fields'.tr(), context);
@@ -432,9 +435,7 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                               },
                               color: backgroundColor,
                             ),
-                            SizedBox(
-                              height: 6.h,
-                            ),
+                            SizedBox(height: 6.h),
                           ],
                         ),
                       ),

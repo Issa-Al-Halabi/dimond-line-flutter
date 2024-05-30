@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/Driver_Provider/wait_for_payment_provider.dart';
-import 'package:diamond_line/Presentation/Functions/firebase_notification.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_ended.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';

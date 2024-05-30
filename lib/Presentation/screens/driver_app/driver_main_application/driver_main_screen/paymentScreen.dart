@@ -4,7 +4,6 @@
 // import 'package:connectivity/connectivity.dart';
 // import 'package:easy_localization/src/public_ext.dart';
 // import 'package:flutter/material.dart';
-import '../../../../widgets/loader_widget.dart';
 // import 'package:diamond_line/Presentation/widgets/bottom_icons_driver.dart';
 // import 'package:diamond_line/Presentation/widgets/text.dart';
 // import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';

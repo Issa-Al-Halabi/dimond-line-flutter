@@ -10,7 +10,6 @@ import 'package:diamond_line/Buisness_logic/provider/User_Provider/order_trip_ou
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/send_otp_email_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/send_otp_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/update_profile_provider.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,8 +48,6 @@ import 'Buisness_logic/provider/User_Provider/verify_otp_email_provider.dart';
 import 'Buisness_logic/provider/User_Provider/verify_otp_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
-import 'Presentation/Functions/notifications.dart';
-import 'Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/in_trip_screen.dart';
 import 'Presentation/screens/welcoming_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';

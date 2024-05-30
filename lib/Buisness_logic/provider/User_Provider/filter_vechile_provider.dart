@@ -18,8 +18,7 @@ class filterVechileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getFilterVechilesCategory(String category_id, String subcategory_id, String seats, String bags,
-      String distance, String time) async {
+  getFilterVechilesCategory(String category_id, String subcategory_id, String seats, String bags, String distance, String time) async {
     print("layan Test");
     isLoading = true;
     data = await AppRequests.getFilterVechilesCategoryRequest(category_id, subcategory_id, seats, bags, distance, time);

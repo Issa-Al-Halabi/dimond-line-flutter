@@ -4,12 +4,16 @@ import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
+import 'package:diamond_line/Presentation/Functions/helper.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/inside_trip_delayed.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_wait_for_payment.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/user_dashboard.dart';
+import 'package:diamond_line/Presentation/widgets/container_widget.dart';
+import 'package:diamond_line/Presentation/widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,14 +26,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/io.dart';
 import '../../../../../../Data/Models/User_Models/SocketResponse.dart';
 import '../../../../../../Data/network/requests.dart';
-import '../../../../../Functions/helper.dart';
-import '../../../../../widgets/container_widget.dart';
-import '../../../../../widgets/loader_widget.dart';
+
 import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart';
-import '../user_dashboard.dart';
-import 'inside_trip_delayed.dart';
+
 
 class InsideTripMomentScreen extends StatefulWidget {
   InsideTripMomentScreen(
@@ -78,11 +79,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
 
   StreamController<Map<String, dynamic>> eventStreamController =
       StreamController<Map<String, dynamic>>.broadcast();
-
-  List<GeoPoint> latLngList = [];
-  ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
-  late MapController controller;
-  bool isLoading = false;
+  // PusherChannelsFlutter pusher = PusherChannelsFlutter.getInstance();
 
   @override
   void initState() {
@@ -91,6 +88,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     getUserId();
     // getCookie();
     // connectSocket();
+    markerOfMainWay();
     getLatAndLong();
     getPolyPoints();
     super.initState();
@@ -103,15 +101,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
   }
 
   Future<void> getLatAndLong() async {
-    controller = await MapController(
-      initPosition: GeoPoint(
-          latitude: double.parse(widget.momentTripModel.pickupLatitude!),
-          longitude: double.parse(widget.momentTripModel.pickupLongitude!)),
+    _kGooglePlex = CameraPosition(
+      target: LatLng(double.parse(widget.momentTripModel.pickupLatitude!),
+          double.parse(widget.momentTripModel.pickupLongitude!)),
+      zoom: 10,
     );
-    isLoading = true;
-    tripPolyline(double.parse(widget.momentTripModel.pickupLatitude!),double.parse(widget.momentTripModel.pickupLongitude!));
     setState(() {});
-
   }
 
   Future<void> getCookie() async {
@@ -134,75 +129,89 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     return byteData.buffer.asUint8List();
   }
 
-  void tripPolyline(
-    double pickupLatitude,
-    double pickupLongitude,
-  ) async {
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    if (lastGeoPoint.value != null) {
-      controller.changeLocationMarker(
-        oldLocation: lastGeoPoint.value!,
-        newLocation: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-      );
-    } else {
-      controller.addMarker(
-        GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-        markerIcon: MarkerIcon(
-          assetMarker:
-          AssetMarker(
-            scaleAssetImage: 2,
-            image: AssetImage(
-              "assets/images/caricon.png",
-            ),
-          ),
-        ),
-      );
-    }
-    lastGeoPoint.value !=
-        GeoPoint(latitude: pickupLongitude, longitude: pickupLatitude);
-     controller.drawCircle(
-      CircleOSM(
+  void tripPolyline(double pickupLatitude, double pickupLongitude,
+      double dropLatitude, double dropLongitude) async {
+    /// clear main route
+    polylineCoordinates.clear();
 
-        key: "car",
-        centerPoint: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
+    /// clear car route
+    // polylineCoordinates3.clear();
 
-        radius: 50,
-        color: Colors.blue,
-        strokeWidth: 0.3,
-      ),
+    Uint8List imageData = await getMarker();
+    marker = Marker(
+        markerId: MarkerId("home"),
+        position: LatLng(pickupLatitude, pickupLongitude),
+        rotation: course,
+        draggable: false,
+        zIndex: 2,
+        flat: true,
+        anchor: Offset(0.5, 0.5),
+        icon: BitmapDescriptor.fromBytes(imageData));
+    circle = Circle(
+        circleId: CircleId("car"),
+        radius: 10,
+        zIndex: 1,
+        strokeColor: Colors.grey,
+        center: LatLng(pickupLatitude, pickupLongitude),
+        fillColor: Colors.grey.withAlpha(70));
+    polylineCoordinates2.clear();
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      APIKEY,
+      PointLatLng(pickupLatitude, pickupLongitude),
+      PointLatLng(dropLatitude, dropLongitude),
     );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates2.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    if (mounted) {
+      setState(() {});
+    }
+
+    // delete from marker
+    marker2 = Marker(markerId: MarkerId("from"));
   }
 
-  /// Draw main Road
-  void roadActionBt() async {
-    RoadInfo roadInfo = await controller.drawRoad(
-      GeoPoint(
-          latitude: double.parse(widget.momentTripModel.pickupLatitude!),
-          longitude: double.parse(widget.momentTripModel.pickupLongitude!)),
-      GeoPoint(
-        latitude: double.parse(widget.momentTripModel.dropLatitude!),
-        longitude: double.parse(widget.momentTripModel.dropLongitude!),
-      ),
-      roadType: RoadType.car,
-      roadOption: RoadOption(
-        roadWidth: 10,
-        roadColor: Colors.blue,
-        zoomInto: true,
-      ),
-    );
+  void carPolyline(double pickupLatitude, double pickupLongitude,
+      double dropLatitude, double dropLongitude) async {
+    /// clear main route
+    // polylineCoordinates.clear();
 
-    print("${roadInfo.distance}km");
-    print("${roadInfo.duration}sec");
-    print("${roadInfo.instructions}");
+    Uint8List imageData = await getMarker();
+    marker = Marker(
+        markerId: MarkerId("home"),
+        position: LatLng(pickupLatitude, pickupLongitude),
+        rotation: course,
+        draggable: false,
+        zIndex: 2,
+        flat: true,
+        anchor: Offset(0.5, 0.5),
+        icon: BitmapDescriptor.fromBytes(imageData));
+    circle = Circle(
+        circleId: CircleId("car"),
+        radius: 10,
+        zIndex: 1,
+        strokeColor: Colors.grey,
+        // center: latLngList.last,
+        center: LatLng(pickupLatitude, pickupLongitude),
+        fillColor: Colors.grey.withAlpha(70));
+    polylineCoordinates3.clear();
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      APIKEY,
+      PointLatLng(pickupLatitude, pickupLongitude),
+      PointLatLng(dropLatitude, dropLongitude),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates3.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   /// رسم المسار الاساسي
@@ -224,6 +233,38 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void markerOfMainWay() {
+    marker2 = Marker(
+      markerId: MarkerId("from"),
+      position: LatLng(double.parse(widget.momentTripModel.pickupLatitude!),
+          double.parse(widget.momentTripModel.pickupLongitude!)),
+      rotation: 2,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      infoWindow: InfoWindow(
+        title: 'from'.tr(),
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
+
+    marker3 = Marker(
+      markerId: MarkerId("to"),
+      position: LatLng(double.parse(widget.momentTripModel.dropLatitude!),
+          double.parse(widget.momentTripModel.dropLongitude!)),
+      rotation: 2,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      infoWindow: InfoWindow(
+        title: 'to'.tr(),
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
   }
 
   ////////////////// cancel trip api //////////////////////////
@@ -266,6 +307,69 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CUR_USERID = prefs.getString('user_id') ?? '';
   }
+
+  // ******************************************* //
+  // void connectSocket() async {
+  //   try {
+  //     await pusher.init(
+  //       apiKey: APIKEY_PUSHER,
+  //       cluster: CLUSTER_PUSHER,
+  //       onConnectionStateChange: onConnectionStateChange,
+  //       onError: onError,
+  //       onSubscriptionSucceeded: onSubscriptionSucceeded,
+  //       onEvent: onEvent,
+  //       onSubscriptionError: onSubscriptionError,
+  //       onDecryptionFailure: onDecryptionFailure,
+  //       onMemberAdded: onMemberAdded,
+  //       onMemberRemoved: onMemberRemoved,
+  //       onSubscriptionCount: onSubscriptionCount,
+  //     );
+  //     await pusher.subscribe(channelName: 'trip-status-$CUR_USERID');
+  //     await pusher.connect();
+  //   } catch (e) {
+  //     log("ERROR: $e");
+  //   }
+  // }
+
+  // void onConnectionStateChange(dynamic currentState, dynamic previousState) {
+  //   log("Connection: $currentState inside trip moment");
+  // }
+
+  // void onError(String message, int? code, dynamic e) {
+  //   log("onError: $message code: $code exception: $e");
+  // }
+
+  // void onEvent(PusherEvent event) {
+  //   log("onEvent  inside trip moment: $event");
+  //   Map<String, dynamic> data = jsonDecode(event.data);
+  //   eventStreamController.sink.add(data);
+  // }
+
+  // void onSubscriptionSucceeded(String channelName, dynamic data) {
+  //   log("onSubscriptionSucceeded: $channelName data: $data");
+  //   final me = pusher.getChannel(channelName)?.me;
+  //   log("Me: $me");
+  // }
+
+  // void onSubscriptionError(String message, dynamic e) {
+  //   log("onSubscriptionError: $message Exception: $e");
+  // }
+
+  // void onDecryptionFailure(String event, String reason) {
+  //   log("onDecryptionFailure: $event reason: $reason");
+  // }
+
+  // void onMemberAdded(String channelName, PusherMember member) {
+  //   log("onMemberAdded: $channelName user: $member");
+  // }
+
+  // void onMemberRemoved(String channelName, PusherMember member) {
+  //   log("onMemberRemoved: $channelName user: $member");
+  // }
+
+  // void onSubscriptionCount(String channelName, int subscriptionCount) {
+  //   log("onSubscriptionCount: $channelName subscriptionCount: $subscriptionCount");
+  // }
 
   dynamic onAuthorizer(String channelName, String socketId, dynamic options) {
     return {
@@ -328,6 +432,16 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     return true;
   }
 
+  // bool convertSecondTrack() {
+  //   WidgetsBinding.instance?.addPostFrameCallback((_) {
+  //     setState(() {
+  //       !isTrackDriverDelayTrip;
+  //       !widget.isSecondTrip;
+  //     });
+  //   });
+  //   return true;
+  // }
+
   bool convertSecondTrack() {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       setState(() {
@@ -352,6 +466,15 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     return true;
   }
 
+  // bool convertBoolean(bool myBoolean) {
+  //   WidgetsBinding.instance?.addPostFrameCallback((_) {
+  //     setState(() {
+  //       myBoolean = !myBoolean;
+  //     });
+  //   });
+  //   return true;
+  // }
+
   void navigateToSecondTrip() {
     eventStreamController.close();
     if (_channel != null) {
@@ -361,17 +484,15 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => InsideTripDelayedScreen(
-          delayTripModel: widget.delayTripModel,
-          isAcceptTrip: isTrackDriverDelayTrip,
-        ),
-      ),
+          builder: (context) => InsideTripDelayedScreen(
+                delayTripModel: widget.delayTripModel,
+                isAcceptTrip: isTrackDriverDelayTrip,
+              )),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    print('7777777');
     return WillPopScope(
       onWillPop: () async {
         if (Loader.isShown == true) {
@@ -398,7 +519,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
         }
       },
       child: Scaffold(
-        body: isLoading == false
+        body: _kGooglePlex == null
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -442,7 +563,21 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                               ? tripPolyline(
                                                   latRoute,
                                                   lngRoute,
-                                                )
+                                                  // latToRoute,
+                                                  // lngToRoute
+                                                  double.parse(widget
+                                                      .momentTripModel
+                                                      .dropLatitude!),
+                                                  double.parse(widget
+                                                      .momentTripModel
+                                                      .dropLongitude!))
+                                              // : isAcceptTrip == true ?
+                                              // carPolyline(
+                                              //     latRoute,
+                                              //     lngRoute,
+                                              //     double.parse(widget.pickupLatitude),
+                                              //     double.parse(widget.pickupLongitude)
+                                              // )
                                               : null;
                                         }
                                       }
@@ -468,56 +603,38 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                   topRight: Radius.circular(20)),
                               color: backgroundColor,
                             ),
-                            child: OSMFlutter(
-                              onMapIsReady: (p0) {
-                                roadActionBt();
-                                tripPolyline(double.parse(widget.momentTripModel.pickupLatitude!),double.parse(widget.momentTripModel.pickupLongitude!));
-
-                              },
-                              controller: controller,
-                              osmOption: OSMOption(
-                                zoomOption: ZoomOption(
-                                  initZoom: 14,
+                            child: GoogleMap(
+                              // markers: myMarker,
+                              markers: Set.of((marker3 != null)
+                                  ? [marker, marker2, marker3]
+                                  : []),
+                              polylines: {
+                                Polyline(
+                                  polylineId: PolylineId('route'),
+                                  points: polylineCoordinates,
+                                  color: primaryBlue,
+                                  width: 5,
                                 ),
-                                staticPoints: [
-                                  StaticPositionGeoPoint(
-                                    "from",
-                                    MarkerIcon(
-                                      icon: Icon(
-                                        Icons.location_on_rounded,
-                                        color: Colors.green,
-                                        size: 32,
-                                      ),
-                                    ),
-                                    [
-                                      GeoPoint(
-                                        latitude: double.parse(widget
-                                            .momentTripModel.pickupLatitude!),
-                                        longitude: double.parse(widget
-                                            .momentTripModel.pickupLongitude!),
-                                      ),
-                                    ],
-                                  ),
-                                  StaticPositionGeoPoint(
-                                    "to",
-                                    MarkerIcon(
-                                      icon: Icon(
-                                        Icons.location_on_rounded,
-                                        color: Colors.green,
-                                        size: 32,
-                                      ),
-                                    ),
-                                    [
-                                      GeoPoint(
-                                        latitude: double.parse(widget
-                                            .momentTripModel.dropLatitude!),
-                                        longitude: double.parse(widget
-                                            .momentTripModel.dropLongitude!),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                Polyline(
+                                  polylineId: PolylineId('track'),
+                                  points: polylineCoordinates2,
+                                  color: primaryBlue,
+                                  // color: Colors.red,
+                                  width: 5,
+                                ),
+                                Polyline(
+                                  polylineId: PolylineId('car'),
+                                  points: polylineCoordinates3,
+                                  color: Colors.orange,
+                                  width: 5,
+                                ),
+                              },
+                              mapType: MapType.normal,
+                              initialCameraPosition: _kGooglePlex!,
+                              onMapCreated: (GoogleMapController controller) {
+                                gmc = controller;
+                              },
+                              onTap: (latlng) {},
                             ),
                           ),
                           // Positioned(
@@ -606,13 +723,6 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                       'canceld') {
                                     print('your trip didnt accept');
                                     navigateDash();
-                                  }
-                                  if (widget.momentTripModel.status ==
-                                      'wait for payment') {
-                                    finalCost = data['cost'];
-                                    // print(finalCost);
-                                    provider.reset();
-                                    navigate();
                                   }
                                 } else {
                                   print('ttttttttttttt');

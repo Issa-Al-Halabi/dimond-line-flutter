@@ -1,6 +1,5 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
-import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget2.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';

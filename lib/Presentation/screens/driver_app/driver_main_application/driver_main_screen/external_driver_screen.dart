@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:core';
-import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../../widgets/loader_widget.dart';
 import 'package:flutter/services.dart';
-import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_profile_screen/driver_settings.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
@@ -17,12 +14,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../../../Buisness_logic/provider/Driver_Provider/driver_status_provider.dart';
 import '../../../../../Data/network/requests.dart';
 import 'incity_driver_trips.dart';
 import 'outcity_driver_trips.dart';
-import 'dart:ui' as ui;
 
 class OutDriverMainScreen extends StatefulWidget {
   const OutDriverMainScreen({Key? key}) : super(key: key);

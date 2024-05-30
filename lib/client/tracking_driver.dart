@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
+import 'package:diamond_line/Presentation/widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/rating_screen.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
@@ -38,6 +38,7 @@ class TrackingDriverScreen extends StatefulWidget {
 }
 
 class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
+  CameraPosition? _kGooglePlex;
   GoogleMapController? gmc;
   late Position cl;
   double lat = 0.0;
@@ -45,14 +46,17 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
   double course = 0.0;
   bool _isNetworkAvail = true;
   late SharedPreferences prefs;
+  List<LatLng> latLngList = [];
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> pathPolyline = <Polyline>{};
   var finalDistance;
   String totalPrice = '';
   int deviceNumb = 0;
+  Marker marker = Marker(markerId: MarkerId("home"));
+  Marker marker2 = Marker(markerId: MarkerId("from"));
+  Marker marker3 = Marker(markerId: MarkerId("to"));
+  Circle? circle;
 
-  List<GeoPoint> latLngList = [];
-  ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
   late MapController controller;
   bool isLoading = false;
 
@@ -64,11 +68,12 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
     deviceNumb = int.parse(widget.driverDeviceNumb);
     print('deviceNumb');
     print(deviceNumb);
+    markerOfMainWay();
     getLatAndLong();
 
     ///رسم المسار الاساسي
+    getpoly();
     getPer();
-
     super.initState();
   }
 
@@ -96,7 +101,29 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
     }
   }
 
-  /// رسم المسار الاساس
+  getpoly() async {
+    await getPolyPoints();
+  }
+
+  /// رسم المسار الاساسي
+  Future getPolyPoints() async {
+    polylineCoordinates.clear();
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      APIKEY,
+      PointLatLng(double.parse(widget.pickupLatitude), double.parse(widget.pickupLongitude)),
+      PointLatLng(double.parse(widget.dropLatitude), double.parse(widget.dropLongitude)),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   void roadActionBt() async {
     // controller.addMarker(
     //   GeoPoint(
@@ -133,25 +160,66 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
     print("${roadInfo.instructions}");
   }
 
+
+  void markerOfMainWay() {
+    marker2 = Marker(
+      markerId: MarkerId("from"),
+      position: LatLng(double.parse(widget.pickupLatitude),
+          double.parse(widget.pickupLongitude)),
+      rotation: 2,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      infoWindow: InfoWindow(
+        title: 'from'.tr(),
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
+
+    marker3 = Marker(
+      markerId: MarkerId("to"),
+      position: LatLng(double.parse(widget.dropLatitude),
+          double.parse(widget.dropLongitude)),
+      rotation: 2,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      infoWindow: InfoWindow(
+        title: 'to'.tr(),
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
+  }
+
   Future<void> getLatAndLong() async {
     cl = await Geolocator.getCurrentPosition().then((value) => value);
     lat = cl.latitude;
     lng = cl.longitude;
-    controller = MapController(
-      initPosition: GeoPoint(
-        latitude: double.parse(widget.pickupLatitude),
-        longitude: double.parse(widget.pickupLongitude),
-      ),
+    _kGooglePlex = CameraPosition(
+      target: LatLng(double.parse(widget.pickupLatitude),
+          double.parse(widget.pickupLongitude)),
+      zoom: 12,
     );
-    latLngList.add(GeoPoint(latitude: lat, longitude: lng));
+    latLngList.add(LatLng(lat, lng));
     print(latLngList);
-    updateMarker();
-
-    isLoading = true;
-
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 5,
+    //       points: latLngList,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
     if (mounted) {
       setState(() {});
     }
+
+    updatePolyline();
   }
 
   Future getPer() async {
@@ -169,35 +237,42 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
     }
   }
 
-  void updateMarker() async {
-    if (lastGeoPoint.value != null) {
-      controller.changeLocationMarker(
-        oldLocation: lastGeoPoint.value!,
-        newLocation: latLngList.last,
-      );
-    } else {
-      controller.addMarker(
-        latLngList.last,
-        markerIcon: MarkerIcon(
-          assetMarker: AssetMarker(
-            scaleAssetImage: 2,
-            image: AssetImage(
-              "assets/images/caricon.png",
-            ),
-          ),
-        ),
-      );
-    }
-    lastGeoPoint.value = latLngList.last;
-    controller.drawCircle(
-      CircleOSM(
-        key: "car",
-        centerPoint: latLngList.last,
-        radius: 50,
-        color: Colors.blue,
-        strokeWidth: 0.3,
-      ),
-    );
+  Future<Uint8List> getMarker() async {
+    ByteData byteData = await DefaultAssetBundle.of(context).load(carIcon);
+    return byteData.buffer.asUint8List();
+  }
+
+  void updatePolyline() async {
+    Uint8List imageData = await getMarker();
+    marker = Marker(
+        markerId: MarkerId("home"),
+        position: latLngList.last,
+        //////  directional marker
+        rotation: course,
+        draggable: false,
+        zIndex: 2,
+        flat: true,
+        anchor: Offset(0.5, 0.5),
+        icon: BitmapDescriptor.fromBytes(imageData));
+    circle = Circle(
+        circleId: CircleId("car"),
+        radius: 10,
+        zIndex: 1,
+        strokeColor: Colors.grey,
+        center: latLngList.last,
+        fillColor: Colors.grey.withAlpha(70));
+    setState(() {});
+    // pathPolyline.add(
+    //   Polyline(
+    //       polylineId: PolylineId('track'),
+    //       color: Colors.red,
+    //       width: 4,
+    //       points: latLngList,
+    //       patterns: [
+    //         PatternItem.dash(20),
+    //         PatternItem.gap(10),
+    //       ]),
+    // );
   }
 
   getDistance(double latcurrent, double lancurrent, double lat, double lng) {
@@ -256,7 +331,7 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isLoading == false
+      body: _kGooglePlex == null
           ? Center(child: LoaderWidget())
           : Container(
               height: getScreenHeight(context),
@@ -324,10 +399,9 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
                                                       lng) {
                                                 print(
                                                     'lats and longs isnt equal');
-                                                latLngList.add(GeoPoint(
-                                                    latitude: lat,
-                                                    longitude: lng));
-                                                updateMarker();
+                                                latLngList
+                                                    .add(LatLng(lat, lng));
+                                                updatePolyline();
                                                 getLocationApi(
                                                     lat.toString(),
                                                     lng.toString(),
@@ -357,56 +431,43 @@ class _TrackingDriverScreenState extends State<TrackingDriverScreen> {
                                       topRight: Radius.circular(20)),
                                   color: backgroundColor,
                                 ),
-                                child: OSMFlutter(
-                                  onMapIsReady: (p0) => roadActionBt(),
-                                  controller: controller,
-                                  osmOption: OSMOption(
-                                    zoomOption: ZoomOption(
-                                      initZoom: 14,
+                                child: GoogleMap(
+                                  mapType: MapType.normal,
+                                  zoomControlsEnabled: true,
+                                  zoomGesturesEnabled: true,
+                                  scrollGesturesEnabled: true,
+                                  markers: Set.of((marker3 != null) ? [marker, marker2, marker3] : []),
+                                  // Set.of([marker!,marker2!, marker3!]),
+                                  circles: Set.of((circle != null) ? [circle!] : []),
+                                  /// مع المسار الاساسي
+                                  polylines: {
+                                    Polyline(
+                                      polylineId: PolylineId('route'),
+                                      points: polylineCoordinates,
+                                      color: primaryBlue,
+                                      width: 5,
                                     ),
-                                    staticPoints: [
-                                      StaticPositionGeoPoint(
-                                        "from",
-                                        MarkerIcon(
-                                          icon: Icon(
-                                            Icons.location_on_rounded,
-                                            color: Colors.green,
-                                            size: 32,
-                                          ),
-                                        ),
-                                        [
-                                          GeoPoint(
-                                            latitude: double.parse(
-                                              widget.pickupLatitude,
-                                            ),
-                                            longitude: double.parse(
-                                              widget.pickupLongitude,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      StaticPositionGeoPoint(
-                                        "to",
-                                        MarkerIcon(
-                                          icon: Icon(
-                                            Icons.location_on_rounded,
-                                            color: Colors.green,
-                                            size: 32,
-                                          ),
-                                        ),
-                                        [
-                                          GeoPoint(
-                                            latitude: double.parse(
-                                              widget.dropLatitude,
-                                            ),
-                                            longitude: double.parse(
-                                              widget.dropLongitude,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                    // Polyline(
+                                    //     points: latLngList,
+                                    //     polylineId: PolylineId('track'),
+                                    //     color: Colors.red,
+                                    //     width: 4,
+                                    //     // points: latLngList,
+                                    //     patterns: [
+                                    //       PatternItem.dash(20),
+                                    //       PatternItem.gap(10),
+                                    //     ]),
+                                  },
+
+                                  /// بدون المسار الاساسي
+                                  // polylines: pathPolyline,
+
+                                  initialCameraPosition: _kGooglePlex!,
+                                  onMapCreated:
+                                      (GoogleMapController controller) {
+                                    gmc = controller;
+                                  },
+                                  onTap: (latlng) {},
                                 ),
                               ),
                               Positioned(

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_ended.dart';
 import 'package:easy_localization/src/public_ext.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +12,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../../constants.dart';
 import '../../../../../Functions/helper.dart';
 import '../../../../../widgets/loader_widget.dart';
-import '../user_dashboard.dart';
 
 class TripWaitForPaymentUserScreen extends StatefulWidget {
   TripWaitForPaymentUserScreen(

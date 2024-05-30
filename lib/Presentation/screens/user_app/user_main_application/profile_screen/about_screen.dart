@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../widgets/loader_widget.dart';
 import '../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

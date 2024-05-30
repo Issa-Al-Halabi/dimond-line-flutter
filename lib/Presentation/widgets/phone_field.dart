@@ -79,11 +79,8 @@
 
 
 
-import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:intl_phone_field/phone_number.dart';
 import '../../constants.dart';
 
 class PhoneField extends StatefulWidget {

@@ -259,6 +259,7 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
 
   @override
   Widget build(BuildContext context) {
+    print('%%%%%%%%%%%%%%%%%%%%');
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
@@ -629,9 +630,7 @@ class _OutsideCityDriverTripsState extends State<OutsideCityDriverTrips> {
                                                                 .dropLatitude,
                                                             tripsList[index]
                                                                 .dropLongitude,
-                                                            tripsList[index]
-                                                                .profileImage
-                                                                .toString(),
+                                                            tripsList[index].profileImage.toString() ,
                                                             tripsList[index]
                                                                 .hasExpense
                                                                 .toString(),

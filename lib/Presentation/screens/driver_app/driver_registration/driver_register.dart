@@ -1,5 +1,4 @@
 import 'dart:convert';
-// import 'dart:html';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -25,7 +24,6 @@ import '../../../Widgets/text.dart';
 import '../../../widgets/container_with_textfield.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../user_app/user_registration/phone_verification.dart';
-import '../driver_main_application/driver_main_screen/driver_dashboard.dart';
 
 class RegistrationDriver extends StatefulWidget {
   const RegistrationDriver({Key? key}) : super(key: key);
@@ -898,7 +896,7 @@ class _MyDialogState extends State<alert> {
         color: primaryBlue,
       )),
       content: Scrollbar(
-        isAlwaysShown: true,
+        // isAlwaysShown: true,
         showTrackOnHover: true,
         interactive: true,
         child: Container(

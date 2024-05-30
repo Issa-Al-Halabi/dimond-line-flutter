@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../Data/network/requests.dart';
 import '../../../../../constants.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import '../../../../../main.dart';
 import '../../../../Functions/helper.dart';
 import '../../user_registration/are_you.dart';
 import '../../user_registration/sign_in_sign_up.dart';

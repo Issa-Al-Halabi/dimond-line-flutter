@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:diamond_line/Data/Models/Driver_Models/driver_trips_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/email_login_model.dart';
@@ -24,6 +25,7 @@ import 'package:diamond_line/Data/Models/User_Models/update_profile_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_email_model.dart';
 import 'package:diamond_line/Data/Models/User_Models/verify_otp_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
@@ -947,7 +949,9 @@ class AppRequests {
         });
     print(response.body);
     if (response.statusCode == 200) {
-      print(response.statusCode.toString() + response.body);
+      print('========================================');
+      debugPrint( (FilterVechileModel.fromJson(json.decode(response.body)).data!.length.toString()));
+      print('========================================');
       print("fetchServices status 200");
       return FilterVechileModel.fromJson(json.decode(response.body));
     } else {

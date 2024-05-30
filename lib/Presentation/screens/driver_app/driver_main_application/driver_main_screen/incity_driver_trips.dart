@@ -1,8 +1,8 @@
 import 'dart:typed_data';
-
+import 'package:diamond_line/Presentation/Functions/helper.dart';
+import 'package:diamond_line/Presentation/widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
-import '../../../../widgets/loader_widget.dart';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/Driver_Provider/driver_trips_provider.dart';
@@ -10,14 +10,13 @@ import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_information.dart';
 import 'package:diamond_line/Presentation/widgets/shimmer_widget.dart';
 import 'package:diamond_line/constants.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_screenutil/src/size_extension.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../Functions/helper.dart';
 
 String? userIdForTrip = '';
 
@@ -35,10 +34,11 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
   late SharedPreferences prefs;
   String deviceNumber = '';
   int deviceNumb = 0;
-  CameraPosition? _kGooglePlex;
-  GoogleMapController? gmc;
+
+  // CameraPosition? _kGooglePlex;
   late Position cl;
   bool isUpdate = false;
+  bool isLoading = false;
   int length = 0;
   bool isGetTrips = false;
   List idList = [];
@@ -54,7 +54,7 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
   List requestTypeList = [];
   List timeList = [];
   List dateList = [];
-  late List tripsList;
+  List tripsList = [];
   String idTrip = '';
   String pickupAddTrip = '';
   String destAddrTrip = '';
@@ -69,11 +69,17 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
   String time = '';
   String date = '';
   late final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  Set<Marker> myMarker = {};
+  late MapController controller;
 
   @override
   void initState() {
     _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+    controller = MapController.withUserPosition(
+      trackUserLocation: UserTrackingOption(
+        enableTracking: true,
+        unFollowUser: false,
+      ),
+    );
     getPer();
     initShared();
     getLatAndLong();
@@ -82,6 +88,7 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
 
   @override
   void dispose() {
+    controller.dispose();
     super.dispose();
   }
 
@@ -95,9 +102,9 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
 
   Future<void> init2() async {
     tripsList = [];
-    var creat =
+    var create =
         await Provider.of<GetDriverTripsProvider>(context, listen: false);
-    getDriverTripsApi(creat);
+    getDriverTripsApi(create);
   }
 
   Future getPer() async {
@@ -122,12 +129,17 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
 
   /////////////////////////get lat long api //////////////////////////////////
   Future<void> getLatAndLong() async {
-    cl = await Geolocator.getCurrentPosition().then((value) => value);
+    print('###');
+    cl = await Geolocator.getCurrentPosition();
+    print('222');
+
     lat = cl.latitude;
     lng = cl.longitude;
-    _kGooglePlex = CameraPosition(
-      target: LatLng(lat, lng),
-      zoom: 14,
+    controller = MapController(
+      initPosition: GeoPoint(
+        latitude: lat,
+        longitude: lng,
+      ),
     );
     if (lat != 0.0 || lng != 0.0) {
       getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
@@ -135,7 +147,6 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
       print('no lat or lng');
       getLatAndLong();
     }
-    initMainMarker();
     if (mounted) {
       setState(() {});
     }
@@ -164,6 +175,7 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
 
   /////////////////////////// get driver trips inside city api ///////////////////////////
   Future<void> getDriverTripsApi(GetDriverTripsProvider creat) async {
+    isLoading = true;
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
@@ -209,35 +221,39 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
     }
   }
 
-  Future<Uint8List> getMarker() async {
-    ByteData byteData = await DefaultAssetBundle.of(context).load(carIcon);
-    return byteData.buffer.asUint8List();
-  }
-
   void initMainMarker() async {
-    Uint8List imageData = await getMarker();
-    myMarker.add(Marker(
-        markerId: MarkerId('source'),
-        position: LatLng(lat, lng),
-        infoWindow: InfoWindow(
-            title: 'you are here'.tr(),
-            onTap: () {
-              print('marker info tab');
-            }),
-        icon: BitmapDescriptor.fromBytes(imageData)));
+    controller.addMarker(
+      GeoPoint(latitude: lat, longitude: lng),
+      markerIcon: MarkerIcon(
+        icon: Icon(
+          Icons.location_on_rounded,
+        ),
+      ),
+    );
+    // myMarker.add(Marker(
+    //     markerId: MarkerId('source'),
+    //     position: LatLng(lat, lng),
+    //     infoWindow: InfoWindow(
+    //         title: 'you are here'.tr(),
+    //         onTap: () {
+    //           print('marker info tab');
+    //         }),
+    //     icon: BitmapDescriptor.fromBytes(imageData)));
   }
 
   void initMarker() async {
-    print('ggggggggggmmmmmmmmmmmllllllllll');
     for (int i = 0; i < tripsList.length; i++) {
-      myMarker.add(Marker(
-        markerId: MarkerId('$i'),
-        position: LatLng(
-          double.parse(tripsList[i].pickupLatitude),
-          double.parse(tripsList[i].pickupLongitude),
+      controller.addMarker(
+        GeoPoint(
+          latitude: double.parse(tripsList[i].pickupLatitude),
+          longitude: double.parse(tripsList[i].pickupLongitude),
         ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-      ));
+        markerIcon: MarkerIcon(
+          icon: Icon(
+            Icons.navigation,
+          ),
+        ),
+      );
     }
   }
 
@@ -360,7 +376,7 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
-        body: _kGooglePlex == null
+        body: controller == false
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -423,17 +439,35 @@ class _InsideCityDriverTripsState extends State<InsideCityDriverTrips> {
                                                   ],
                                                   color: backgroundColor,
                                                 ),
-                                                child: GoogleMap(
-                                                  mapType: MapType.normal,
-                                                  markers: myMarker,
-                                                  initialCameraPosition:
-                                                      _kGooglePlex!,
-                                                  onMapCreated:
-                                                      (GoogleMapController
-                                                          controller) {
-                                                    gmc = controller;
-                                                  },
-                                                  onTap: (latlng) {},
+                                                child: OSMFlutter(
+                                                  controller: controller,
+                                                  osmOption: OSMOption(
+                                                    enableRotationByGesture:
+                                                        true,
+                                                    staticPoints: [
+                                                      StaticPositionGeoPoint(
+                                                        "home",
+                                                        MarkerIcon(
+                                                          assetMarker:
+                                                              AssetMarker(
+                                                            scaleAssetImage: 2,
+                                                            image: AssetImage(
+                                                              "assets/images/caricon.png",
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        [
+                                                          GeoPoint(
+                                                            latitude: lat,
+                                                            longitude: lng,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                    zoomOption: ZoomOption(
+                                                      initZoom: 17,
+                                                    ),
+                                                  ),
                                                 ),
                                               )
                                             : shimmer(context),

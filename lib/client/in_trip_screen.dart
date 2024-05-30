@@ -4,12 +4,16 @@ import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
+import 'package:diamond_line/Presentation/Functions/helper.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/inside_trip_delayed.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_wait_for_payment.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/user_dashboard.dart';
+import 'package:diamond_line/Presentation/widgets/container_widget.dart';
+import 'package:diamond_line/Presentation/widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,44 +26,42 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/io.dart';
 import '../../../../../../Data/Models/User_Models/SocketResponse.dart';
 import '../../../../../../Data/network/requests.dart';
-import '../../../../../Functions/helper.dart';
-import '../../../../../widgets/container_widget.dart';
-import '../../../../../widgets/loader_widget.dart';
+
 import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart';
-import '../user_dashboard.dart';
-import 'inside_trip_delayed.dart';
 
-class InsideTripMomentScreen extends StatefulWidget {
-  InsideTripMomentScreen(
-      {required this.isSecondTrip,
-      required this.isAcceptTrip,
-      required this.momentTripModel,
-      required this.delayTripModel,
-      Key? key})
-      : super(key: key);
+class InTripScreen extends StatefulWidget {
+  InTripScreen({
+    required this.tripId,
+    required this.pickupLatitude,
+    required this.pickupLongitude,
+    required this.dropLatitude,
+    required this.dropLongitude,
+    Key? key,
+  }) : super(key: key);
 
-  bool isSecondTrip;
-  bool isAcceptTrip;
-  SocketResponse momentTripModel = SocketResponse();
-  SocketResponse delayTripModel = SocketResponse();
+  String tripId;
+  String pickupLatitude, pickupLongitude, dropLatitude, dropLongitude;
 
   @override
-  State<InsideTripMomentScreen> createState() => _InsideTripMomentScreenState();
+  State<InTripScreen> createState() => _InTripScreenState();
 }
 
-class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
+class _InTripScreenState extends State<InTripScreen> {
   CameraPosition? _kGooglePlex;
   double latRoute = 0.0;
   double lngRoute = 0.0;
   double course = 0.0;
-  String statusDelayed = '';
   GoogleMapController? gmc;
   bool _isNetworkAvail = true;
   String CUR_USERID = '';
   DateTime timeback = DateTime.now();
-  String id = '';
+  String status = '';
+
+  // String statusDelayed = '';
+  // String id = '';
+  int id = 0;
   List<LatLng> polylineCoordinates = [];
   List<LatLng> polylineCoordinates2 = [];
   List<LatLng> polylineCoordinates3 = [];
@@ -69,28 +71,38 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
   Circle circle = Circle(
     circleId: CircleId("car"),
   );
-
-  bool isStartTrip = false;
+  int deviceNumb = 0;
+  String driverFname = '';
+  String driverLname = '';
+  String driverImage = '';
+  String driverPhone = '';
+  String carModel = '';
+  String carColor = '';
   String finalCost = '';
+  String vehicelImage = '';
+  bool isAcceptTrip = false;
+  bool isStartTrip = false;
+  bool isSecondTrip = false;
+  int counter = 180; // Initial counter value in seconds
   bool isTrackDriverDelayTrip = false;
+
+  SocketResponse delayTripModel = SocketResponse();
+  Map<String, dynamic> data = Map();
 
   IOWebSocketChannel? _channel;
 
   StreamController<Map<String, dynamic>> eventStreamController =
       StreamController<Map<String, dynamic>>.broadcast();
 
-  List<GeoPoint> latLngList = [];
-  ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
-  late MapController controller;
-  bool isLoading = false;
+  // PusherChannelsFlutter pusher = PusherChannelsFlutter.getInstance();
 
   @override
   void initState() {
     Provider.of<InTripProvider>(context, listen: false).tripStatus = "";
-
     getUserId();
     // getCookie();
     // connectSocket();
+    markerOfMainWay();
     getLatAndLong();
     getPolyPoints();
     super.initState();
@@ -103,15 +115,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
   }
 
   Future<void> getLatAndLong() async {
-    controller = await MapController(
-      initPosition: GeoPoint(
-          latitude: double.parse(widget.momentTripModel.pickupLatitude!),
-          longitude: double.parse(widget.momentTripModel.pickupLongitude!)),
+    _kGooglePlex = CameraPosition(
+      target: LatLng(double.parse(widget.pickupLatitude),
+          double.parse(widget.pickupLongitude)),
+      zoom: 10,
     );
-    isLoading = true;
-    tripPolyline(double.parse(widget.momentTripModel.pickupLatitude!),double.parse(widget.momentTripModel.pickupLongitude!));
     setState(() {});
-
   }
 
   Future<void> getCookie() async {
@@ -134,75 +143,46 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     return byteData.buffer.asUint8List();
   }
 
-  void tripPolyline(
-    double pickupLatitude,
-    double pickupLongitude,
-  ) async {
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    if (lastGeoPoint.value != null) {
-      controller.changeLocationMarker(
-        oldLocation: lastGeoPoint.value!,
-        newLocation: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-      );
-    } else {
-      controller.addMarker(
-        GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-        markerIcon: MarkerIcon(
-          assetMarker:
-          AssetMarker(
-            scaleAssetImage: 2,
-            image: AssetImage(
-              "assets/images/caricon.png",
-            ),
-          ),
-        ),
-      );
+  void tripPolyline(double pickupLatitude, double pickupLongitude, double dropLatitude, double dropLongitude) async {
+    polylineCoordinates.clear();
+    Uint8List imageData = await getMarker();
+    marker = Marker(
+        markerId: MarkerId("home"),
+        // position: latLngList.last,
+        position: LatLng(pickupLatitude, pickupLongitude),
+        rotation: course,
+        draggable: false,
+        zIndex: 2,
+        flat: true,
+        anchor: Offset(0.5, 0.5),
+        icon: BitmapDescriptor.fromBytes(imageData),
+    );
+    circle = Circle(
+        circleId: CircleId("car"),
+        radius: 10,
+        zIndex: 1,
+        strokeColor: Colors.grey,
+        // center: latLngList.last,
+        center: LatLng(pickupLatitude, pickupLongitude),
+        fillColor: Colors.grey.withAlpha(70));
+    polylineCoordinates2.clear();
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      APIKEY,
+      PointLatLng(pickupLatitude, pickupLongitude),
+      PointLatLng(dropLatitude, dropLongitude),
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates2.add(LatLng(point.latitude, point.longitude));
+      });
     }
-    lastGeoPoint.value !=
-        GeoPoint(latitude: pickupLongitude, longitude: pickupLatitude);
-     controller.drawCircle(
-      CircleOSM(
+    if (mounted) {
+      setState(() {});
+    }
 
-        key: "car",
-        centerPoint: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-
-        radius: 50,
-        color: Colors.blue,
-        strokeWidth: 0.3,
-      ),
-    );
-  }
-
-  /// Draw main Road
-  void roadActionBt() async {
-    RoadInfo roadInfo = await controller.drawRoad(
-      GeoPoint(
-          latitude: double.parse(widget.momentTripModel.pickupLatitude!),
-          longitude: double.parse(widget.momentTripModel.pickupLongitude!)),
-      GeoPoint(
-        latitude: double.parse(widget.momentTripModel.dropLatitude!),
-        longitude: double.parse(widget.momentTripModel.dropLongitude!),
-      ),
-      roadType: RoadType.car,
-      roadOption: RoadOption(
-        roadWidth: 10,
-        roadColor: Colors.blue,
-        zoomInto: true,
-      ),
-    );
-
-    print("${roadInfo.distance}km");
-    print("${roadInfo.duration}sec");
-    print("${roadInfo.instructions}");
+    // delete from marker
+    marker2 = Marker(markerId: MarkerId("from"));
   }
 
   /// رسم المسار الاساسي
@@ -211,10 +191,10 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       APIKEY,
-      PointLatLng(double.parse(widget.momentTripModel.pickupLatitude!),
-          double.parse(widget.momentTripModel.pickupLongitude!)),
-      PointLatLng(double.parse(widget.momentTripModel.dropLatitude!),
-          double.parse(widget.momentTripModel.dropLongitude!)),
+      PointLatLng(double.parse(widget.pickupLatitude),
+          double.parse(widget.pickupLongitude)),
+      PointLatLng(double.parse(widget.dropLatitude),
+          double.parse(widget.dropLongitude)),
     );
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
@@ -226,8 +206,41 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     }
   }
 
+  void markerOfMainWay() {
+    marker2 = Marker(
+      markerId: MarkerId("from"),
+      position: LatLng(double.parse(widget.pickupLatitude),
+          double.parse(widget.pickupLongitude)),
+      rotation: 2,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      infoWindow: InfoWindow(
+        title: 'from'.tr(),
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
+
+    marker3 = Marker(
+      markerId: MarkerId("to"),
+      position: LatLng(double.parse(widget.dropLatitude),
+          double.parse(widget.dropLongitude)),
+      rotation: 2,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      infoWindow: InfoWindow(
+        title: 'to'.tr(),
+      ),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
+  }
+
   ////////////////// cancel trip api //////////////////////////
   Future<void> cancelTrip(String trip_id) async {
+    print(trip_id);
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       Loader.show(context, progressIndicator: LoaderWidget());
@@ -235,14 +248,18 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
       data = json.decode(data);
       if (data["error"] == false) {
         Loader.hide();
-        if (widget.isSecondTrip == true) {
+        if (isSecondTrip == true) {
           navigateToSecondTrip();
         } else {
           navigateToDashboard();
         }
       } else {
         Loader.hide();
-        setSnackbar(data["message"].toString(), context);
+        try {
+          setSnackbar(data["message"].toString(), context);
+        } catch (e) {
+          print(e);
+        }
       }
     } else {
       setSnackbar("nointernet".tr(), context);
@@ -250,30 +267,80 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     }
   }
 
-  void navigateToDashboard() {
-    eventStreamController.close();
-    if (_channel != null) {
-      _channel!.sink.close();
-    }
-    // pusher.disconnect();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => UserDashboard()),
-    );
-  }
-
   void getUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CUR_USERID = prefs.getString('user_id') ?? '';
+    print('CUR_USERID');
+    print(CUR_USERID);
   }
 
-  dynamic onAuthorizer(String channelName, String socketId, dynamic options) {
-    return {
-      "auth": "foo:bar",
-      "channel_data": '{"user_id": 1}',
-      "shared_secret": "foobar"
-    };
-  }
+  // void connectSocket() async {
+  //   try {
+  // await pusher.init(
+  //   apiKey: APIKEY_PUSHER,
+  //   cluster: CLUSTER_PUSHER,
+  //   onConnectionStateChange: onConnectionStateChange,
+  //   onError: onError,
+  //   onSubscriptionSucceeded: onSubscriptionSucceeded,
+  //   onEvent: onEvent,
+  //   onSubscriptionError: onSubscriptionError,
+  //   onDecryptionFailure: onDecryptionFailure,
+  //   onMemberAdded: onMemberAdded,
+  //   onMemberRemoved: onMemberRemoved,
+  //   onSubscriptionCount: onSubscriptionCount,
+  // );
+  // await pusher.subscribe(channelName: 'trip-status-$CUR_USERID');
+  // await pusher.connect();
+  //   } catch (e) {
+  //     log("ERROR: $e");
+  //   }
+  // }
+
+  // void onConnectionStateChange(dynamic currentState, dynamic previousState) {
+  //   log("Connection: $currentState in trip screen");
+  // }
+
+  // void onError(String message, int? code, dynamic e) {
+  //   log("onError: $message code: $code exception: $e");
+  // }
+
+  // void onEvent(PusherEvent event) {
+  //   log("onEvent in trip screen: $event");
+  //   if (event.data != {}) {
+  //     Map<String, dynamic> data = jsonDecode(event.data);
+  //     eventStreamController.sink.add(data);
+  //   }
+  // }
+
+  // void onSubscriptionSucceeded(String channelName, dynamic data) {
+  //   log("onSubscriptionSucceeded: $channelName data: $data");
+  //   PusherChannel? me = pusher.getChannel(channelName);
+  //   if (me != null) {
+  //     log("Me: ${me.me}");
+  //   } else {
+  //     log("Me: null null");
+  //   }
+  // }
+
+  // void onSubscriptionError(String message, dynamic e) {
+  //   log("onSubscriptionError: $message Exception: $e");
+  // }
+
+  // void onDecryptionFailure(String event, String reason) {
+  //   log("onDecryptionFailure: $event reason: $reason");
+  // }
+
+  // void onMemberAdded(String channelName, PusherMember member) {
+  //   log("onMemberAdded: $channelName user: $member");
+  // }
+
+  // void onMemberRemoved(String channelName, PusherMember member) {
+  //   log("onMemberRemoved: $channelName user: $member");
+  // }
+
+  // void onSubscriptionCount(String channelName, int subscriptionCount) {
+  //   log("onSubscriptionCount: $channelName subscriptionCount: $subscriptionCount");
+  // }
 
   bool navigate() {
     eventStreamController.close();
@@ -287,11 +354,102 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
         MaterialPageRoute(
             builder: (context) => TripWaitForPaymentUserScreen(
                   finalCost: finalCost,
-                  tripId: widget.momentTripModel.id.toString(),
+                  tripId: widget.tripId,
                 )),
       );
     });
     return true;
+  }
+
+  bool convertAccept() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        isAcceptTrip = true;
+        // print('teeeeeeeeeeeeeeeeeeeeeeeest accept');
+        // print(isAcceptTrip);
+      });
+    });
+    return true;
+  }
+
+  bool convertStart() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        isStartTrip = true;
+        // print('teeeeeeeeeeeeeeeeeeeeeeeest start');
+        // print(isStartTrip);
+      });
+    });
+    return true;
+  }
+
+  // bool convertSecondTrack() {
+  //   WidgetsBinding.instance?.addPostFrameCallback((_) {
+  //     setState(() {
+  //       isTrackDriverDelayTrip = !isTrackDriverDelayTrip;
+  //       isSecondTrip = !isSecondTrip;
+  //       print(isTrackDriverDelayTrip);
+  //       print(isSecondTrip);
+  //     });
+  //   });
+  //   return true;
+  // }
+
+  bool convertSecondTrack() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        isTrackDriverDelayTrip = true;
+        isSecondTrip = true;
+        // print(isTrackDriverDelayTrip);
+        // print(isSecondTrip);
+      });
+    });
+    return true;
+  }
+
+  bool convertSecondTrackFalse() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        isTrackDriverDelayTrip = false;
+        isSecondTrip = false;
+        print(isTrackDriverDelayTrip);
+        print(isSecondTrip);
+      });
+    });
+    return true;
+  }
+
+  // bool convertBoolean(bool myBoolean) {
+  //   WidgetsBinding.instance?.addPostFrameCallback((_) {
+  //     setState(() {
+  //       myBoolean = !myBoolean;
+  //       // print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh $myBoolean');
+  //     });
+  //   });
+  //   return true;
+  // }
+
+  bool convertId(int newId) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        id = newId;
+        print('id is: $id');
+        print(newId);
+      });
+    });
+    return true;
+  }
+
+  void navigateToDashboard() {
+    eventStreamController.close();
+    if (_channel != null) {
+      _channel!.sink.close();
+    }
+    // pusher.disconnect();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => UserDashboard()),
+    );
   }
 
   bool navigateDash() {
@@ -310,48 +468,6 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     return true;
   }
 
-  bool convertAccept() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      setState(() {
-        widget.isAcceptTrip = true;
-      });
-    });
-    return true;
-  }
-
-  bool convertStart() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      setState(() {
-        isStartTrip = true;
-      });
-    });
-    return true;
-  }
-
-  bool convertSecondTrack() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      setState(() {
-        isTrackDriverDelayTrip = true;
-        widget.isSecondTrip = true;
-        // print(isTrackDriverDelayTrip);
-        // print(isSecondTrip);
-      });
-    });
-    return true;
-  }
-
-  bool convertSecondTrackFalse() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      setState(() {
-        isTrackDriverDelayTrip = false;
-        widget.isSecondTrip = false;
-        // print(isTrackDriverDelayTrip);
-        // print(widget.isSecondTrip);
-      });
-    });
-    return true;
-  }
-
   void navigateToSecondTrip() {
     eventStreamController.close();
     if (_channel != null) {
@@ -361,17 +477,15 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => InsideTripDelayedScreen(
-          delayTripModel: widget.delayTripModel,
-          isAcceptTrip: isTrackDriverDelayTrip,
-        ),
-      ),
+          builder: (context) => InsideTripDelayedScreen(
+                delayTripModel: delayTripModel,
+                isAcceptTrip: isTrackDriverDelayTrip,
+              )),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    print('7777777');
     return WillPopScope(
       onWillPop: () async {
         if (Loader.isShown == true) {
@@ -398,7 +512,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
         }
       },
       child: Scaffold(
-        body: isLoading == false
+        body: _kGooglePlex == null
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -414,35 +528,41 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                     children: [
                       Stack(
                         children: [
-                          widget.isAcceptTrip == true && _channel != null
+                          isAcceptTrip == true && _channel != null
                               ? StreamBuilder(
                                   stream: _channel!.stream,
                                   builder: (context, snapshot) {
-                                    print(snapshot.data);
-                                    print(snapshot.connectionState);
                                     if (snapshot.hasData == true) {
                                       var data =
                                           json.decode(snapshot.data.toString());
-                                      print('--------------------------------');
-                                      print(data);
+                                      // print('--------------------------------');
+                                      // print(data);
                                       if (data['positions'] != null) {
+                                        //TODO
                                         if (data['positions'][0]['deviceId'] ==
-                                            widget.momentTripModel
-                                                .vehicelDeviceNumber) {
-                                          print(
-                                              'course me ${data['positions'][0]['course']}');
+                                            deviceNumb) {
+                                          // if (data['positions'][0]['deviceId'] ==
+                                          //     204) {
+                                          // print(
+                                          //     'course me ${data['positions'][0]['course']}');
                                           latRoute =
                                               data['positions'][0]['latitude'];
                                           lngRoute =
                                               data['positions'][0]['longitude'];
                                           course =
                                               data['positions'][0]['course'];
-                                          isStartTrip == true
-                                              // ? updateMainPolyline(
-                                              ? tripPolyline(
-                                                  latRoute,
-                                                  lngRoute,
-                                                )
+                                          isStartTrip == true ? tripPolyline(
+                                                  latRoute, lngRoute,
+                                                  double.parse(widget.dropLatitude),
+                                                  double.parse(widget.dropLongitude),
+                                          )
+                                              // : isAcceptTrip == true ?
+                                              // carPolyline(
+                                              //     latRoute,
+                                              //     lngRoute,
+                                              //     double.parse(widget.pickupLatitude),
+                                              //     double.parse(widget.pickupLongitude)
+                                              // )
                                               : null;
                                         }
                                       }
@@ -468,62 +588,44 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                   topRight: Radius.circular(20)),
                               color: backgroundColor,
                             ),
-                            child: OSMFlutter(
-                              onMapIsReady: (p0) {
-                                roadActionBt();
-                                tripPolyline(double.parse(widget.momentTripModel.pickupLatitude!),double.parse(widget.momentTripModel.pickupLongitude!));
-
-                              },
-                              controller: controller,
-                              osmOption: OSMOption(
-                                zoomOption: ZoomOption(
-                                  initZoom: 14,
+                            child: GoogleMap(
+                              // markers: myMarker,
+                              markers: Set.of((marker3 != null)
+                                  ? [marker, marker2, marker3]
+                                  : []),
+                              polylines: {
+                                Polyline(
+                                  polylineId: PolylineId('route'),
+                                  points: polylineCoordinates,
+                                  color: primaryBlue,
+                                  width: 5,
                                 ),
-                                staticPoints: [
-                                  StaticPositionGeoPoint(
-                                    "from",
-                                    MarkerIcon(
-                                      icon: Icon(
-                                        Icons.location_on_rounded,
-                                        color: Colors.green,
-                                        size: 32,
-                                      ),
-                                    ),
-                                    [
-                                      GeoPoint(
-                                        latitude: double.parse(widget
-                                            .momentTripModel.pickupLatitude!),
-                                        longitude: double.parse(widget
-                                            .momentTripModel.pickupLongitude!),
-                                      ),
-                                    ],
-                                  ),
-                                  StaticPositionGeoPoint(
-                                    "to",
-                                    MarkerIcon(
-                                      icon: Icon(
-                                        Icons.location_on_rounded,
-                                        color: Colors.green,
-                                        size: 32,
-                                      ),
-                                    ),
-                                    [
-                                      GeoPoint(
-                                        latitude: double.parse(widget
-                                            .momentTripModel.dropLatitude!),
-                                        longitude: double.parse(widget
-                                            .momentTripModel.dropLongitude!),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                Polyline(
+                                  polylineId: PolylineId('track'),
+                                  points: polylineCoordinates2,
+                                  color: primaryBlue,
+                                  // color: Colors.red,
+                                  width: 5,
+                                ),
+                                Polyline(
+                                  polylineId: PolylineId('car'),
+                                  points: polylineCoordinates3,
+                                  color: Colors.orange,
+                                  width: 5,
+                                ),
+                              },
+                              mapType: MapType.normal,
+                              initialCameraPosition: _kGooglePlex!,
+                              onMapCreated: (GoogleMapController controller) {
+                                gmc = controller;
+                              },
+                              onTap: (latlng) {},
                             ),
                           ),
                           // Positioned(
                           //   top: 4.h,
                           //   right: 1.w,
-                          //   child: widget.isSecondTrip == true
+                          //   child: isSecondTrip
                           //       ? InkWell(
                           //           child: Container(
                           //               width: 50,
@@ -559,60 +661,58 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                               if (provider.tripStatus != "") {
                                 Map<String, dynamic> data = provider.tripData;
                                 int id = int.parse(data['id']);
+                                print(
+                                    "==========================================");
                                 print(data);
-                                // print(data);
-                                // if(id.toString() == int.parse(widget.momentTripModel.id)){
-                                if (id.toString() ==
-                                    widget.momentTripModel.id.toString()) {
-                                  print('xxxxxxxxxxxxxxxxxxxxxx');
-                                  //   setState(() {
-                                  widget.momentTripModel.status =
-                                      data['status'];
-                                  // print(widget.momentTripModel.status);
-                                  if (widget.momentTripModel.status ==
-                                      'accepted') {
+                                print(data['status']);
+                                print(widget.tripId);
+                                print(id);
+                                print(id.toString() == widget.tripId);
+                                print(
+                                    "==========================================");
+                                // setState(() {
+                                //   id = data['data']['id'];
+                                //   print('id is: $id');
+                                //   print(data['data']['id']);
+                                // });
+                                // convertId(data['data']['id']);
+
+                                if (id.toString() == widget.tripId) {
+                                  status = data['status'];
+                                  // print('ids equal');
+                                  if (status == 'accepted') {
                                     convertAccept();
-                                    // convertBoolean(widget.isAcceptTrip);
-                                    widget.momentTripModel.vehicelDeviceNumber =
-                                        data['vehicel_device_number'];
-                                    widget.momentTripModel.driverFirstName =
-                                        data['driver_first_name'];
-                                    widget.momentTripModel.driverLastName =
-                                        data['driver_last_name'];
-                                    widget.momentTripModel.driverProfileImage =
-                                        data['driver_profile_image'];
-                                    widget.momentTripModel.driverPhone =
-                                        data['driver_phone'];
-                                    widget.momentTripModel.vehicelCarModel =
-                                        data['vehicel_car_model'];
-                                    widget.momentTripModel.vehicelColor =
-                                        data['vehicel_color'];
-                                    widget.momentTripModel.vehicelImage =
-                                        data['vehicel_image'];
+                                    // convertBoolean(isAcceptTrip);
+                                    deviceNumb = int.parse(
+                                        data['vehicel_device_number']);
+                                    driverFname = data['driver_first_name'];
+                                    driverLname = data['driver_last_name'];
+                                    driverImage = data['driver_profile_image'];
+                                    driverPhone = data['driver_phone'];
+                                    carModel = data['vehicel_car_model'];
+                                    carColor = data['vehicel_color'];
+                                    vehicelImage = data['vehicel_image'];
                                   }
-                                  if (widget.momentTripModel.status ==
-                                      'started') {
-                                    // isStartTrip = true;
+                                  if (status == 'started') {
                                     convertStart();
                                     // convertBoolean(isStartTrip);
                                   }
-                                  if (widget.momentTripModel.status ==
-                                      'ended') {
-                                    finalCost = data['cost'];
-                                    print(finalCost);
-                                    navigate();
-                                  }
-                                  if (widget.momentTripModel.status ==
-                                      'canceld') {
-                                    print('your trip didnt accept');
-                                    navigateDash();
-                                  }
-                                  if (widget.momentTripModel.status ==
-                                      'wait for payment') {
+                                  if (status == 'wait for payment') {
                                     finalCost = data['cost'];
                                     // print(finalCost);
                                     provider.reset();
                                     navigate();
+                                  }
+                                  if (status == 'ended') {
+                                    finalCost = data['cost'];
+                                    // print(finalCost);
+                                    provider.reset();
+                                    navigate();
+                                  }
+                                  if (status == 'canceld') {
+                                    // print('your trip didnt accept');
+                                    provider.reset();
+                                    navigateDash();
                                   }
                                 } else {
                                   print('ttttttttttttt');
@@ -621,192 +721,153 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                   print(statusDelayed);
                                   print(data['id']);
                                 }
+                                print("status:" + status);
                                 return Row(
                                   children: [
-                                    widget.momentTripModel.status == 'accepted'
+                                    status == 'accepted'
                                         ? AcceptedWidget()
-                                        : widget.momentTripModel.status ==
-                                                'arrived'
+                                        : status == 'arrived'
                                             ? ArrivedWidget()
-                                            : widget.momentTripModel.status ==
-                                                    'started'
+                                            : status == 'started'
                                                 ? StartedWidget()
                                                 : Text('')
                                   ],
                                 );
                               } else {
-                                return Row(
-                                  children: [
-                                    widget.momentTripModel.status == 'accepted'
-                                        ? AcceptedWidget()
-                                        : widget.momentTripModel.status ==
-                                                'arrived'
-                                            ? ArrivedWidget()
-                                            : widget.momentTripModel.status ==
-                                                    'started'
-                                                ? StartedWidget()
-                                                : PendingWidget()
-                                  ],
-                                );
+                                return PendingWidget();
                               }
                             }),
-                          ),
 
-                          //  StreamBuilder<Map<String, dynamic>>(
-                          //   stream: eventStreamController.stream,
-                          //   builder: (context, snapshot) {
-                          //     if (snapshot.hasData) {
-                          //       Map<String, dynamic> data = snapshot.data!;
-                          //       print('**************************');
-                          //       print(data);
-                          //       // print(data);
-                          //       int id = data['data']['id'];
-                          //       // if(id.toString() == int.parse(widget.momentTripModel.id)){
-                          //       if (id.toString() ==
-                          //           widget.momentTripModel.id.toString()) {
-                          //         print('xxxxxxxxxxxxxxxxxxxxxx');
-                          //         //   setState(() {
-                          //         widget.momentTripModel.status =
-                          //             data['data']['status'];
-                          //         // print(widget.momentTripModel.status);
-                          //         if (widget.momentTripModel.status ==
-                          //             'accepted') {
-                          //           convertAccept();
-                          //           // convertBoolean(widget.isAcceptTrip);
-                          //           widget.momentTripModel
-                          //                   .vehicelDeviceNumber =
-                          //               data['data']
-                          //                   ['vehicel_device_number'];
-                          //           widget.momentTripModel.driverFirstName =
-                          //               data['data']['driver_first_name'];
-                          //           widget.momentTripModel.driverLastName =
-                          //               data['data']['driver_last_name'];
-                          //           widget.momentTripModel
-                          //                   .driverProfileImage =
-                          //               data['data']
-                          //                   ['driver_profile_image'];
-                          //           widget.momentTripModel.driverPhone =
-                          //               data['data']['driver_phone'];
-                          //           widget.momentTripModel.vehicelCarModel =
-                          //               data['data']['vehicel_car_model'];
-                          //           widget.momentTripModel.vehicelColor =
-                          //               data['data']['vehicel_color'];
-                          //           widget.momentTripModel.vehicelImage =
-                          //               data['data']['vehicel_image'];
-                          //         }
-                          //         if (widget.momentTripModel.status ==
-                          //             'started') {
-                          //           // isStartTrip = true;
-                          //           convertStart();
-                          //           // convertBoolean(isStartTrip);
-                          //         }
-                          //         if (widget.momentTripModel.status ==
-                          //             'ended') {
-                          //           finalCost = data['data']['cost'];
-                          //           print(finalCost);
-                          //           navigate();
-                          //         }
-                          //         if (widget.momentTripModel.status ==
-                          //             'canceld') {
-                          //           print('your trip didnt accept');
-                          //           navigateDash();
-                          //         }
-                          //       } else {
-                          //         print('ttttttttttttt');
-                          //         print(data);
-                          //         String statusDelayed =
-                          //             data['data']['status'];
-                          //         print(statusDelayed);
-                          //         print(data['data']['id']);
-                          //       }
+                            //  StreamBuilder<Map<String, dynamic>>(
+                            //   stream: eventStreamController.stream,
+                            //   builder: (context, snapshot) {
+                            //     if (snapshot.hasData) {
+                            //       // Map<String, dynamic> data = snapshot.data!;
+                            //       data = snapshot.data!;
+                            //       int id = data['data']['id'];
+                            //       // setState(() {
+                            //       //   id = data['data']['id'];
+                            //       //   print('id is: $id');
+                            //       //   print(data['data']['id']);
+                            //       // });
+                            //       // convertId(data['data']['id']);
 
-                          //       // else {
-                          //       //   print('vvvvvvvvvvvvvvvvvvvvvvvv');
-                          //       //
-                          //       //   statusDelayed =  data['data']['status'];
-                          //       //   print('this trip $id is ${statusDelayed}');
-                          //       //   if (statusDelayed != 'pending' && statusDelayed != 'accepted') {
-                          //       //     widget.delayTripModel = SocketResponse();
-                          //       //     convertSecondTrack();
-                          //       //     // convertBoolean(isTrackDriverDelayTrip);
-                          //       //     // convertBoolean(widget.isSecondTrip);
-                          //       //     widget.delayTripModel.driverFirstName =
-                          //       //         data['data']['driver_first_name'];
-                          //       //     widget.delayTripModel.driverLastName =
-                          //       //         data['data']['driver_last_name'];
-                          //       //     widget.delayTripModel
-                          //       //             .driverProfileImage =
-                          //       //         data['data']
-                          //       //             ['driver_profile_image'];
-                          //       //     widget.delayTripModel.driverPhone =
-                          //       //         data['data']['driver_phone'];
-                          //       //
-                          //       //     widget.delayTripModel
-                          //       //             .vehicelDeviceNumber =
-                          //       //         data['data']
-                          //       //             ['vehicel_device_number'];
-                          //       //     widget.delayTripModel.vehicelCarModel =
-                          //       //         data['data']['vehicel_car_model'];
-                          //       //     widget.delayTripModel.vehicelColor =
-                          //       //         data['data']['vehicel_color'];
-                          //       //     widget.delayTripModel.vehicelImage =
-                          //       //         data['data']['vehicel_image'];
-                          //       //
-                          //       //     widget.delayTripModel.pickupLatitude =
-                          //       //         data['data']['pickup_latitude'];
-                          //       //     widget.delayTripModel.pickupLongitude =
-                          //       //         data['data']['pickup_longitude'];
-                          //       //     widget.delayTripModel.dropLatitude =
-                          //       //         data['data']['drop_latitude'];
-                          //       //     widget.delayTripModel.dropLongitude =
-                          //       //         data['data']['drop_longitude'];
-                          //       //     widget.delayTripModel.id =
-                          //       //         data['data']['id'];
-                          //       //     widget.delayTripModel.status =
-                          //       //         data['data']['status'];
-                          //       //   } else if (statusDelayed == 'ended') {
-                          //       //     print(
-                          //       //         'endeeeeeeeeeeeeeeeeeeeeeeeeed');
-                          //       //     convertSecondTrackFalse();
-                          //       //     // convertBoolean(isTrackDriverDelayTrip);
-                          //       //     // convertBoolean(widget.isSecondTrip);
-                          //       //   }
-                          //       // }
+                            //       if (id.toString() == widget.tripId) {
+                            //         status = data['data']['status'];
+                            //         // print('ids equal');
+                            //         if (status == 'accepted') {
+                            //           convertAccept();
+                            //           // convertBoolean(isAcceptTrip);
+                            //           deviceNumb = data['data']
+                            //               ['vehicel_device_number'];
+                            //           driverFname =
+                            //               data['data']['driver_first_name'];
+                            //           driverLname =
+                            //               data['data']['driver_last_name'];
+                            //           driverImage = data['data']
+                            //               ['driver_profile_image'];
+                            //           driverPhone =
+                            //               data['data']['driver_phone'];
+                            //           carModel =
+                            //               data['data']['vehicel_car_model'];
+                            //           carColor =
+                            //               data['data']['vehicel_color'];
+                            //           vehicelImage =
+                            //               data['data']['vehicel_image'];
+                            //         }
+                            //         if (status == 'started') {
+                            //           convertStart();
+                            //           // convertBoolean(isStartTrip);
+                            //         }
+                            //         if (status == 'ended') {
+                            //           finalCost = data['data']['cost'];
+                            //           // print(finalCost);
+                            //           navigate();
+                            //         }
+                            //         if (status == 'canceld') {
+                            //           // print('your trip didnt accept');
+                            //           navigateDash();
+                            //         }
+                            //       } else {
+                            //         print('ttttttttttttt');
+                            //         print(data);
+                            //         String statusDelayed =
+                            //             data['data']['status'];
+                            //         print(statusDelayed);
+                            //         print(data['data']['id']);
+                            //       }
 
-                          //       return Row(
-                          //         children: [
-                          //           widget.momentTripModel.status ==
-                          //                   'accepted'
-                          //               ? AcceptedWidget()
-                          //               : widget.momentTripModel.status ==
-                          //                       'arrived'
-                          //                   ? ArrivedWidget()
-                          //                   : widget.momentTripModel
-                          //                               .status ==
-                          //                           'started'
-                          //                       ? StartedWidget()
-                          //                       : Text('')
-                          //         ],
-                          //       );
-                          //     } else {
-                          //       return Row(
-                          //         children: [
-                          //           widget.momentTripModel.status ==
-                          //                   'accepted'
-                          //               ? AcceptedWidget()
-                          //               : widget.momentTripModel.status ==
-                          //                       'arrived'
-                          //                   ? ArrivedWidget()
-                          //                   : widget.momentTripModel
-                          //                               .status ==
-                          //                           'started'
-                          //                       ? StartedWidget()
-                          //                       : PendingWidget()
-                          //         ],
-                          //       );
-                          //     }
-                          //   },
-                          // ))
+                            //       // TODO
+                            //       // else {
+                            //       //   // print(data);
+                            //       //   // print('actual second status ${data['data']['status']}');
+                            //       //   String statusDelayed = data['data']['status'];
+                            //       //   print('this trip $id is $statusDelayed');
+                            //       //   print(widget.tripId);
+                            //       //   if (statusDelayed != 'pending' && statusDelayed != 'accepted') {
+                            //       //     // print('not pending or accepted');
+                            //       //     convertSecondTrack();
+                            //       //     // print('second status $statusDelayed');
+                            //       //     // convertBoolean(isTrackDriverDelayTrip);
+                            //       //     // convertBoolean(isSecondTrip);
+                            //       //
+                            //       //     // delayTripModel = SocketResponse();
+                            //       //
+                            //       //
+                            //       //     delayTripModel.driverFirstName =
+                            //       //         data['data']['driver_first_name'];
+                            //       //     delayTripModel.driverLastName =
+                            //       //         data['data']['driver_last_name'];
+                            //       //     delayTripModel.driverProfileImage =
+                            //       //         data['data']
+                            //       //             ['driver_profile_image'];
+                            //       //     delayTripModel.driverPhone =
+                            //       //         data['data']['driver_phone'];
+                            //       //     delayTripModel.vehicelDeviceNumber =
+                            //       //         data['data']
+                            //       //             ['vehicel_device_number'];
+                            //       //     delayTripModel.vehicelCarModel =
+                            //       //         data['data']['vehicel_car_model'];
+                            //       //     delayTripModel.vehicelColor =
+                            //       //         data['data']['vehicel_color'];
+                            //       //     delayTripModel.vehicelImage =
+                            //       //         data['data']['vehicel_image'];
+                            //       //     delayTripModel.pickupLatitude =
+                            //       //         data['data']['pickup_latitude'];
+                            //       //     delayTripModel.pickupLongitude =
+                            //       //         data['data']['pickup_longitude'];
+                            //       //     delayTripModel.dropLatitude =
+                            //       //         data['data']['drop_latitude'];
+                            //       //     delayTripModel.dropLongitude =
+                            //       //         data['data']['drop_longitude'];
+                            //       //     delayTripModel.id = data['data']['id'];
+                            //       //     delayTripModel.status =
+                            //       //         data['data']['status'];
+                            //       //   } else if (statusDelayed == 'ended') {
+                            //       //     print('endeeeeeeeeeeeeeeeeeeeeeeeeed');
+                            //       //     convertSecondTrackFalse();
+                            //       //     // convertBoolean(isTrackDriverDelayTrip);
+                            //       //     // convertBoolean(isSecondTrip);
+                            //       //   }
+                            //       // }
+
+                            //       return Row(
+                            //         children: [
+                            //           status == 'accepted'
+                            //               ? AcceptedWidget()
+                            //               : status == 'arrived'
+                            //                   ? ArrivedWidget()
+                            //                   : status == 'started'
+                            //                       ? StartedWidget()
+                            //                       : Text('')
+                            //         ],
+                            //       );
+                            //     } else {
+                            //       return PendingWidget();
+                            //     }
+                            //   },
+                            // )
+                          )
                         ],
                       ),
                     ],
@@ -900,7 +961,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                   color: Colors.black,
                   fontWeight: FontWeight.w600),
               onPressed: () {
-                cancelTrip(widget.momentTripModel.id.toString());
+                cancelTrip(widget.tripId);
               },
             ),
           ),
@@ -948,15 +1009,13 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               myText(
-                  text: widget.momentTripModel.driverFirstName! +
-                      ' ' +
-                      widget.momentTripModel.driverLastName!,
+                  text: driverFname + ' ' + driverLname,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: Text(
-                  '${widget.momentTripModel.driverPhone}',
+                  '${driverPhone}',
                   style: TextStyle(
                     color: primaryBlue,
                     fontSize: 5.sp,
@@ -964,14 +1023,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                   ),
                 ),
                 onTap: () {
-                  launchUrl(Uri.parse(
-                      "tel://+963 ${widget.momentTripModel.driverPhone}"));
+                  launchUrl(Uri.parse("tel://+963 ${driverPhone}"));
                 },
               ),
               InkWell(
                   child: FadeInImage(
-                    image: NetworkImage(
-                        widget.momentTripModel.driverProfileImage.toString()),
+                    image: NetworkImage(driverImage.toString()),
                     height: 10.h,
                     width: 10.w,
                     fit: BoxFit.contain,
@@ -980,8 +1037,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                     placeholder: placeHolder(100),
                   ),
                   onTap: () {
-                    getDialog(
-                        widget.momentTripModel.driverProfileImage.toString());
+                    getDialog(driverImage.toString());
                   }),
             ],
           ),
@@ -989,19 +1045,19 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               myText(
-                  text: widget.momentTripModel.vehicelCarModel,
+                  // text: 'car color'.tr(),
+                  text: carModel,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               myText(
-                  text: widget.momentTripModel.vehicelColor,
+                  text: carColor,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: FadeInImage(
-                  image: NetworkImage(
-                      widget.momentTripModel.vehicelImage.toString()),
+                  image: NetworkImage(vehicelImage.toString()),
                   height: 10.h,
                   width: 10.w,
                   fit: BoxFit.contain,
@@ -1010,7 +1066,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                   placeholder: placeHolder(20),
                 ),
                 onTap: () {
-                  getDialog(widget.momentTripModel.vehicelImage.toString());
+                  getDialog(vehicelImage.toString());
                 },
               ),
             ],
@@ -1024,12 +1080,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                     "\n\n" +
                     "I with".tr() +
                     "\n"
-                        "${widget.momentTripModel.driverFirstName}"
+                        "${driverFname}"
                         "\t"
-                        "${widget.momentTripModel.driverLastName}\n"
-                        "${widget.momentTripModel.driverPhone}\n"
-                        "${widget.momentTripModel.vehicelCarModel}\n"
-                        "${widget.momentTripModel.vehicelColor}";
+                        "${driverLname}\n"
+                        "${driverPhone}\n"
+                        "${carModel}\n"
+                        "${carColor}";
                 Share.share(str);
                 print(str);
               }),
@@ -1092,9 +1148,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               myText(
-                  text: widget.momentTripModel.driverFirstName! +
-                      ' ' +
-                      widget.momentTripModel.driverLastName!,
+                  text: driverFname + ' ' + driverLname,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
@@ -1103,7 +1157,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
               ),
               InkWell(
                 child: Text(
-                  '${widget.momentTripModel.driverPhone}',
+                  '${driverPhone}',
                   style: TextStyle(
                     color: primaryBlue,
                     fontSize: 5.sp,
@@ -1111,14 +1165,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                   ),
                 ),
                 onTap: () {
-                  launchUrl(Uri.parse(
-                      "tel://+963 ${widget.momentTripModel.driverPhone}"));
+                  launchUrl(Uri.parse("tel://+963 ${driverPhone}"));
                 },
               ),
               InkWell(
                   child: FadeInImage(
-                    image: NetworkImage(
-                        widget.momentTripModel.driverProfileImage.toString()),
+                    image: NetworkImage(driverImage.toString()),
                     height: 10.h,
                     width: 10.w,
                     fit: BoxFit.contain,
@@ -1127,8 +1179,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                     placeholder: placeHolder(100),
                   ),
                   onTap: () {
-                    getDialog(
-                        widget.momentTripModel.driverProfileImage.toString());
+                    getDialog(driverImage.toString());
                   }),
             ],
           ),
@@ -1136,19 +1187,18 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               myText(
-                  text: widget.momentTripModel.vehicelCarModel,
+                  text: carModel,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               myText(
-                  text: widget.momentTripModel.vehicelColor,
+                  text: carColor,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: FadeInImage(
-                  image: NetworkImage(
-                      widget.momentTripModel.vehicelImage.toString()),
+                  image: NetworkImage(vehicelImage.toString()),
                   height: 10.h,
                   width: 10.w,
                   fit: BoxFit.contain,
@@ -1157,7 +1207,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                   placeholder: placeHolder(20),
                 ),
                 onTap: () {
-                  getDialog(widget.momentTripModel.vehicelImage.toString());
+                  getDialog(vehicelImage.toString());
                 },
               ),
             ],
@@ -1171,12 +1221,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                     "\n\n" +
                     "I with".tr() +
                     "\n"
-                        "${widget.momentTripModel.driverFirstName}"
+                        "${driverFname}"
                         "\t"
-                        "${widget.momentTripModel.driverLastName}\n"
-                        "${widget.momentTripModel.driverPhone}\n"
-                        "${widget.momentTripModel.vehicelCarModel}\n"
-                        "${widget.momentTripModel.vehicelColor}";
+                        "${driverLname}\n"
+                        "${driverPhone}\n"
+                        "${carModel}\n"
+                        "${carColor}";
                 Share.share(str);
                 print(str);
               }),
@@ -1224,15 +1274,13 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               myText(
-                  text: widget.momentTripModel.driverFirstName! +
-                      ' ' +
-                      widget.momentTripModel.driverLastName!,
+                  text: driverFname + ' ' + driverLname,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: Text(
-                  '${widget.momentTripModel.driverPhone}',
+                  '${driverPhone}',
                   style: TextStyle(
                     color: primaryBlue,
                     fontSize: 5.sp,
@@ -1240,14 +1288,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                   ),
                 ),
                 onTap: () {
-                  launchUrl(Uri.parse(
-                      "tel://+963 ${widget.momentTripModel.driverPhone}"));
+                  launchUrl(Uri.parse("tel://+963 ${driverPhone}"));
                 },
               ),
               InkWell(
                   child: FadeInImage(
-                    image: NetworkImage(
-                        widget.momentTripModel.driverProfileImage.toString()),
+                    image: NetworkImage(driverImage.toString()),
                     height: 10.h,
                     width: 10.w,
                     fit: BoxFit.contain,
@@ -1256,8 +1302,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                     placeholder: placeHolder(100),
                   ),
                   onTap: () {
-                    getDialog(
-                        widget.momentTripModel.driverProfileImage.toString());
+                    getDialog(driverImage.toString());
                   }),
             ],
           ),
@@ -1266,19 +1311,18 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
             children: [
               myText(
                   // text: 'car color'.tr(),
-                  text: widget.momentTripModel.vehicelCarModel,
+                  text: carModel,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               myText(
-                  text: widget.momentTripModel.vehicelColor,
+                  text: carColor,
                   fontSize: 5.sp,
                   color: primaryBlue,
                   fontWeight: FontWeight.w600),
               InkWell(
                 child: FadeInImage(
-                  image: NetworkImage(
-                      widget.momentTripModel.vehicelImage.toString()),
+                  image: NetworkImage(vehicelImage.toString()),
                   height: 10.h,
                   width: 10.w,
                   fit: BoxFit.contain,
@@ -1287,7 +1331,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                   placeholder: placeHolder(20),
                 ),
                 onTap: () {
-                  getDialog(widget.momentTripModel.vehicelImage.toString());
+                  getDialog(vehicelImage.toString());
                 },
               ),
             ],
@@ -1301,12 +1345,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                     "\n\n" +
                     "I with".tr() +
                     "\n"
-                        "${widget.momentTripModel.driverFirstName}"
+                        "${driverFname}"
                         "\t"
-                        "${widget.momentTripModel.driverLastName}\n"
-                        "${widget.momentTripModel.driverPhone}\n"
-                        "${widget.momentTripModel.vehicelCarModel}\n"
-                        "${widget.momentTripModel.vehicelColor}";
+                        "${driverLname}\n"
+                        "${driverPhone}\n"
+                        "${carModel}\n"
+                        "${carColor}";
                 Share.share(str);
                 print(str);
               }),

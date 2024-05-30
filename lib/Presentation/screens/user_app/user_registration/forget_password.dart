@@ -3,16 +3,13 @@ import 'package:diamond_line/Presentation/screens/user_app/user_registration/sig
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import '../../../widgets/loader_widget.dart';
-import 'package:diamond_line/Buisness_logic/provider/User_Provider/forget_password_email_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/forget_password_provider.dart';
 import 'package:diamond_line/Presentation/Functions/Validators.dart';
-import 'package:diamond_line/Presentation/screens/user_app/user_registration/phone_verification.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../Buisness_logic/provider/User_Provider/send_otp_provider.dart';
 import '../../../../constants.dart';
 import '../../../Functions/helper.dart';
 import '../../driver_app/driver_registration/driver_login.dart';

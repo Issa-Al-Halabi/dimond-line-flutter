@@ -16,7 +16,6 @@ import 'package:diamond_line/Presentation/widgets/text_with_textfield.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

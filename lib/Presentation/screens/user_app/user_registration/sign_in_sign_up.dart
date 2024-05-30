@@ -758,7 +758,7 @@ class _MyDialogState extends State<alert> {
             color: primaryBlue,
           )),
           content: Scrollbar(
-            isAlwaysShown: true,
+            // isAlwaysShown: true,
             showTrackOnHover: true,
             interactive: true,
             child: Container(

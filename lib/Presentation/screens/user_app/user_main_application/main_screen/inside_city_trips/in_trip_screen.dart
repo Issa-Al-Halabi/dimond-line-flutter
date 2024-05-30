@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
-import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_ended.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_wait_for_payment.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -50,7 +49,6 @@ class InTripScreen extends StatefulWidget {
 }
 
 class _InTripScreenState extends State<InTripScreen> {
-  CameraPosition? _kGooglePlex;
   double latRoute = 0.0;
   double lngRoute = 0.0;
   double course = 0.0;
@@ -59,18 +57,11 @@ class _InTripScreenState extends State<InTripScreen> {
   String CUR_USERID = '';
   DateTime timeback = DateTime.now();
   String status = '';
+
   // String statusDelayed = '';
   // String id = '';
   int id = 0;
-  List<LatLng> polylineCoordinates = [];
-  List<LatLng> polylineCoordinates2 = [];
-  List<LatLng> polylineCoordinates3 = [];
-  Marker marker = Marker(markerId: MarkerId("home"));
-  Marker marker2 = Marker(markerId: MarkerId("from"));
-  Marker marker3 = Marker(markerId: MarkerId("to"));
-  Circle circle = Circle(
-    circleId: CircleId("car"),
-  );
+
   int deviceNumb = 0;
   String driverFname = '',
       driverLname = '',
@@ -91,10 +82,13 @@ class _InTripScreenState extends State<InTripScreen> {
 
   IOWebSocketChannel? _channel;
 
+  List<GeoPoint> latLngList = [];
+  ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
+  late MapController controller;
+  bool isLoading = false;
+
   StreamController<Map<String, dynamic>> eventStreamController =
       StreamController<Map<String, dynamic>>.broadcast();
-
-  // PusherChannelsFlutter pusher = PusherChannelsFlutter.getInstance();
 
   @override
   void initState() {
@@ -102,9 +96,9 @@ class _InTripScreenState extends State<InTripScreen> {
     getUserId();
     // getCookie();
     // connectSocket();
-    markerOfMainWay();
+    // markerOfMainWay();
     getLatAndLong();
-    getPolyPoints();
+    // getPolyPoints();
     super.initState();
   }
 
@@ -115,11 +109,14 @@ class _InTripScreenState extends State<InTripScreen> {
   }
 
   Future<void> getLatAndLong() async {
-    _kGooglePlex = CameraPosition(
-      target: LatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
-      zoom: 10,
+    controller = MapController(
+      initPosition: GeoPoint(
+        latitude: double.parse(widget.pickupLatitude),
+        longitude: double.parse(widget.pickupLongitude),
+      ),
     );
+    isLoading = true;
+    tripPolyline(double.parse(widget.pickupLatitude), double.parse(widget.pickupLongitude));
     setState(() {});
   }
 
@@ -138,151 +135,73 @@ class _InTripScreenState extends State<InTripScreen> {
     }
   }
 
-  Future<Uint8List> getMarker() async {
-    ByteData byteData = await DefaultAssetBundle.of(context).load(carIcon);
-    return byteData.buffer.asUint8List();
-  }
-
-  void tripPolyline(double pickupLatitude, double pickupLongitude,
-      double dropLatitude, double dropLongitude) async {
-    /// clear main route
-    polylineCoordinates.clear();
-
-    // /// clear car route
-    // polylineCoordinates3.clear();
-
-    Uint8List imageData = await getMarker();
-    marker = Marker(
-        markerId: MarkerId("home"),
-        // position: latLngList.last,
-        position: LatLng(pickupLatitude, pickupLongitude),
-        rotation: course,
-        draggable: false,
-        zIndex: 2,
-        flat: true,
-        anchor: Offset(0.5, 0.5),
-        icon: BitmapDescriptor.fromBytes(imageData));
-    circle = Circle(
-        circleId: CircleId("car"),
-        radius: 10,
-        zIndex: 1,
-        strokeColor: Colors.grey,
-        // center: latLngList.last,
-        center: LatLng(pickupLatitude, pickupLongitude),
-        fillColor: Colors.grey.withAlpha(70));
-    polylineCoordinates2.clear();
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      APIKEY,
-      PointLatLng(pickupLatitude, pickupLongitude),
-      PointLatLng(dropLatitude, dropLongitude),
-    );
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates2.add(LatLng(point.latitude, point.longitude));
-      });
+  /// Update draw main Road
+  void tripPolyline(
+    double pickupLatitude,
+    double pickupLongitude,
+  ) async {
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    if (lastGeoPoint.value != null) {
+      controller.changeLocationMarker(
+        oldLocation: lastGeoPoint.value!,
+        newLocation: GeoPoint(
+          latitude: pickupLatitude,
+          longitude: pickupLongitude,
+        ),
+      );
+    } else {
+      controller.addMarker(
+        GeoPoint(
+          latitude: pickupLatitude,
+          longitude: pickupLongitude,
+        ),
+        markerIcon: MarkerIcon(
+          assetMarker: AssetMarker(
+            scaleAssetImage: 2,
+            image: AssetImage(
+              "assets/images/caricon.png",
+            ),
+          ),
+        ),
+      );
     }
-    if (mounted) {
-      setState(() {});
-    }
-
-    // delete from marker
-    marker2 = Marker(markerId: MarkerId("from"));
-  }
-
-  void carPolyline(double pickupLatitude, double pickupLongitude,
-      double dropLatitude, double dropLongitude) async {
-    /// clear main route
-    // polylineCoordinates.clear();
-
-    Uint8List imageData = await getMarker();
-    marker = Marker(
-        markerId: MarkerId("home"),
-        // position: latLngList.last,
-        position: LatLng(pickupLatitude, pickupLongitude),
-        rotation: course,
-        draggable: false,
-        zIndex: 2,
-        flat: true,
-        anchor: Offset(0.5, 0.5),
-        icon: BitmapDescriptor.fromBytes(imageData));
-    circle = Circle(
-        circleId: CircleId("car"),
-        radius: 10,
-        zIndex: 1,
-        strokeColor: Colors.grey,
-        // center: latLngList.last,
-        center: LatLng(pickupLatitude, pickupLongitude),
-        fillColor: Colors.grey.withAlpha(70));
-    polylineCoordinates3.clear();
-    // setState(() {});
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      APIKEY,
-      PointLatLng(pickupLatitude, pickupLongitude),
-      PointLatLng(dropLatitude, dropLongitude),
-    );
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates3.add(LatLng(point.latitude, point.longitude));
-      });
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  /// رسم المسار الاساسي
-  void getPolyPoints() async {
-    polylineCoordinates.clear();
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      APIKEY,
-      PointLatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
-      PointLatLng(double.parse(widget.dropLatitude),
-          double.parse(widget.dropLongitude)),
-    );
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    }
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void markerOfMainWay() {
-    marker2 = Marker(
-      markerId: MarkerId("from"),
-      position: LatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
-      rotation: 2,
-      draggable: false,
-      zIndex: 2,
-      flat: true,
-      anchor: Offset(0.5, 0.5),
-      infoWindow: InfoWindow(
-        title: 'from'.tr(),
+    lastGeoPoint.value !=
+        GeoPoint(latitude: pickupLongitude, longitude: pickupLatitude);
+    await controller.drawCircle(
+      CircleOSM(
+        key: "car",
+        centerPoint: GeoPoint(
+          latitude: pickupLatitude,
+          longitude: pickupLongitude,
+        ),
+        radius: 30,
+        color: Colors.blue,
+        strokeWidth: 0.3,
       ),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+    );
+  }
+
+  /// Draw main Road
+  void roadActionBt() async {
+    RoadInfo roadInfo = await controller.drawRoad(
+      GeoPoint(
+          latitude: double.parse(widget.pickupLatitude),
+          longitude: double.parse(widget.pickupLongitude)),
+      GeoPoint(
+        latitude: double.parse(widget.dropLatitude),
+        longitude: double.parse(widget.dropLongitude),
+      ),
+      roadType: RoadType.car,
+      roadOption: RoadOption(
+        roadWidth: 10,
+        roadColor: Colors.blue,
+        zoomInto: true,
+      ),
     );
 
-    marker3 = Marker(
-      markerId: MarkerId("to"),
-      position: LatLng(double.parse(widget.dropLatitude),
-          double.parse(widget.dropLongitude)),
-      rotation: 2,
-      draggable: false,
-      zIndex: 2,
-      flat: true,
-      anchor: Offset(0.5, 0.5),
-      infoWindow: InfoWindow(
-        title: 'to'.tr(),
-      ),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-    );
+    print("${roadInfo.distance}km");
+    print("${roadInfo.duration}sec");
+    print("${roadInfo.instructions}");
   }
 
   ////////////////// cancel trip api //////////////////////////
@@ -321,81 +240,13 @@ class _InTripScreenState extends State<InTripScreen> {
     print(CUR_USERID);
   }
 
-  // void connectSocket() async {
-  //   try {
-  // await pusher.init(
-  //   apiKey: APIKEY_PUSHER,
-  //   cluster: CLUSTER_PUSHER,
-  //   onConnectionStateChange: onConnectionStateChange,
-  //   onError: onError,
-  //   onSubscriptionSucceeded: onSubscriptionSucceeded,
-  //   onEvent: onEvent,
-  //   onSubscriptionError: onSubscriptionError,
-  //   onDecryptionFailure: onDecryptionFailure,
-  //   onMemberAdded: onMemberAdded,
-  //   onMemberRemoved: onMemberRemoved,
-  //   onSubscriptionCount: onSubscriptionCount,
-  // );
-  // await pusher.subscribe(channelName: 'trip-status-$CUR_USERID');
-  // await pusher.connect();
-  //   } catch (e) {
-  //     log("ERROR: $e");
-  //   }
-  // }
-
-  // void onConnectionStateChange(dynamic currentState, dynamic previousState) {
-  //   log("Connection: $currentState in trip screen");
-  // }
-
-  // void onError(String message, int? code, dynamic e) {
-  //   log("onError: $message code: $code exception: $e");
-  // }
-
-  // void onEvent(PusherEvent event) {
-  //   log("onEvent in trip screen: $event");
-  //   if (event.data != {}) {
-  //     Map<String, dynamic> data = jsonDecode(event.data);
-  //     eventStreamController.sink.add(data);
-  //   }
-  // }
-
-  // void onSubscriptionSucceeded(String channelName, dynamic data) {
-  //   log("onSubscriptionSucceeded: $channelName data: $data");
-  //   PusherChannel? me = pusher.getChannel(channelName);
-  //   if (me != null) {
-  //     log("Me: ${me.me}");
-  //   } else {
-  //     log("Me: null null");
-  //   }
-  // }
-
-  // void onSubscriptionError(String message, dynamic e) {
-  //   log("onSubscriptionError: $message Exception: $e");
-  // }
-
-  // void onDecryptionFailure(String event, String reason) {
-  //   log("onDecryptionFailure: $event reason: $reason");
-  // }
-
-  // void onMemberAdded(String channelName, PusherMember member) {
-  //   log("onMemberAdded: $channelName user: $member");
-  // }
-
-  // void onMemberRemoved(String channelName, PusherMember member) {
-  //   log("onMemberRemoved: $channelName user: $member");
-  // }
-
-  // void onSubscriptionCount(String channelName, int subscriptionCount) {
-  //   log("onSubscriptionCount: $channelName subscriptionCount: $subscriptionCount");
-  // }
-
   bool navigate() {
     eventStreamController.close();
     if (_channel != null) {
       _channel!.sink.close();
     }
     // pusher.disconnect();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -409,53 +260,36 @@ class _InTripScreenState extends State<InTripScreen> {
   }
 
   bool convertAccept() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         isAcceptTrip = true;
-        // print('teeeeeeeeeeeeeeeeeeeeeeeest accept');
-        // print(isAcceptTrip);
       });
     });
     return true;
   }
 
   bool convertStart() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         isStartTrip = true;
-        // print('teeeeeeeeeeeeeeeeeeeeeeeest start');
-        // print(isStartTrip);
       });
     });
     return true;
   }
 
-  // bool convertSecondTrack() {
-  //   WidgetsBinding.instance?.addPostFrameCallback((_) {
-  //     setState(() {
-  //       isTrackDriverDelayTrip = !isTrackDriverDelayTrip;
-  //       isSecondTrip = !isSecondTrip;
-  //       print(isTrackDriverDelayTrip);
-  //       print(isSecondTrip);
-  //     });
-  //   });
-  //   return true;
-  // }
-
   bool convertSecondTrack() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         isTrackDriverDelayTrip = true;
         isSecondTrip = true;
-        // print(isTrackDriverDelayTrip);
-        // print(isSecondTrip);
+        ;
       });
     });
     return true;
   }
 
   bool convertSecondTrackFalse() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         isTrackDriverDelayTrip = false;
         isSecondTrip = false;
@@ -466,18 +300,8 @@ class _InTripScreenState extends State<InTripScreen> {
     return true;
   }
 
-  // bool convertBoolean(bool myBoolean) {
-  //   WidgetsBinding.instance?.addPostFrameCallback((_) {
-  //     setState(() {
-  //       myBoolean = !myBoolean;
-  //       // print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh $myBoolean');
-  //     });
-  //   });
-  //   return true;
-  // }
-
   bool convertId(int newId) {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         id = newId;
         print('id is: $id');
@@ -505,7 +329,7 @@ class _InTripScreenState extends State<InTripScreen> {
       _channel!.sink.close();
     }
     // pusher.disconnect();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setSnackbar('your trip didnt accept'.tr(), context);
       Navigator.pushReplacement(
         context,
@@ -524,15 +348,19 @@ class _InTripScreenState extends State<InTripScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => InsideTripDelayedScreen(
-                delayTripModel: delayTripModel,
-                isAcceptTrip: isTrackDriverDelayTrip,
-              )),
+        builder: (context) => InsideTripDelayedScreen(
+          delayTripModel: delayTripModel,
+          isAcceptTrip: isTrackDriverDelayTrip,
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    print('333333333333333333333');
+    print('333333333333333333333');
+    print('333333333333333333333');
     return WillPopScope(
       onWillPop: () async {
         if (Loader.isShown == true) {
@@ -559,7 +387,7 @@ class _InTripScreenState extends State<InTripScreen> {
         }
       },
       child: Scaffold(
-        body: _kGooglePlex == null
+        body: isLoading == false
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -599,20 +427,10 @@ class _InTripScreenState extends State<InTripScreen> {
                                           course =
                                               data['positions'][0]['course'];
                                           isStartTrip == true
-                                              ? tripPolyline(
+                                              ?   tripPolyline(
                                                   latRoute,
                                                   lngRoute,
-                                                  double.parse(
-                                                      widget.dropLatitude),
-                                                  double.parse(
-                                                      widget.dropLongitude))
-                                              // : isAcceptTrip == true ?
-                                              // carPolyline(
-                                              //     latRoute,
-                                              //     lngRoute,
-                                              //     double.parse(widget.pickupLatitude),
-                                              //     double.parse(widget.pickupLongitude)
-                                              // )
+                                                )
                                               : null;
                                         }
                                       }
@@ -638,72 +456,62 @@ class _InTripScreenState extends State<InTripScreen> {
                                   topRight: Radius.circular(20)),
                               color: backgroundColor,
                             ),
-                            child: GoogleMap(
-                              // markers: myMarker,
-                              markers: Set.of((marker3 != null)
-                                  ? [marker, marker2, marker3]
-                                  : []),
-                              polylines: {
-                                Polyline(
-                                  polylineId: PolylineId('route'),
-                                  points: polylineCoordinates,
-                                  color: primaryBlue,
-                                  width: 5,
-                                ),
-                                Polyline(
-                                  polylineId: PolylineId('track'),
-                                  points: polylineCoordinates2,
-                                  color: primaryBlue,
-                                  // color: Colors.red,
-                                  width: 5,
-                                ),
-                                Polyline(
-                                  polylineId: PolylineId('car'),
-                                  points: polylineCoordinates3,
-                                  color: Colors.orange,
-                                  width: 5,
-                                ),
+                            child: OSMFlutter(
+                              onMapIsReady: (p0) {
+                                roadActionBt();
+                                tripPolyline(double.parse(widget.pickupLatitude), double.parse(widget.pickupLongitude));
+
                               },
-                              mapType: MapType.normal,
-                              initialCameraPosition: _kGooglePlex!,
-                              onMapCreated: (GoogleMapController controller) {
-                                gmc = controller;
-                              },
-                              onTap: (latlng) {},
+                              controller: controller,
+                              osmOption: OSMOption(
+                                zoomOption: ZoomOption(
+                                  initZoom: 14,
+                                ),
+                                staticPoints: [
+                                  StaticPositionGeoPoint(
+                                    "from",
+                                    MarkerIcon(
+                                      icon: Icon(
+                                        Icons.location_on_rounded,
+                                        color: Colors.green,
+                                        size: 32,
+                                      ),
+                                    ),
+                                    [
+                                      GeoPoint(
+                                        latitude: double.parse(
+                                          widget.pickupLatitude,
+                                        ),
+                                        longitude: double.parse(
+                                          widget.pickupLongitude,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  StaticPositionGeoPoint(
+                                    "to",
+                                    MarkerIcon(
+                                      icon: Icon(
+                                        Icons.location_on_rounded,
+                                        color: Colors.green,
+                                        size: 32,
+                                      ),
+                                    ),
+                                    [
+                                      GeoPoint(
+                                        latitude: double.parse(
+                                          widget.dropLatitude,
+                                        ),
+                                        longitude: double.parse(
+                                          widget.dropLongitude,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          // Positioned(
-                          //   top: 4.h,
-                          //   right: 1.w,
-                          //   child: isSecondTrip
-                          //       ? InkWell(
-                          //           child: Container(
-                          //               width: 50,
-                          //               height: 50,
-                          //               decoration: BoxDecoration(
-                          //                   boxShadow: [
-                          //                     BoxShadow(
-                          //                       color: primaryBlue
-                          //                           .withOpacity(0.3),
-                          //                       spreadRadius: 2,
-                          //                       blurRadius: 7,
-                          //                       offset: const Offset(0, 0),
-                          //                     ),
-                          //                   ],
-                          //                   borderRadius: BorderRadius.all(
-                          //                       Radius.circular(100)),
-                          //                   color: primaryBlue),
-                          //               child: Center(
-                          //                   child: Icon(
-                          //                 Icons.compare_arrows_outlined,
-                          //                 size: 35,
-                          //                 color: backgroundColor,
-                          //               ))),
-                          //           onTap: () async {
-                          //             navigateToSecondTrip();
-                          //           })
-                          //       : Text(''),
-                          // ),
                           Positioned(
                             bottom: 0.h,
                             child: Consumer<InTripProvider>(
@@ -720,13 +528,6 @@ class _InTripScreenState extends State<InTripScreen> {
                                 print(id.toString() == widget.tripId);
                                 print(
                                     "==========================================");
-                                // setState(() {
-                                //   id = data['data']['id'];
-                                //   print('id is: $id');
-                                //   print(data['data']['id']);
-                                // });
-                                // convertId(data['data']['id']);
-
                                 if (id.toString() == widget.tripId) {
                                   status = data['status'];
                                   // print('ids equal');
@@ -787,136 +588,6 @@ class _InTripScreenState extends State<InTripScreen> {
                                 return PendingWidget();
                               }
                             }),
-
-                            //  StreamBuilder<Map<String, dynamic>>(
-                            //   stream: eventStreamController.stream,
-                            //   builder: (context, snapshot) {
-                            //     if (snapshot.hasData) {
-                            //       // Map<String, dynamic> data = snapshot.data!;
-                            //       data = snapshot.data!;
-                            //       int id = data['data']['id'];
-                            //       // setState(() {
-                            //       //   id = data['data']['id'];
-                            //       //   print('id is: $id');
-                            //       //   print(data['data']['id']);
-                            //       // });
-                            //       // convertId(data['data']['id']);
-
-                            //       if (id.toString() == widget.tripId) {
-                            //         status = data['data']['status'];
-                            //         // print('ids equal');
-                            //         if (status == 'accepted') {
-                            //           convertAccept();
-                            //           // convertBoolean(isAcceptTrip);
-                            //           deviceNumb = data['data']
-                            //               ['vehicel_device_number'];
-                            //           driverFname =
-                            //               data['data']['driver_first_name'];
-                            //           driverLname =
-                            //               data['data']['driver_last_name'];
-                            //           driverImage = data['data']
-                            //               ['driver_profile_image'];
-                            //           driverPhone =
-                            //               data['data']['driver_phone'];
-                            //           carModel =
-                            //               data['data']['vehicel_car_model'];
-                            //           carColor =
-                            //               data['data']['vehicel_color'];
-                            //           vehicelImage =
-                            //               data['data']['vehicel_image'];
-                            //         }
-                            //         if (status == 'started') {
-                            //           convertStart();
-                            //           // convertBoolean(isStartTrip);
-                            //         }
-                            //         if (status == 'ended') {
-                            //           finalCost = data['data']['cost'];
-                            //           // print(finalCost);
-                            //           navigate();
-                            //         }
-                            //         if (status == 'canceld') {
-                            //           // print('your trip didnt accept');
-                            //           navigateDash();
-                            //         }
-                            //       } else {
-                            //         print('ttttttttttttt');
-                            //         print(data);
-                            //         String statusDelayed =
-                            //             data['data']['status'];
-                            //         print(statusDelayed);
-                            //         print(data['data']['id']);
-                            //       }
-
-                            //       // TODO
-                            //       // else {
-                            //       //   // print(data);
-                            //       //   // print('actual second status ${data['data']['status']}');
-                            //       //   String statusDelayed = data['data']['status'];
-                            //       //   print('this trip $id is $statusDelayed');
-                            //       //   print(widget.tripId);
-                            //       //   if (statusDelayed != 'pending' && statusDelayed != 'accepted') {
-                            //       //     // print('not pending or accepted');
-                            //       //     convertSecondTrack();
-                            //       //     // print('second status $statusDelayed');
-                            //       //     // convertBoolean(isTrackDriverDelayTrip);
-                            //       //     // convertBoolean(isSecondTrip);
-                            //       //
-                            //       //     // delayTripModel = SocketResponse();
-                            //       //
-                            //       //
-                            //       //     delayTripModel.driverFirstName =
-                            //       //         data['data']['driver_first_name'];
-                            //       //     delayTripModel.driverLastName =
-                            //       //         data['data']['driver_last_name'];
-                            //       //     delayTripModel.driverProfileImage =
-                            //       //         data['data']
-                            //       //             ['driver_profile_image'];
-                            //       //     delayTripModel.driverPhone =
-                            //       //         data['data']['driver_phone'];
-                            //       //     delayTripModel.vehicelDeviceNumber =
-                            //       //         data['data']
-                            //       //             ['vehicel_device_number'];
-                            //       //     delayTripModel.vehicelCarModel =
-                            //       //         data['data']['vehicel_car_model'];
-                            //       //     delayTripModel.vehicelColor =
-                            //       //         data['data']['vehicel_color'];
-                            //       //     delayTripModel.vehicelImage =
-                            //       //         data['data']['vehicel_image'];
-                            //       //     delayTripModel.pickupLatitude =
-                            //       //         data['data']['pickup_latitude'];
-                            //       //     delayTripModel.pickupLongitude =
-                            //       //         data['data']['pickup_longitude'];
-                            //       //     delayTripModel.dropLatitude =
-                            //       //         data['data']['drop_latitude'];
-                            //       //     delayTripModel.dropLongitude =
-                            //       //         data['data']['drop_longitude'];
-                            //       //     delayTripModel.id = data['data']['id'];
-                            //       //     delayTripModel.status =
-                            //       //         data['data']['status'];
-                            //       //   } else if (statusDelayed == 'ended') {
-                            //       //     print('endeeeeeeeeeeeeeeeeeeeeeeeeed');
-                            //       //     convertSecondTrackFalse();
-                            //       //     // convertBoolean(isTrackDriverDelayTrip);
-                            //       //     // convertBoolean(isSecondTrip);
-                            //       //   }
-                            //       // }
-
-                            //       return Row(
-                            //         children: [
-                            //           status == 'accepted'
-                            //               ? AcceptedWidget()
-                            //               : status == 'arrived'
-                            //                   ? ArrivedWidget()
-                            //                   : status == 'started'
-                            //                       ? StartedWidget()
-                            //                       : Text('')
-                            //         ],
-                            //       );
-                            //     } else {
-                            //       return PendingWidget();
-                            //     }
-                            //   },
-                            // )
                           )
                         ],
                       ),

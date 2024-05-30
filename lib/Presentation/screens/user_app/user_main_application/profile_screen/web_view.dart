@@ -1,6 +1,4 @@
-import 'package:diamond_line/Presentation/widgets/text.dart';
 import 'package:flutter/material.dart';
-import '../../../../widgets/loader_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../../constants.dart';

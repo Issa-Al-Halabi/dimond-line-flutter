@@ -4,12 +4,12 @@ import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_ended_outcity.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -55,12 +55,16 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
   List<double> latList = [];
   List<double> lngList = [];
   List<LatLng> points = [];
+  List<GeoPoint> GeoPoints = [];
   Marker? marker;
   Marker? marker2;
   Marker? marker3;
   Circle? circle;
 
   IOWebSocketChannel? _channel;
+
+  late MapController controller;
+  bool isLoading = false;
 
   Future<void> getCookie() async {
     try {
@@ -79,19 +83,16 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
 
   @override
   void initState() {
-    // getCookie();
     markerOfMainWay();
     getLatAndLong();
     initShared();
     getPer();
 
     ///رسم المسار الاساسي
-    getPolyPoints();
     super.initState();
   }
 
   getpoly() async {
-    await getPolyPoints();
     markerOfMainWay();
     getLatAndLong();
   }
@@ -157,9 +158,8 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     cl = await Geolocator.getCurrentPosition().then((value) => value);
     lat = cl.latitude;
     lng = cl.longitude;
-    _kGooglePlex = CameraPosition(
-      target: LatLng(lat, lng),
-      zoom: 14,
+    controller = MapController(
+      initPosition: GeoPoint(latitude: lat, longitude: lng),
     );
     latList.add(lat);
     lngList.add(lng);
@@ -173,26 +173,19 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     print(lngList);
     for (int i = 0; i < latList.length; i++) {
       points.add(LatLng(latList[i], lngList[i]));
+      GeoPoints.add(GeoPoint(latitude: latList[i], longitude: lngList[i]));
     }
     ;
     print('points');
     print(points);
-    // pathPolyline.add(
-    //   Polyline(
-    //       polylineId: PolylineId('track'),
-    //       color: Colors.red,
-    //       width: 4,
-    //       points: points,
-    //       patterns: [
-    //         PatternItem.dash(20),
-    //         PatternItem.gap(10),
-    //       ]),
-    // );
+    print('============================================');
+    print('GeoPoints');
+    print(GeoPoints);
+    isLoading = true;
     if (mounted) {
       setState(() {});
     }
 
-    updatePolyline();
   }
 
   Future getPer() async {
@@ -238,60 +231,85 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
         center: points.last,
         fillColor: Colors.grey.withAlpha(70));
     setState(() {});
-    // pathPolyline.add(
-    //   Polyline(
-    //       polylineId: PolylineId('track'),
-    //       color: Colors.red,
-    //       width: 5,
-    //       points: points,
-    //       patterns: [
-    //         PatternItem.dash(20),
-    //         PatternItem.gap(10),
-    //       ]),
-    // );
-  }
-
-  void updateMainPolyline(double pickupLatitude, double pickupLongitude) async {
-    polylineCoordinates.clear();
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      APIKEY,
-      PointLatLng(pickupLatitude, pickupLongitude),
-      PointLatLng(double.parse(widget.dropLatitude),
-          double.parse(widget.dropLongitude)),
-    );
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    }
-    if (mounted) {
-      setState(() {});
-    }
-
-    // delete from marker
-    marker2 = Marker(markerId: MarkerId("from"));
   }
 
   /// رسم المسار الاساسي
-  Future getPolyPoints() async {
-    polylineCoordinates.clear();
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      'AIzaSyCPsxZeXKcSYK1XXw0O0RbrZiI_Ekou5DY',
-      PointLatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
-      PointLatLng(double.parse(widget.dropLatitude),
-          double.parse(widget.dropLongitude)),
+  ///////////////////////// OSM FLUTTER //////////////////////////////////
+  void roadActionBt() async {
+    controller.addMarker(
+      GeoPoint(
+        latitude: lat,
+        longitude: lng,
+      ),
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage("assets/images/caricon.png"),
+        ),
+      ),
     );
-    if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    }
-    if (mounted) {
-      setState(() {});
-    }
+    RoadInfo roadInfo = await controller.drawRoad(
+      GeoPoint(
+          latitude: double.parse(widget.pickupLatitude),
+          longitude: double.parse(widget.pickupLongitude)),
+      GeoPoint(
+        latitude: double.parse(widget.dropLatitude),
+        longitude: double.parse(widget.dropLongitude),
+      ),
+      roadType: RoadType.car,
+      roadOption: RoadOption(
+        roadWidth: 10,
+        roadColor: Colors.blue,
+        zoomInto: true,
+      ),
+    );
+
+    // controller.changeLocationMarker(oldLocation: oldLocation, newLocation: newLocation)
+
+    print("${roadInfo.distance}km");
+    print("${roadInfo.duration}sec");
+    print("${roadInfo.instructions}");
+  }
+
+  void UpdateRoadActionBt(double pickupLatitude, double pickupLongitude) async {
+    await controller.removeLastRoad();
+    // controller.changeLocationMarker(
+    //   oldLocation: GeoPoint(latitude: lat, longitude: lng),
+    //   newLocation: GeoPoint(latitude: lat, longitude: lng),
+    //   markerIcon: MarkerIcon(
+    //     assetMarker: AssetMarker(
+    //       image: AssetImage('assets/images/caricon.png'),
+    //     ),
+    //   ),
+    // );
+    await controller.drawCircle(
+      CircleOSM(
+        key: "car",
+        centerPoint: GeoPoint(latitude: lat, longitude: lng),
+        radius: 10,
+        color: Colors.red,
+        strokeWidth: 0.3,
+      ),
+    );
+    RoadInfo roadInfo = await controller.drawRoad(
+      GeoPoint(
+        latitude: pickupLatitude,
+        longitude: pickupLongitude,
+      ),
+      GeoPoint(
+        latitude: double.parse(widget.dropLatitude),
+        longitude: double.parse(widget.dropLongitude),
+      ),
+      roadType: RoadType.car,
+      roadOption: RoadOption(
+        roadWidth: 10,
+        roadColor: Colors.blue,
+        zoomInto: true,
+      ),
+    );
+    print("${roadInfo.distance}km_2");
+    print("${roadInfo.duration}sec_2");
+    print("${roadInfo.instructions}");
   }
 
   getDistance(double latcurrent, double lancurrent, double lat, double lng) {
@@ -301,7 +319,6 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
       lat,
       lng,
     );
-    print('distaaaaaaaaaaaaaaance');
     print(finalDistance);
     print(finalDistance / 1000);
     finalDistance = finalDistance / 1000;
@@ -325,8 +342,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
   }
 
   /////////////////////////trip end api //////////////////////////////////
-  Future<void> endTripApi(
-      String trip_id, String end_time, String finalDistance) async {
+  Future<void> endTripApi(String trip_id, String end_time, String finalDistance) async {
     _isNetworkAvail = await isNetworkAvailable();
     print(trip_id);
     print(end_time);
@@ -414,7 +430,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
-        body: _kGooglePlex == null || _channel == null
+        body: isLoading == false
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -455,79 +471,40 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                       print(snapshot.data);
                                       print(snapshot.connectionState);
                                       if (snapshot.hasData == true) {
-                                        var data = json
-                                            .decode(snapshot.data.toString());
-                                        print(
-                                            '--------------------------------');
+                                        var data = json.decode(snapshot.data.toString());
+                                        print('--------------------------------');
                                         if (data['positions'] != null) {
                                           // if (data['positions'][0]['deviceId'] == 252) {
                                           //TODO
                                           // if (data['positions'][0]['deviceId'] ==
                                           //     274) {
-                                          if (data['positions'][0]
-                                                  ['deviceId'] ==
-                                              deviceNumb) {
-                                            print(
-                                                '////////////////////////////');
+                                          if (data['positions'][0]['deviceId'] == deviceNumb) {
+                                            print('////////////////////////////');
                                             // print(data['positions'][0]['deviceId']);
                                             // print(data['positions'][0]['latitude']);
                                             // print(data['positions'][0]['longitude']);
                                             print('course me');
-                                            print(
-                                                data['positions'][0]['course']);
-                                            lat = data['positions'][0]
-                                                ['latitude'];
-                                            lng = data['positions'][0]
-                                                ['longitude'];
-                                            course =
-                                                data['positions'][0]['course'];
-                                            if (latList.last != lat &&
-                                                lngList.last != lng) {
-                                              print(
-                                                  'lats and longs isnt equal');
+                                            print(data['positions'][0]['course']);
+                                            lat = data['positions'][0]['latitude'];
+                                            lng = data['positions'][0]['longitude'];
+                                            course = data['positions'][0]['course'];
+                                            if (latList.last != lat && lngList.last != lng) {
+                                              print('lats and longs isnt equal');
                                               latList.add(lat);
                                               lngList.add(lng);
-                                              List<String> strList = latList
-                                                  .map((i) => i.toString())
-                                                  .toList();
-                                              prefs.setStringList(
-                                                  "latList", strList);
-                                              List<String> strList2 = lngList
-                                                  .map((i) => i.toString())
-                                                  .toList();
-                                              prefs.setStringList(
-                                                  "lngList", strList2);
-                                              // for (int i = 0;
-                                              //     i < latList.length;
-                                              //     i++) {
-                                              //   points.add(
-                                              //       LatLng(latList[i], lngList[i]));
-                                              // }
+                                              List<String> strList = latList.map((i) => i.toString()).toList();
+                                              prefs.setStringList("latList", strList);
+                                              List<String> strList2 = lngList.map((i) => i.toString()).toList();
+                                              prefs.setStringList("lngList", strList2);
                                               points.add(LatLng(lat, lng));
-                                              // print(points);
+                                              GeoPoints.add(GeoPoint(latitude: lat, longitude: lng));
                                               updatePolyline();
-                                              updateMainPolyline(lat, lng);
-                                              getLocationApi(
-                                                  lat.toString(),
-                                                  lng.toString(),
-                                                  deviceNumb.toString());
+                                              UpdateRoadActionBt(lat, lng);
+                                              getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
                                             }
-                                            //   latList.add(lat);
-                                            //   lngList.add(lng);
-                                            //   List<String> strList = latList.map((i) => i.toString()).toList();
-                                            //   prefs.setStringList("latList", strList);
-                                            //   List<String> strList2 = lngList.map((i) => i.toString()).toList();
-                                            //   prefs.setStringList("lngList", strList2);
-                                            //  //   for (int i = 0 ; i < latList.length; i++){
-                                            //   //     points.add(LatLng(latList[i],lngList[i]));
-                                            //   //   };
-                                            // points.add(LatLng(lat, lng));
-                                            //   // print(points);
-                                            //   updatePolyline();
-                                            //   getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
                                           }
                                         }
-                                      } else {}
+                                      }
                                       return Text('');
                                     },
                                   )
@@ -549,57 +526,107 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                     topRight: Radius.circular(20)),
                                 color: backgroundColor,
                               ),
-                              child: GoogleMap(
-                                mapType: MapType.normal,
-                                zoomControlsEnabled: true,
-                                zoomGesturesEnabled: true,
-                                scrollGesturesEnabled: true,
-                                // padding: EdgeInsets.all(2.w),
+                              child: OSMFlutter(
+                              onMapIsReady: (p0) => roadActionBt(),
+                                controller: controller,
+                                osmOption: OSMOption(
+                                  zoomOption: ZoomOption(initZoom: 14),
+                                  staticPoints: [
+                                    StaticPositionGeoPoint(
+                                      "from",
+                                      MarkerIcon(
+                                        icon: Icon(
+                                          Icons.location_on_rounded,
+                                          color: Colors.green,
+                                          size: 32,
+                                        ),
+                                      ),
+                                      [
+                                        GeoPoint(
+                                          latitude: double.parse(
+                                            widget.pickupLatitude,
+                                          ),
+                                          longitude: double.parse(
+                                            widget.pickupLongitude,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    StaticPositionGeoPoint(
+                                      "to",
+                                      MarkerIcon(
+                                        icon: Icon(
+                                          Icons.location_on_rounded,
+                                          color: Colors.green,
+                                          size: 32,
+                                        ),
+                                      ),
+                                      [
+                                        GeoPoint(
+                                          latitude: double.parse(
+                                            widget.dropLatitude,
+                                          ),
+                                          longitude: double.parse(
+                                            widget.dropLongitude,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
 
-                                markers: Set.of((marker != null)
-                                    ? [marker!, marker2!, marker3!]
-                                    : []),
-                                circles:
-                                    Set.of((circle != null) ? [circle!] : []),
-
-                                polylines: {
-                                  Polyline(
-                                    polylineId: PolylineId('route'),
-                                    points: polylineCoordinates,
-                                    color: primaryBlue,
-                                    width: 5,
-                                  ),
-                                },
-
-                                // /// مع المسار الاساسي
-                                // polylines: {
-                                //   Polyline(
-                                //     polylineId: PolylineId('route'),
-                                //     points: polylineCoordinates,
-                                //     color: primaryBlue,
-                                //     width: 5,
-                                //   ),
-                                //   Polyline(
-                                //       points: points,
-                                //       polylineId: PolylineId('track'),
-                                //       color: Colors.red,
-                                //       width: 4,
-                                //       // points: latLngList,
-                                //       patterns: [
-                                //         PatternItem.dash(20),
-                                //         PatternItem.gap(10),
-                                //       ]),
-                                // },
-
-                                /// بدون المسار الاساسي
-                                // polylines: pathPolyline,
-
-                                initialCameraPosition: _kGooglePlex!,
-                                onMapCreated: (GoogleMapController controller) {
-                                  gmc = controller;
-                                },
-                                onTap: (latlng) {},
+                                ),
                               ),
+                              // child: GoogleMap(
+                              //   mapType: MapType.normal,
+                              //   zoomControlsEnabled: true,
+                              //   zoomGesturesEnabled: true,
+                              //   scrollGesturesEnabled: true,
+                              //   // padding: EdgeInsets.all(2.w),
+                              //
+                              //   markers: Set.of((marker != null)
+                              //       ? [marker!, marker2!, marker3!]
+                              //       : []),
+                              //   circles:
+                              //       Set.of((circle != null) ? [circle!] : []),
+                              //
+                              //   polylines: {
+                              //     Polyline(
+                              //       polylineId: PolylineId('route'),
+                              //       points: polylineCoordinates,
+                              //       color: primaryBlue,
+                              //       width: 5,
+                              //     ),
+                              //   },
+                              //
+                              //   // /// مع المسار الاساسي
+                              //   // polylines: {
+                              //   //   Polyline(
+                              //   //     polylineId: PolylineId('route'),
+                              //   //     points: polylineCoordinates,
+                              //   //     color: primaryBlue,
+                              //   //     width: 5,
+                              //   //   ),
+                              //   //   Polyline(
+                              //   //       points: points,
+                              //   //       polylineId: PolylineId('track'),
+                              //   //       color: Colors.red,
+                              //   //       width: 4,
+                              //   //       // points: latLngList,
+                              //   //       patterns: [
+                              //   //         PatternItem.dash(20),
+                              //   //         PatternItem.gap(10),
+                              //   //       ]),
+                              //   // },
+                              //
+                              //   /// بدون المسار الاساسي
+                              //   // polylines: pathPolyline,
+                              //
+                              //   initialCameraPosition: _kGooglePlex!,
+                              //   onMapCreated: (GoogleMapController controller) {
+                              //     gmc = controller;
+                              //   },
+                              //   onTap: (latlng) {},
+                              // ),
                             ),
                             Positioned(
                                 bottom: 2.h,
@@ -631,8 +658,8 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                       prefs.remove('latList');
                                       prefs.remove('lngList');
                                       for (int i = 0; i < latList.length; i++) {
-                                        points.add(
-                                            LatLng(latList[i], lngList[i]));
+                                        points.add(LatLng(latList[i], lngList[i]));
+                                        GeoPoints.add(GeoPoint(latitude: latList[i],longitude:  lngList[i]));
                                       }
                                       ;
                                       endTripApi(widget.tripId, end_time,

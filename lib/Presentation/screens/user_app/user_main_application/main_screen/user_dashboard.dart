@@ -3,9 +3,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../Buisness_logic/provider/User_Provider/init_user_trips_provider.dart';
-import '../../../../../Data/Models/User_Models/InitUserTripsModel.dart';
 import '../../../../../Data/Models/User_Models/SocketResponse.dart';
-import '../../../../widgets/loader_widget.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/user_orders.dart';
 import '../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,8 +54,8 @@ class _UserDashboardState extends State<UserDashboard> {
   void initState() {
     buildScreens();
     getTrips();
-    SystemChrome.setEnabledSystemUIOverlays(
-        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(
+        SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
