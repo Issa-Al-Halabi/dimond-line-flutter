@@ -29,6 +29,7 @@ class SocketResponse {
     String? dropLongitude,
     String? status,
     int? id,
+    int? driver_id,
   }) {
     _driverFirstName = driverFirstName;
     _driverLastName = driverLastName;
@@ -44,6 +45,7 @@ class SocketResponse {
     _dropLongitude = dropLongitude;
     _status = status;
     _id = id;
+    _driver_id = driver_id;
   }
 
   set driverFirstName(String? value) {
@@ -65,6 +67,7 @@ class SocketResponse {
     _dropLongitude = json['dropLongitude'];
     _status = json['status'];
     _id = json['id'];
+    _driver_id = json['driver_id'];
   }
   String? _driverFirstName;
   String? _driverLastName;
@@ -80,6 +83,8 @@ class SocketResponse {
   String? _dropLongitude;
   String? _status;
   int? _id;
+  int? _driver_id;
+
   SocketResponse copyWith({
     String? driverFirstName,
     String? driverLastName,
@@ -95,6 +100,7 @@ class SocketResponse {
     String? dropLongitude,
     String? status,
     int? id,
+    int? driver_id,
   }) =>
       SocketResponse(
         driverFirstName: driverFirstName ?? _driverFirstName,
@@ -111,6 +117,7 @@ class SocketResponse {
         dropLongitude: dropLongitude ?? _dropLongitude,
         status: status ?? _status,
         id: id ?? _id,
+        driver_id: driver_id ?? _driver_id,
       );
   String? get driverFirstName => _driverFirstName;
   String? get driverLastName => _driverLastName;
@@ -126,6 +133,7 @@ class SocketResponse {
   String? get dropLongitude => _dropLongitude;
   String? get status => _status;
   int? get id => _id;
+  int? get driver_id => _driver_id;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -143,6 +151,8 @@ class SocketResponse {
     map['dropLongitude'] = _dropLongitude;
     map['status'] = _status;
     map['id'] = _id;
+    map['driver_id'] = _driver_id;
+
     return map;
   }
 
@@ -196,5 +206,9 @@ class SocketResponse {
 
   set id(int? value) {
     _id = value;
+  }
+
+  set driver_id(int? value) {
+    _driver_id = value;
   }
 }

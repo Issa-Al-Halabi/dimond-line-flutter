@@ -21,7 +21,7 @@ import '../../../widgets/phone_field.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import '../../../../constants.dart';
 import '../user_main_application/main_screen/user_dashboard.dart';
-import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_html/flutter_html.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -765,11 +765,11 @@ class _MyDialogState extends State<alert> {
               child: SingleChildScrollView(
                   child: Column(
                 children: [
-                  widget.privacy != null && widget.privacy != ""
-                      ? Html(
-                          data: widget.privacy.toString(),
-                        )
-                      : CircularProgressIndicator(color: primaryBlue),
+                  // widget.privacy != null && widget.privacy != ""
+                  //     ? Html(
+                  //         data: widget.privacy.toString(),
+                  //       )
+                  //     : CircularProgressIndicator(color: primaryBlue),
                   SizedBox(
                     height: 2.h,
                   ),

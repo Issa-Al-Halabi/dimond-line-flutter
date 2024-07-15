@@ -26,8 +26,8 @@ class MapScreen2 extends StatefulWidget {
 
 class _MapScreen2State extends State<MapScreen2> {
   late Position cl;
-  late double lat;
-  late double long;
+  double lat = 0.0;
+  double long = 0.0;
   TextEditingController controllerFrom = TextEditingController();
   TextEditingController controllerTo = TextEditingController();
   List<LatLng> polylineCoordinates = [];
@@ -91,7 +91,8 @@ class _MapScreen2State extends State<MapScreen2> {
       ),
     );
 
-    var creat = await Provider.of<NearestCarsMapProvider>(context, listen: false);
+    var creat =
+        await Provider.of<NearestCarsMapProvider>(context, listen: false);
     getNearestCarsApi(creat);
     isLoading = true;
     if (mounted) {
@@ -100,12 +101,16 @@ class _MapScreen2State extends State<MapScreen2> {
   }
 
   convertToAddress(double lat, double long) async {
+    print('convertToAddress ');
     print(address);
     // String apiurl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$long&key=$APIKEY";
-    String apiurl = "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
+    String apiurl =
+        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
+    print(apiurl);
     try {
       Response response =
           await get(Uri.parse(apiurl)); //send get request to API URL
+      print("response.statusCode " + response.statusCode.toString());
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         // address = data["results"][0]["address_components"][2]["long_name"] + "," + data["results"][0]["address_components"][1]["long_name"]; // f there is atleast one address
@@ -121,6 +126,7 @@ class _MapScreen2State extends State<MapScreen2> {
         address = "";
       }
     } catch (e) {
+      print(e.toString());
       if (mounted)
         setSnackbar(
             "Error While Connecting Please Check your Internet", context);
@@ -197,6 +203,11 @@ class _MapScreen2State extends State<MapScreen2> {
 
   @override
   Widget build(BuildContext context) {
+    print("####################################");
+    print(address);
+    print("lat" + lat.toString());
+    print("long" + long.toString());
+    print("####################################");
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
@@ -290,33 +301,40 @@ class _MapScreen2State extends State<MapScreen2> {
                                     ),
                                   ),
                                   onTap: () async {
-                                    Loader.show(
-                                      context,
-                                      progressIndicator: LoaderWidget(),
-                                    );
-                                    convertToAddress(lat, long);
-                                    print('address is:');
-                                    print(address);
-                                    Loader.hide();
-                                    Future.delayed(
-                                      const Duration(seconds: 1),
-                                    ).then(
-                                      (_) async {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => OrderNow(
-                                              fromLat: lat,
-                                              fromLon: long,
-                                              sourceAddress: address,
-                                              toLat: 0.0,
-                                              toLon: 0.0,
-                                              destAddress: '',
+                                    if (lat != 0.0 && long != 0.0) {
+                                      Loader.show(
+                                        context,
+                                        progressIndicator: LoaderWidget(),
+                                      );
+
+                                      print(lat.toString());
+                                      print(long.toString());
+                                      convertToAddress(lat, long);
+                                      print(
+                                          '2222222222222222222222222222222222222222 is:');
+                                      print('address is:');
+                                      print(address);
+                                      Loader.hide();
+                                      Future.delayed(
+                                        const Duration(seconds: 1),
+                                      ).then(
+                                        (_) async {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => OrderNow(
+                                                fromLat: lat,
+                                                fromLon: long,
+                                                sourceAddress: address,
+                                                toLat: 0.0,
+                                                toLon: 0.0,
+                                                destAddress: '',
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    );
+                                          );
+                                        },
+                                      );
+                                    }
                                   },
                                 ),
                                 SizedBox(width: 1.w),
@@ -343,31 +361,33 @@ class _MapScreen2State extends State<MapScreen2> {
                                         color: white,
                                       ))),
                                   onTap: () async {
-                                    Loader.show(context,
-                                        progressIndicator: LoaderWidget());
-                                    convertToAddress(lat, long);
-                                    print('address is:');
-                                    print(address);
-                                    Loader.hide();
-                                    Future.delayed(const Duration(seconds: 1))
-                                        .then(
-                                      (_) async {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => OrderNow(
-                                              fromLat: lat,
-                                              fromLon: long,
-                                              sourceAddress: address,
-                                              toLat: 0.0,
-                                              toLon: 0.0,
-                                              destAddress: '',
-                                              laterOrder: true,
+                                    if (lat != 0.0 && long != 0.0) {
+                                      Loader.show(context,
+                                          progressIndicator: LoaderWidget());
+                                      convertToAddress(lat, long);
+                                      print('address is:');
+                                      print(address);
+                                      Loader.hide();
+                                      Future.delayed(const Duration(seconds: 1))
+                                          .then(
+                                        (_) async {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => OrderNow(
+                                                fromLat: lat,
+                                                fromLon: long,
+                                                sourceAddress: address,
+                                                toLat: 0.0,
+                                                toLon: 0.0,
+                                                destAddress: '',
+                                                laterOrder: true,
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    );
+                                          );
+                                        },
+                                      );
+                                    }
                                   },
                                 ),
                               ],

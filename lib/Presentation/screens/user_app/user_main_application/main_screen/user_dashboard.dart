@@ -54,8 +54,8 @@ class _UserDashboardState extends State<UserDashboard> {
   void initState() {
     buildScreens();
     getTrips();
-    SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
@@ -81,6 +81,7 @@ class _UserDashboardState extends State<UserDashboard> {
         int length = creat.data.data!.length;
         print('length');
         print(length);
+
         if (length != 0) {
           isTrip = true;
           for (int i = 0; i < creat.data.data!.length; i++) {
@@ -96,6 +97,8 @@ class _UserDashboardState extends State<UserDashboard> {
                 momentTripModel.dropLongitude =
                     creat.data.data![i].dropLongitude;
                 momentTripModel.id = creat.data.data![i].id;
+                momentTripModel.driver_id = creat.data.data![i].driverId;
+
                 momentTripModel.status = creat.data.data![i].status;
               } else {
                 isTrackDriverTrip = true;
@@ -124,6 +127,8 @@ class _UserDashboardState extends State<UserDashboard> {
                 momentTripModel.dropLongitude =
                     creat.data.data![i].dropLongitude;
                 momentTripModel.id = creat.data.data![i].id;
+                momentTripModel.driver_id = creat.data.data![i].driverId;
+
                 momentTripModel.status = creat.data.data![i].status;
               }
               print('dddddddddddddddddddd');
@@ -160,6 +165,8 @@ class _UserDashboardState extends State<UserDashboard> {
                 delayTripModel.dropLongitude =
                     creat.data.data![i].dropLongitude;
                 delayTripModel.id = creat.data.data![i].id;
+                delayTripModel.driver_id = creat.data.data![i].driverId;
+
                 delayTripModel.status = creat.data.data![i].status;
               }
               // typeOfTrip = 'delay';

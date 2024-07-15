@@ -83,6 +83,7 @@ class _OrderNowState extends State<OrderNow> {
   }
 
   convertToAddress(double lat, double long) async {
+    print("convertToAddress");
     print(widget.sourceAddress.toString());
     String apiurl =
         "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
@@ -139,7 +140,7 @@ class _OrderNowState extends State<OrderNow> {
   String getTime(TimeOfDay tod) {
     final now = DateTime.now();
     final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
-    final format = DateFormat.jm();
+    final format = DateFormat.jm("en_US");
     return format.format(dt);
   }
 
@@ -161,7 +162,7 @@ class _OrderNowState extends State<OrderNow> {
     if (selectedDate == null) {
       return 'select date'.tr();
     } else {
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
+      return DateFormat('yyyy-MM-dd', 'en_US').format(selectedDate);
     }
   }
 
@@ -402,9 +403,11 @@ class _OrderNowState extends State<OrderNow> {
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
-        body: widget.sourceAddress == ''
-            ? Center(child: LoaderWidget())
-            : Container(
+        body:
+            //  widget.sourceAddress == ''
+            //     ? Center(child: LoaderWidget())
+            //     :
+            Container(
                 height: getScreenHeight(context),
                 width: getScreenWidth(context),
                 decoration: const BoxDecoration(
@@ -480,6 +483,9 @@ class _OrderNowState extends State<OrderNow> {
                                         countries: const ["sy", "sy"],
                                         isLatLngRequired: true,
                                         getPlaceDetailWithLatLng: (prediction) {
+                                          print(prediction.description);
+                                          print(prediction.matchedSubstrings);
+                                          print(prediction.reference);
                                           setState(() {
                                             controllerFrom.text =
                                                 prediction.description!;
@@ -494,6 +500,11 @@ class _OrderNowState extends State<OrderNow> {
                                               "${prediction.lat}")!;
                                           widget.fromLon = double.tryParse(
                                               "${prediction.lng}")!;
+
+                                          if (prediction.description != null) {
+                                            widget.sourceAddress =
+                                                prediction.description!;
+                                          }
                                           setState(() {});
                                           print("placeDetails 1 :" +
                                               prediction.lng.toString());
@@ -581,7 +592,8 @@ class _OrderNowState extends State<OrderNow> {
                                     child: GooglePlaceAutoCompleteTextField(
                                         textEditingController: controllerTo,
                                         googleAPIKey: APIKEY,
-                                        inputDecoration: const InputDecoration(border: InputBorder.none),
+                                        inputDecoration: const InputDecoration(
+                                            border: InputBorder.none),
                                         countries: const ["sy", "sy"],
                                         // optional by default null is set
                                         isLatLngRequired: true,
@@ -759,6 +771,7 @@ class _OrderNowState extends State<OrderNow> {
                                             print(widget.toLat);
                                             print(widget.toLon);
                                             print(widget.sourceAddress);
+
                                             print(getDate());
                                             print(getTime(selectedTime));
                                             getDistance(
@@ -847,15 +860,20 @@ class _OrderNowState extends State<OrderNow> {
                                             //   timeOfTrip,
                                             //   getSourceDist
                                             // });
-                                            if (widget.toLat.toString() !=
+                                            print(widget.toLat.toString());
+                                            print(widget.toLon.toString());
+                                            print(widget.sourceAddress);
+                                            print(
+                                                "widget.sourceAddress widget.sourceAddress widget.sourceAddress widget.sourceAddress widget.sourceAddress ");
+                                            if (widget.toLat.toString() != '0.0' &&
+                                                widget.toLon.toString() !=
                                                     '0.0' &&
-                                                widget.toLat.toString() !=
-                                                    '0.0') {
+                                                widget.sourceAddress != "") {
                                               sourceDistApi(
                                                   widget.fromLat.toString(),
                                                   widget.fromLon.toString(),
                                                   widget.toLat.toString(),
-                                                  widget.toLat.toString(),
+                                                  widget.toLon.toString(),
                                                   distance.toString(),
                                                   timeOfTrip,
                                                   getSourceDist);

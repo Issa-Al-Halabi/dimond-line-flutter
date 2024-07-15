@@ -67,26 +67,37 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  void roadActionBt(fromLat, fromLon, toLat, toLon) async {
-    RoadInfo roadInfo = await controller.drawRoad(
-      GeoPoint(
-        latitude: fromLat,
-        longitude: fromLon,
-      ),
-      GeoPoint(
-        latitude: toLat,
-        longitude: toLon,
-      ),
-      roadType: RoadType.car,
-      roadOption: RoadOption(
-        roadWidth: 15,
-        roadColor: Colors.blue,
-        zoomInto: true,
-      ),
-    );
-    print("${roadInfo.distance}km");
-    print("${roadInfo.duration}sec");
-    print("${roadInfo.instructions}");
+  void roadActionBt(
+      double fromLat, double fromLon, double toLat, double toLon) async {
+    try {
+      print(
+          'Coordinates: From ($fromLat, $fromLon) To ($toLat, $toLon)'); // Debug print
+
+      RoadInfo roadInfo = await controller.drawRoad(
+        GeoPoint(
+          latitude: fromLat,
+          longitude: fromLon,
+        ),
+        GeoPoint(
+          latitude: toLat,
+          longitude: toLon,
+        ),
+        roadType: RoadType.car,
+        roadOption: RoadOption(
+          roadWidth: 15,
+          roadColor: Colors.blue,
+          zoomInto: true,
+        ),
+      );
+
+      print('Road Info: ${roadInfo.toString()}');
+      print('Route: ${roadInfo.route}');
+      print('Distance: ${roadInfo.distance} km');
+      print('Duration: ${roadInfo.duration} sec');
+      print('Instructions: ${roadInfo.instructions}');
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   getDistance(double latcurrent, double lancurrent, double lat, double lng) {
@@ -132,7 +143,7 @@ class _MapScreenState extends State<MapScreen> {
         print(addressFromMarker);
       });
     } else {
-      print("error while fetching geoconding data");
+      print("@@@@@@@@@@@@error while fetching geoconding data");
     }
   }
 
@@ -140,17 +151,22 @@ class _MapScreenState extends State<MapScreen> {
     print(addressToMarker);
     String apiurl =
         "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    http.Response response =
-        await http.get(Uri.parse(apiurl)); //send get request to API URL
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      addressToMarker = data["features"][0]["properties"]["geocoding"]["label"];
-      print("address --- Ahmad convertToAddress --- : " + addressToMarker);
-      setState(() {
-        print(addressToMarker);
-      });
-    } else {
-      print("error while fetching geoconding data");
+    try {
+      http.Response response =
+          await http.get(Uri.parse(apiurl)); //send get request to API URL
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        addressToMarker =
+            data["features"][0]["properties"]["geocoding"]["label"];
+        print("address --- Ahmad convertToAddress --- : " + addressToMarker);
+        setState(() {
+          print(addressToMarker);
+        });
+      } else {
+        print("error while fetching geoconding data");
+      }
+    } catch (e) {
+      print("error while fetching geoconding data " + e.toString());
     }
   }
 
@@ -270,8 +286,11 @@ class _MapScreenState extends State<MapScreen> {
                               color: backgroundColor,
                             ),
                             child: OSMFlutter(
-                              onMapIsReady: (p0) =>
-                                  roadActionBt(fromLat, fromLon, toLat, toLon),
+                              onMapIsReady: (p0) {
+                                if (fromLat != toLat && fromLon != toLon) {
+                                  roadActionBt(fromLat, fromLon, toLat, toLon);
+                                }
+                              },
                               controller: controller,
                               osmOption: OSMOption(
                                 staticPoints: [
@@ -376,7 +395,8 @@ class _MapScreenState extends State<MapScreen> {
                                     } else {
                                       Loader.hide();
                                       setSnackbar(
-                                          'enter all fields'.tr(), context,
+                                        'enter all fields'.tr(),
+                                        context,
                                       );
                                     }
                                   },

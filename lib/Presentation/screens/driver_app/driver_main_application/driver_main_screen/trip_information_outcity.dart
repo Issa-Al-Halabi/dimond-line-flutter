@@ -110,8 +110,10 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                   pageBuilder: (BuildContext context,
                       Animation<double> animation,
                       Animation<double> secondaryAnimation) {
-                    return DriverDashboard(driverType: 'driver',
-                      index: 1,);
+                    return DriverDashboard(
+                      driverType: 'driver',
+                      index: 1,
+                    );
                   },
                   transitionsBuilder: (BuildContext context,
                       Animation<double> animation,
@@ -127,15 +129,16 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                   transitionDuration: Duration(milliseconds: 500),
                 ),
               );
-            }
-            else {
+            } else {
               Navigator.of(context).push(
                 PageRouteBuilder(
                   pageBuilder: (BuildContext context,
                       Animation<double> animation,
                       Animation<double> secondaryAnimation) {
-                    return DriverDashboard(driverType: 'external_driver',
-                    index: 1,);
+                    return DriverDashboard(
+                      driverType: 'external_driver',
+                      index: 1,
+                    );
                   },
                   transitionsBuilder: (BuildContext context,
                       Animation<double> animation,
@@ -287,8 +290,9 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                                           width: 70.w,
                                           decoration: BoxDecoration(
                                             color: lightBlue2,
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(20)),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(20)),
                                           ),
                                         ),
                                       ),
@@ -335,29 +339,36 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                                         children: [
                                           Image.asset(from,
                                               height: 6.h, width: 6.w),
-                                            myText(
+                                          SizedBox(width: 10),
+                                          Expanded(
+                                            child: myText(
                                               text: '${widget.pickupAddTrip}',
                                               fontSize: 5.sp,
                                               color: primaryBlue,
                                             ),
+                                          ),
                                         ],
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Image.asset(to,
                                               height: 6.h, width: 6.w),
-                                            myText(
+                                          SizedBox(width: 10),
+                                          Expanded(
+                                            child: myText(
                                                 text: '${widget.destAddrTrip}',
                                                 fontSize: 5.sp,
                                                 color: primaryBlue),
+                                          ),
                                         ],
                                       ),
                                       widget.date != ''
                                           ? Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Image.asset(date,
                                                     height: 6.h, width: 6.w),
@@ -377,7 +388,8 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                                       widget.time != ''
                                           ? Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Image.asset(time,
                                                     height: 6.h, width: 6.w),
@@ -457,7 +469,8 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                                               style: TextStyle(
                                                 color: lightBlue4,
                                                 fontSize: 5.sp,
-                                                decoration: TextDecoration.underline,
+                                                decoration:
+                                                    TextDecoration.underline,
                                               ),
                                             ),
                                             onTap: () {
@@ -473,65 +486,72 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                                         children: [
                                           Image.asset(location,
                                               height: 6.h, width: 6.w),
-                                          InkWell(
-                                            child: Text(
-                                              '${widget.pickupAddTrip}',
-                                              style: TextStyle(
-                                                color: lightBlue4,
-                                                fontSize: 5.sp,
-                                                decoration: TextDecoration.underline,
-                                              ),
-                                            ),
-                                            onTap: () {
-                                              print(widget.pickupLatitude);
-                                              print(widget.pickupLongitude);
-                                              Navigator.of(context).push(
-                                                PageRouteBuilder(
-                                                  pageBuilder: (BuildContext
-                                                          context,
-                                                      Animation<double> animation,
-                                                      Animation<double>
-                                                          secondaryAnimation) {
-                                                    return UserLocationScreen(
-                                                      pickupLongitude:
-                                                          widget.pickupLongitude,
-                                                      pickupLatitude:
-                                                          widget.pickupLatitude,
-                                                      dropLatitude:
-                                                          widget.dropLatitude,
-                                                      dropLongitude:
-                                                          widget.dropLongitude,
-                                                    );
-                                                  },
-                                                  transitionsBuilder:
-                                                      (BuildContext context,
-                                                          Animation<double>
-                                                              animation,
-                                                          Animation<double>
-                                                              secondaryAnimation,
-                                                          Widget child) {
-                                                    return Align(
-                                                      child: SizeTransition(
-                                                        sizeFactor: animation,
-                                                        child: child,
-                                                      ),
-                                                    );
-                                                  },
-                                                  transitionDuration:
-                                                      Duration(milliseconds: 500),
+                                          SizedBox(width: 10),
+                                          Expanded(
+                                            child: InkWell(
+                                              child: Text(
+                                                '${widget.pickupAddTrip}',
+                                                style: TextStyle(
+                                                  color: lightBlue4,
+                                                  fontSize: 5.sp,
+                                                  decoration:
+                                                      TextDecoration.underline,
                                                 ),
-                                              );
-                                            },
+                                              ),
+                                              onTap: () {
+                                                print(widget.pickupLatitude);
+                                                print(widget.pickupLongitude);
+                                                Navigator.of(context).push(
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (BuildContext
+                                                            context,
+                                                        Animation<double>
+                                                            animation,
+                                                        Animation<double>
+                                                            secondaryAnimation) {
+                                                      return UserLocationScreen(
+                                                        pickupLongitude: widget
+                                                            .pickupLongitude,
+                                                        pickupLatitude: widget
+                                                            .pickupLatitude,
+                                                        dropLatitude:
+                                                            widget.dropLatitude,
+                                                        dropLongitude: widget
+                                                            .dropLongitude,
+                                                      );
+                                                    },
+                                                    transitionsBuilder:
+                                                        (BuildContext context,
+                                                            Animation<double>
+                                                                animation,
+                                                            Animation<double>
+                                                                secondaryAnimation,
+                                                            Widget child) {
+                                                      return Align(
+                                                        child: SizeTransition(
+                                                          sizeFactor: animation,
+                                                          child: child,
+                                                        ),
+                                                      );
+                                                    },
+                                                    transitionDuration:
+                                                        Duration(
+                                                            milliseconds: 500),
+                                                  ),
+                                                );
+                                              },
+                                            ),
                                           ),
                                         ],
                                       ),
                                       widget.hasExpense == 'Yes'
                                           ? Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Icon(Icons.money,
-                                                color: primaryBlue),
+                                                    color: primaryBlue),
                                                 Text(
                                                   'expens'.tr(),
                                                   style: TextStyle(
@@ -542,10 +562,8 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                                               ],
                                             )
                                           : Container(),
-
                                       widget.hasExpense == 'Yes'
-                                          ?
-                                          Column(
+                                          ? Column(
                                               children: List.generate(
                                                   widget.expensesList[0].type!
                                                       .length,
@@ -556,22 +574,25 @@ class _TripInfoOutcityScreenState extends State<TripInfoOutcityScreen> {
                                                         children: [
                                                           myText(
                                                               text: widget
-                                                                      .expensesList[
-                                                                          0]
-                                                                      .type![index] +
-                                                                  ' ',
-                                                              fontSize: 5.sp,
-                                                              color: primaryBlue),
-                                                          myText(
-                                                              text: formatter.format(
-                                                                      int.parse(widget
                                                                           .expensesList[
                                                                               0]
-                                                                          .price![index])) +
+                                                                          .type![
+                                                                      index] +
+                                                                  ' ',
+                                                              fontSize: 5.sp,
+                                                              color:
+                                                                  primaryBlue),
+                                                          myText(
+                                                              text: formatter.format(int.parse(widget
+                                                                          .expensesList[
+                                                                              0]
+                                                                          .price![
+                                                                      index])) +
                                                                   'sp'.tr() +
                                                                   ' ',
                                                               fontSize: 5.sp,
-                                                              color: primaryBlue)
+                                                              color:
+                                                                  primaryBlue)
                                                         ],
                                                       )),
                                             )

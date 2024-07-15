@@ -50,12 +50,13 @@ class _TrackingScreenState extends State<TrackingScreen> {
   var finalDistance;
   String totalPrice = '';
   String adminFare = '';
+  Timer? timer;
 
   List<GeoPoint> latLngList = [];
   ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
 
   IOWebSocketChannel? _channel;
-  late MapController controller;
+  MapController? controller;
   bool isLoading = false;
 
   @override
@@ -68,9 +69,19 @@ class _TrackingScreenState extends State<TrackingScreen> {
 
   @override
   void dispose() {
+    print("dispose()");
     if (_channel != null) {
       _channel!.sink.close();
-      controller.dispose();
+    }
+    if (timer != null) {
+      print("timer != null");
+      timer!.cancel();
+      timer = null;
+    }
+
+    if (controller != null) {
+      controller!.dispose();
+      controller = null;
     }
     super.dispose();
   }
@@ -78,7 +89,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
   Future<void> getCookie() async {
     try {
       Map<String, String> co = {};
-      Response response = await get(Uri.parse(network_client.mycarSscSecurity_URL));
+      Response response =
+          await get(Uri.parse(network_client.mycarSscSecurity_URL));
       co.addAll({"Cookie": response.headers['set-cookie'].toString()});
       print(co);
       _channel = IOWebSocketChannel.connect(
@@ -102,18 +114,20 @@ class _TrackingScreenState extends State<TrackingScreen> {
     lng = cl.longitude;
     controller = MapController(
       initPosition: GeoPoint(
-        latitude: lat,
-        longitude: lng,
+        latitude: double.parse(widget.pickupLatitude),
+        longitude: double.parse(widget.pickupLongitude),
       ),
     );
-
     latLngList.add(GeoPoint(latitude: lat, longitude: lng));
 
+    print(latLngList);
+    // updateMarker();
+
     isLoading = true;
+
     if (mounted) {
       setState(() {});
     }
-    updateMarker();
   }
 
   Future getPer() async {
@@ -157,24 +171,26 @@ class _TrackingScreenState extends State<TrackingScreen> {
     }
   }
 
-  ///////////////////////// OSM FLUTTER //////////////////////////////////
+  /// رسم المسار الاساس
   void roadActionBt() async {
-    controller.addMarker(
-      GeoPoint(
-        latitude: lat,
-        longitude: lng,
-      ),
-      markerIcon: MarkerIcon(
-        assetMarker: AssetMarker(
-          scaleAssetImage: 2,
-          image: AssetImage("assets/images/caricon.png"),
-        ),
-      ),
-    );
-    RoadInfo roadInfo = await controller.drawRoad(
-      GeoPoint(
-          latitude: double.parse(widget.pickupLatitude),
-          longitude: double.parse(widget.pickupLongitude)),
+    // controller.addMarker(
+    //   GeoPoint(
+    //     latitude: lat,
+    //     longitude: lng,
+    //   ),
+    //   markerIcon: MarkerIcon(
+    //     assetMarker: AssetMarker(
+    //       scaleAssetImage: 2,
+    //       image: AssetImage("assets/images/caricon.png"),
+    //     ),
+    //   ),
+    // );
+    final pickupGeoPoint = GeoPoint(
+        latitude: double.parse(widget.pickupLatitude),
+        longitude: double.parse(widget.pickupLongitude));
+
+    RoadInfo roadInfo = await controller!.drawRoad(
+      pickupGeoPoint,
       GeoPoint(
         latitude: double.parse(widget.dropLatitude),
         longitude: double.parse(widget.dropLongitude),
@@ -187,6 +203,20 @@ class _TrackingScreenState extends State<TrackingScreen> {
       ),
     );
 
+    // init marker
+    await controller!.addMarker(
+      pickupGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
+          ),
+        ),
+      ),
+    );
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = pickupGeoPoint;
     // controller.changeLocationMarker(oldLocation: oldLocation, newLocation: newLocation)
 
     print("${roadInfo.distance}km");
@@ -195,8 +225,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
   }
 
   void UpdateRoadActionBt(double pickupLatitude, double pickupLongitude) async {
-    await controller.removeLastRoad();
-    RoadInfo roadInfo = await controller.drawRoad(
+    await controller!.removeLastRoad();
+    RoadInfo roadInfo = await controller!.drawRoad(
       GeoPoint(
         latitude: pickupLatitude,
         longitude: pickupLongitude,
@@ -217,32 +247,61 @@ class _TrackingScreenState extends State<TrackingScreen> {
     print("${roadInfo.instructions}");
   }
 
-  void updateMarker() async {
+  void updateMarker(
+    double pickupLatitude,
+    double pickupLongitude,
+  ) async {
+    print('2222222222222222222222222222');
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    print({
+      "latitude": pickupLatitude,
+      "longitude": pickupLongitude,
+    });
+    if (controller == null || !mounted) {
+      return;
+    }
+    // Create the new GeoPoint
+    final newGeoPoint = GeoPoint(
+      latitude: pickupLatitude,
+      longitude: pickupLongitude,
+    );
+
+    // Check if lastGeoPoint is not null and is different from the newGeoPoint
     if (lastGeoPoint.value != null) {
-      controller.changeLocationMarker(
-        oldLocation: lastGeoPoint.value!,
-        newLocation: latLngList.last,
-      );
-    } else {
-      controller.addMarker(
-        latLngList.last,
-        markerIcon: MarkerIcon(
-          assetMarker: AssetMarker(
-            scaleAssetImage: 2,
-            image: AssetImage(
-              "assets/images/caricon.png",
-            ),
+      print("Removing existing marker at ${lastGeoPoint.value}");
+
+      // Attempt to remove the existing marker
+      await controller!.removeMarker(lastGeoPoint.value!);
+      await controller!.removeMarkers([
+        lastGeoPoint.value!,
+        newGeoPoint,
+      ]);
+
+      print("Markers removed, adding new marker at $newGeoPoint");
+    }
+    // Add the new marker
+    await controller!.addMarker(
+      newGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
           ),
         ),
-      );
-    }
-    lastGeoPoint.value = latLngList.last;
+      ),
+    );
 
-    await controller.drawCircle(
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = newGeoPoint;
+
+    print("Marker added and lastGeoPoint updated to $newGeoPoint");
+
+    await controller!.drawCircle(
       CircleOSM(
         key: "car",
-        centerPoint: latLngList.last,
-        radius: 10,
+        centerPoint: newGeoPoint,
+        radius: 50,
         color: Colors.blue,
         strokeWidth: 0.3,
       ),
@@ -389,6 +448,27 @@ class _TrackingScreenState extends State<TrackingScreen> {
     ));
   }
 
+  ////////////////// to update the driver location //////////////////////////
+  void startPeriodicRequest() {
+    timer = Timer.periodic(Duration(seconds: 10), (Timer tick) {
+      if (timer != null) {
+        updateDriverLocation();
+      }
+
+      print("timer :" + tick.tick.toString());
+    });
+  }
+
+  Future<void> updateDriverLocation() async {
+    try {
+      Position currentLocation =
+          await Geolocator.getCurrentPosition().then((value) => value);
+      updateMarker(currentLocation.latitude, currentLocation.longitude);
+    } catch (e) {
+      print('updateDriverLocation failed with catch: ${e}');
+    }
+  }
+
   DateTime timeback = DateTime.now();
 
   @override
@@ -421,7 +501,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
         }
       },
       child: Scaffold(
-        body: isLoading == false
+        body: isLoading == false || controller == null
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -481,23 +561,23 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                               lng = data['positions'][0]
                                                   ['longitude'];
 
-                                              latLngList.add(
-                                                GeoPoint(
-                                                  latitude: lat,
-                                                  longitude: lng,
-                                                ),
-                                              );
-                                              updateMarker();
-                                              UpdateRoadActionBt(
-                                                lat,
-                                                lng,
-                                              );
+                                              // latLngList.add(
+                                              //   GeoPoint(
+                                              //     latitude: lat,
+                                              //     longitude: lng,
+                                              //   ),
+                                              // );
+                                              // updateMarker();
+                                              // UpdateRoadActionBt(
+                                              //   lat,
+                                              //   lng,
+                                              // );
                                               //todo
-                                              getLocationApi(
-                                                lat.toString(),
-                                                lng.toString(),
-                                                deviceNumb.toString(),
-                                              );
+                                              // getLocationApi(
+                                              //   lat.toString(),
+                                              //   lng.toString(),
+                                              //   deviceNumb.toString(),
+                                              // );
                                             }
                                           }
                                         } else {
@@ -526,8 +606,13 @@ class _TrackingScreenState extends State<TrackingScreen> {
                                   color: backgroundColor,
                                 ),
                                 child: OSMFlutter(
-                                  onMapIsReady: (p0) => roadActionBt(),
-                                  controller: controller,
+                                  onMapIsReady: (p0) {
+                                    roadActionBt();
+                                    if (timer == null) {
+                                      startPeriodicRequest();
+                                    }
+                                  },
+                                  controller: controller!,
                                   osmOption: OSMOption(
                                     roadConfiguration: RoadOption(
                                       roadColor: Colors.blueAccent,

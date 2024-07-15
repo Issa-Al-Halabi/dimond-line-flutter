@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/map_screen_destination.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/map_screen_polyline.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/map_screen_source.dart';
 import 'package:flutter/material.dart';
-import '../../../../../widgets/loader_widget.dart';
+import '../../../../Presentation/widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/source_destination_delayed_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/source_destination_provider.dart';
@@ -17,10 +20,10 @@ import 'package:provider/provider.dart';
 import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
-import '../../../../../Functions/helper.dart';
-import 'map_screen_destination.dart';
-import 'map_screen_polyline.dart';
-import 'map_screen_source.dart';
+import '../../../../Presentation/Functions/helper.dart';
+// import 'map_screen_destination.dart';
+// import 'map_screen_polyline.dart';
+// import 'map_screen_source.dart';
 import 'package:http/http.dart' as http;
 
 class OrderNow extends StatefulWidget {
@@ -70,6 +73,7 @@ class _OrderNowState extends State<OrderNow> {
   @override
   void initState() {
     convertToAddress(widget.fromLat, widget.fromLon);
+
     if (widget.getDestAdd == true) {
       convertToAddressDest(widget.toLat, widget.toLon);
     }
@@ -161,7 +165,7 @@ class _OrderNowState extends State<OrderNow> {
     if (selectedDate == null) {
       return 'select date'.tr();
     } else {
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
+      return DateFormat('yyyy-MM-dd', 'en_US').format(selectedDate);
     }
   }
 
@@ -760,6 +764,10 @@ class _OrderNowState extends State<OrderNow> {
                                             print(widget.toLat);
                                             print(widget.toLon);
                                             print(widget.sourceAddress);
+                                            print("getDate");
+                                            print(DateFormat(
+                                                    'yyyy-MM-dd', 'en_US')
+                                                .format(selectedDate));
                                             print(getDate());
                                             print(getTime(selectedTime));
                                             getDistance(

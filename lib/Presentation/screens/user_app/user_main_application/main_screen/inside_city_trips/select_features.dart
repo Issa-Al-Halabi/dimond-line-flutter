@@ -136,6 +136,14 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                 pageBuilder: (BuildContext context, Animation<double> animation,
                     Animation<double> secondaryAnimation) {
                   // return UserDashboard(index: 1);
+                  print("**********************************************");
+                  print({
+                    "tripId": tripId,
+                    "pickupLatitude": latitude,
+                    "pickupLongitude": longitude,
+                    "dropLatitude": tolat,
+                    "dropLongitude": tolng
+                  });
                   return InTripScreen(
                       tripId: tripId,
                       pickupLatitude: latitude,
@@ -470,6 +478,20 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                       print(order_time);
                                       Loader.hide();
                                       // get nearest car
+                                      print({
+                                        widget.fromLat.toString(),
+                                        widget.fromLon.toString(),
+                                        widget.toLat.toString(),
+                                        widget.toLon.toString(),
+                                        widget.km,
+                                        widget.minutes,
+                                        widget.sourceAdd,
+                                        widget.destAdd,
+                                        widget.price.toString(),
+                                        widget.id,
+                                        optionsId,
+                                        order_time
+                                      });
                                       getNearestCarApi(
                                           widget.fromLat.toString(),
                                           widget.fromLon.toString(),

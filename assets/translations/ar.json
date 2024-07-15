@@ -271,5 +271,9 @@
   "retry" : "إعادة المحاولة",
   "please select type" : "الرجاء اختيار نوع الرحلة",
   "enable gallery" : "يجب اعطاء اذن للتطبيق للوصول الى المعرض من الاعدادات للاستمرار",
-  "search" : "ابحث"
+  "search" : "ابحث",
+  "your trip is waiting for payment" : "طلبك بانتظار الدفع",
+  "go to payment page" : "الذهاب الى صفحة الدفع"
+  
+
 }

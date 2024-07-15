@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_wait_for_payment.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -178,7 +179,7 @@ class _UserOrdersState extends State<UserOrders> {
               child: Column(
                 children: [
                   Container(
-                      height: 90.h,
+                      height: 85.h,
                       width: getScreenWidth(context),
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -207,6 +208,9 @@ class _UserOrdersState extends State<UserOrders> {
                                         itemCount: ordersList.length,
                                         itemBuilder:
                                             (BuildContext context, int index) {
+                                          print(ordersList[index]
+                                              .status
+                                              .toString());
                                           if (ordersList[index]
                                                   .status
                                                   .toString() ==
@@ -238,7 +242,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                       ],
                                                       borderRadius:
                                                           const BorderRadius
-                                                                  .all(
+                                                              .all(
                                                               Radius.circular(
                                                                   20)),
                                                       color: backgroundColor,
@@ -375,7 +379,7 @@ class _UserOrdersState extends State<UserOrders> {
                                                       ],
                                                       borderRadius:
                                                           const BorderRadius
-                                                                  .all(
+                                                              .all(
                                                               Radius.circular(
                                                                   20)),
                                                       color: backgroundColor,
@@ -402,17 +406,31 @@ class _UserOrdersState extends State<UserOrders> {
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w600)
-                                                              : myText(
-                                                                  text:
-                                                                      'your trip is accepted'
+                                                              : ordersList[index]
+                                                                          .status
+                                                                          .toString() ==
+                                                                      'wait for payment'
+                                                                  ? myText(
+                                                                      text: 'your trip is waiting for payment'
                                                                           .tr(),
-                                                                  fontSize:
-                                                                      5.5.sp,
-                                                                  color: Colors
-                                                                      .black54,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
+                                                                      fontSize: 5.5
+                                                                          .sp,
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600)
+                                                                  : myText(
+                                                                      text: 'your trip is accepted'
+                                                                          .tr(),
+                                                                      fontSize:
+                                                                          5.5
+                                                                              .sp,
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600),
                                                           SizedBox(
                                                             height: 2.h,
                                                           ),
@@ -646,86 +664,107 @@ class _UserOrdersState extends State<UserOrders> {
                                                             height: 2.h,
                                                           ),
                                                           ContainerWidget(
-                                                              text:
-                                                                  'track driver'
+                                                              text: ordersList[
+                                                                              index]
+                                                                          .status
+                                                                          .toString() ==
+                                                                      'wait for payment'
+                                                                  ? 'go to payment page'
+                                                                      .tr()
+                                                                  : 'track driver'
                                                                       .tr(),
                                                               h: 6.h,
-                                                              w: 40.w,
+                                                              w: ordersList[index]
+                                                                          .status
+                                                                          .toString() ==
+                                                                      'wait for payment'
+                                                                  ? 60.w
+                                                                  : 40.w,
                                                               onTap: () {
-                                                                print(ordersList[
-                                                                        index]
-                                                                    .id
-                                                                    .toString());
-                                                                print(ordersList[
-                                                                        index]
-                                                                    .pickupLatitude
-                                                                    .toString());
-                                                                print(ordersList[
-                                                                        index]
-                                                                    .pickupLongitude
-                                                                    .toString());
-                                                                print(ordersList[
-                                                                        index]
-                                                                    .vehicle
-                                                                    .deviceNumber
-                                                                    .toString());
-                                                                print(ordersList[
-                                                                        index]
-                                                                    .dropLatitude
-                                                                    .toString());
-                                                                print(ordersList[
-                                                                        index]
-                                                                    .dropLongitude
-                                                                    .toString());
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .push(
-                                                                  PageRouteBuilder(
-                                                                    pageBuilder: (BuildContext context,
-                                                                        Animation<double>
-                                                                            animation,
-                                                                        Animation<double>
-                                                                            secondaryAnimation) {
-                                                                      return TrackingDriverScreen(
-                                                                          tripId: ordersList[index]
-                                                                              .id
-                                                                              .toString(),
-                                                                          driverDeviceNumb: ordersList[index]
-                                                                              .vehicle
-                                                                              .deviceNumber
-                                                                              .toString(),
-                                                                          pickupLatitude: ordersList[index]
-                                                                              .pickupLatitude,
-                                                                          pickupLongitude: ordersList[index]
-                                                                              .pickupLongitude,
-                                                                          dropLatitude: ordersList[index]
-                                                                              .dropLatitude,
-                                                                          dropLongitude:
-                                                                              ordersList[index].dropLongitude);
-                                                                    },
-                                                                    transitionsBuilder: (BuildContext context,
-                                                                        Animation<double>
-                                                                            animation,
-                                                                        Animation<double>
-                                                                            secondaryAnimation,
-                                                                        Widget
-                                                                            child) {
-                                                                      return Align(
-                                                                        child:
-                                                                            SizeTransition(
-                                                                          sizeFactor:
+                                                                if (ordersList[
+                                                                            index]
+                                                                        .status
+                                                                        .toString() ==
+                                                                    'wait for payment') {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .push(
+                                                                    PageRouteBuilder(
+                                                                      pageBuilder: (BuildContext context,
+                                                                          Animation<double>
                                                                               animation,
+                                                                          Animation<double>
+                                                                              secondaryAnimation) {
+                                                                        return TripWaitForPaymentUserScreen(
+                                                                            tripId:
+                                                                                ordersList[index].id.toString(),
+                                                                            finalCost: ordersList[index].cost.toString());
+                                                                      },
+                                                                      transitionsBuilder: (BuildContext context,
+                                                                          Animation<double>
+                                                                              animation,
+                                                                          Animation<double>
+                                                                              secondaryAnimation,
+                                                                          Widget
+                                                                              child) {
+                                                                        return Align(
                                                                           child:
-                                                                              child,
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                    transitionDuration:
-                                                                        Duration(
-                                                                            milliseconds:
-                                                                                500),
-                                                                  ),
-                                                                );
+                                                                              SizeTransition(
+                                                                            sizeFactor:
+                                                                                animation,
+                                                                            child:
+                                                                                child,
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                      transitionDuration:
+                                                                          Duration(
+                                                                              milliseconds: 500),
+                                                                    ),
+                                                                  );
+                                                                } else {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .push(
+                                                                    PageRouteBuilder(
+                                                                      pageBuilder: (BuildContext context,
+                                                                          Animation<double>
+                                                                              animation,
+                                                                          Animation<double>
+                                                                              secondaryAnimation) {
+                                                                        return TrackingDriverScreen(
+                                                                            tripId:
+                                                                                ordersList[index].id.toString(),
+                                                                            driverDeviceNumb: ordersList[index].vehicle.deviceNumber.toString(),
+                                                                            driverId: ordersList[index].driverId.toString(),
+                                                                            pickupLatitude: ordersList[index].pickupLatitude,
+                                                                            pickupLongitude: ordersList[index].pickupLongitude,
+                                                                            dropLatitude: ordersList[index].dropLatitude,
+                                                                            dropLongitude: ordersList[index].dropLongitude);
+                                                                      },
+                                                                      transitionsBuilder: (BuildContext context,
+                                                                          Animation<double>
+                                                                              animation,
+                                                                          Animation<double>
+                                                                              secondaryAnimation,
+                                                                          Widget
+                                                                              child) {
+                                                                        return Align(
+                                                                          child:
+                                                                              SizeTransition(
+                                                                            sizeFactor:
+                                                                                animation,
+                                                                            child:
+                                                                                child,
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                      transitionDuration:
+                                                                          Duration(
+                                                                              milliseconds: 500),
+                                                                    ),
+                                                                  );
+                                                                }
                                                               }),
                                                           SizedBox(
                                                             height: 2.h,

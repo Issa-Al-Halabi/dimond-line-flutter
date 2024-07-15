@@ -121,6 +121,7 @@ class OutsideTrips {
     int? userId,
     int? vehicleId,
     int? driverId,
+    int? cost,
     String? status,
     dynamic requestType,
     String? pickupLatitude,
@@ -139,6 +140,7 @@ class OutsideTrips {
     _userId = userId;
     _vehicleId = vehicleId;
     _driverId = driverId;
+    _cost = cost;
     _status = status;
     _requestType = requestType;
     _pickupLatitude = pickupLatitude;
@@ -159,6 +161,7 @@ class OutsideTrips {
     _userId = json['user_id'];
     _vehicleId = json['vehicle_id'];
     _driverId = json['driver_id'];
+    _cost = json['cost'];
     _status = json['status'];
     _requestType = json['request_type'];
     _pickupLatitude = json['pickup_latitude'];
@@ -178,6 +181,7 @@ class OutsideTrips {
   int? _userId;
   int? _vehicleId;
   int? _driverId;
+  int? _cost;
   String? _status;
   dynamic _requestType;
   String? _pickupLatitude;
@@ -196,6 +200,7 @@ class OutsideTrips {
     int? userId,
     int? vehicleId,
     int? driverId,
+    int? cost,
     String? status,
     dynamic requestType,
     String? pickupLatitude,
@@ -215,6 +220,7 @@ class OutsideTrips {
         userId: userId ?? _userId,
         vehicleId: vehicleId ?? _vehicleId,
         driverId: driverId ?? _driverId,
+        cost: cost ?? _cost,
         status: status ?? _status,
         requestType: requestType ?? _requestType,
         pickupLatitude: pickupLatitude ?? _pickupLatitude,
@@ -233,6 +239,7 @@ class OutsideTrips {
   int? get userId => _userId;
   int? get vehicleId => _vehicleId;
   int? get driverId => _driverId;
+  int? get cost => _cost;
   String? get status => _status;
   dynamic get requestType => _requestType;
   String? get pickupLatitude => _pickupLatitude;
@@ -253,6 +260,7 @@ class OutsideTrips {
     map['user_id'] = _userId;
     map['vehicle_id'] = _vehicleId;
     map['driver_id'] = _driverId;
+    map['cost'] = _cost;
     map['status'] = _status;
     map['request_type'] = _requestType;
     map['pickup_latitude'] = _pickupLatitude;

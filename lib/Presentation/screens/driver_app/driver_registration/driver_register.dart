@@ -11,7 +11,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:diamond_line/Presentation/Functions/Validators.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget.dart';
 import 'package:diamond_line/Presentation/widgets/container_widget3.dart';
-import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import 'package:provider/provider.dart';
 import '../../../../Buisness_logic/provider/Driver_Provider/driver_complete_register_provider.dart';
@@ -903,11 +903,11 @@ class _MyDialogState extends State<alert> {
           child: SingleChildScrollView(
               child: Column(
             children: [
-              widget.privacy != null && widget.privacy != ""
-                  ? Html(
-                      data: widget.privacy.toString(),
-                    )
-                  : CircularProgressIndicator(color: primaryBlue),
+              // widget.privacy != null && widget.privacy != ""
+              //     ? Html(
+              //         data: widget.privacy.toString(),
+              //       )
+              //     : CircularProgressIndicator(color: primaryBlue),
               SizedBox(
                 height: 2.h,
               ),

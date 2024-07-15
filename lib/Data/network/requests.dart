@@ -950,7 +950,10 @@ class AppRequests {
     print(response.body);
     if (response.statusCode == 200) {
       print('========================================');
-      debugPrint( (FilterVechileModel.fromJson(json.decode(response.body)).data!.length.toString()));
+      debugPrint((FilterVechileModel.fromJson(json.decode(response.body))
+          .data!
+          .length
+          .toString()));
       print('========================================');
       print("fetchServices status 200");
       return FilterVechileModel.fromJson(json.decode(response.body));
@@ -2420,6 +2423,26 @@ class AppRequests {
           "trip_id": booking_id,
           "payment_method": payment_method
         }); // payment_method : [cash , e_payment]
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      return json.decode(response.body);
+    } else {
+      return null;
+    }
+  }
+
+  //update Driver Location
+  static Future<dynamic> updateDriverLocation(
+      {required String driver_id}) async {
+    print("updateDriverLocation");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? '';
+
+    final response = await client.requesttoken(
+      requestType: RequestType.GET,
+      path: "api/driver-location/" + driver_id,
+      token: token,
+    );
 
     if (response.statusCode == 200) {
       return json.decode(response.body);

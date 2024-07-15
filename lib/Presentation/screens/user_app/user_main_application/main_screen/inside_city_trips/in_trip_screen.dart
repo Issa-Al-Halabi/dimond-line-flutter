@@ -84,8 +84,10 @@ class _InTripScreenState extends State<InTripScreen> {
 
   List<GeoPoint> latLngList = [];
   ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
-  late MapController controller;
+  MapController? controller;
   bool isLoading = false;
+
+  Timer? timer;
 
   StreamController<Map<String, dynamic>> eventStreamController =
       StreamController<Map<String, dynamic>>.broadcast();
@@ -105,18 +107,36 @@ class _InTripScreenState extends State<InTripScreen> {
   @override
   void dispose() {
     Loader.hide();
+    if (timer != null) {
+      print("timer != null");
+      timer!.cancel();
+      timer = null;
+    }
+
+    if (controller != null) {
+      controller!.dispose();
+      controller = null;
+    }
     super.dispose();
   }
 
   Future<void> getLatAndLong() async {
-    controller = MapController(
+    print("widget.pickupLatitude widget.pickupLatitude");
+    print(widget.pickupLatitude);
+    print(widget.pickupLongitude);
+    print("widget.pickupLatitude widget.pickupLatitude");
+    controller = await MapController(
       initPosition: GeoPoint(
         latitude: double.parse(widget.pickupLatitude),
         longitude: double.parse(widget.pickupLongitude),
       ),
     );
+    print(controller!.initPosition);
     isLoading = true;
-    tripPolyline(double.parse(widget.pickupLatitude), double.parse(widget.pickupLongitude));
+    if (controller != null) {
+      // tripPolyline(double.parse(widget.pickupLatitude),
+      //     double.parse(widget.pickupLongitude));
+    }
     setState(() {});
   }
 
@@ -135,46 +155,60 @@ class _InTripScreenState extends State<InTripScreen> {
     }
   }
 
-  /// Update draw main Road
   void tripPolyline(
     double pickupLatitude,
     double pickupLongitude,
   ) async {
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    print({
+      "latitude": pickupLatitude,
+      "longitude": pickupLongitude,
+    });
+    if (controller == null || !mounted) {
+      return;
+    }
+    // Create the new GeoPoint
+    final newGeoPoint = GeoPoint(
+      latitude: pickupLatitude,
+      longitude: pickupLongitude,
+    );
+
+    // Check if lastGeoPoint is not null and is different from the newGeoPoint
     if (lastGeoPoint.value != null) {
-      controller.changeLocationMarker(
-        oldLocation: lastGeoPoint.value!,
-        newLocation: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-      );
-    } else {
-      controller.addMarker(
-        GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-        markerIcon: MarkerIcon(
-          assetMarker: AssetMarker(
-            scaleAssetImage: 2,
-            image: AssetImage(
-              "assets/images/caricon.png",
-            ),
+      print("Removing existing marker at ${lastGeoPoint.value}");
+
+      // Attempt to remove the existing marker
+      await controller!.removeMarker(lastGeoPoint.value!);
+      await controller!.removeMarkers([
+        lastGeoPoint.value!,
+        newGeoPoint,
+      ]);
+
+      print("Markers removed, adding new marker at $newGeoPoint");
+    }
+    // Add the new marker
+    await controller!.addMarker(
+      newGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
           ),
         ),
-      );
-    }
-    lastGeoPoint.value !=
-        GeoPoint(latitude: pickupLongitude, longitude: pickupLatitude);
-    await controller.drawCircle(
+      ),
+    );
+
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = newGeoPoint;
+
+    print("Marker added and lastGeoPoint updated to $newGeoPoint");
+
+    await controller!.drawCircle(
       CircleOSM(
         key: "car",
-        centerPoint: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-        radius: 30,
+        centerPoint: newGeoPoint,
+        radius: 50,
         color: Colors.blue,
         strokeWidth: 0.3,
       ),
@@ -183,10 +217,12 @@ class _InTripScreenState extends State<InTripScreen> {
 
   /// Draw main Road
   void roadActionBt() async {
-    RoadInfo roadInfo = await controller.drawRoad(
-      GeoPoint(
-          latitude: double.parse(widget.pickupLatitude),
-          longitude: double.parse(widget.pickupLongitude)),
+    final pickupGeoPoint = GeoPoint(
+        latitude: double.parse(widget.pickupLatitude),
+        longitude: double.parse(widget.pickupLongitude));
+
+    RoadInfo roadInfo = await controller!.drawRoad(
+      pickupGeoPoint,
       GeoPoint(
         latitude: double.parse(widget.dropLatitude),
         longitude: double.parse(widget.dropLongitude),
@@ -198,6 +234,21 @@ class _InTripScreenState extends State<InTripScreen> {
         zoomInto: true,
       ),
     );
+
+    // init marker
+    await controller!.addMarker(
+      pickupGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
+          ),
+        ),
+      ),
+    );
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = pickupGeoPoint;
 
     print("${roadInfo.distance}km");
     print("${roadInfo.duration}sec");
@@ -261,18 +312,22 @@ class _InTripScreenState extends State<InTripScreen> {
 
   bool convertAccept() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        isAcceptTrip = true;
-      });
+      if (!isAcceptTrip) {
+        setState(() {
+          isAcceptTrip = true;
+        });
+      }
     });
     return true;
   }
 
   bool convertStart() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        isStartTrip = true;
-      });
+      if (!isStartTrip) {
+        setState(() {
+          isStartTrip = true;
+        });
+      }
     });
     return true;
   }
@@ -356,10 +411,39 @@ class _InTripScreenState extends State<InTripScreen> {
     );
   }
 
+  ////////////////// to update the driver location //////////////////////////
+  void startPeriodicRequest(driver_id) {
+    timer = Timer.periodic(Duration(seconds: 10), (Timer tick) {
+      if (timer != null) {
+        updateDriverLocation(driver_id);
+      }
+    });
+  }
+
+  Future<void> updateDriverLocation(driver_id) async {
+    try {
+      final response = await AppRequests.updateDriverLocation(
+          driver_id: driver_id.toString());
+
+      if (response != null) {
+        print('Response data: ${response}');
+        tripPolyline(double.parse(response["latitude"].toString()),
+            double.parse(response["longitude"].toString()));
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Request failed with catch: ${e}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print('333333333333333333333');
+    print(isLoading);
     print('333333333333333333333');
+    print(controller);
+    print(isLoading == false || controller == null);
     print('333333333333333333333');
     return WillPopScope(
       onWillPop: () async {
@@ -387,7 +471,7 @@ class _InTripScreenState extends State<InTripScreen> {
         }
       },
       child: Scaffold(
-        body: isLoading == false
+        body: isLoading == false || controller == null
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -426,12 +510,12 @@ class _InTripScreenState extends State<InTripScreen> {
                                               data['positions'][0]['longitude'];
                                           course =
                                               data['positions'][0]['course'];
-                                          isStartTrip == true
-                                              ?   tripPolyline(
-                                                  latRoute,
-                                                  lngRoute,
-                                                )
-                                              : null;
+                                          // isStartTrip == true
+                                          //     ? tripPolyline(
+                                          //         latRoute,
+                                          //         lngRoute,
+                                          //       )
+                                          //     : null;
                                         }
                                       }
                                     } else {}
@@ -459,10 +543,11 @@ class _InTripScreenState extends State<InTripScreen> {
                             child: OSMFlutter(
                               onMapIsReady: (p0) {
                                 roadActionBt();
-                                tripPolyline(double.parse(widget.pickupLatitude), double.parse(widget.pickupLongitude));
-
+                                // tripPolyline(
+                                //     double.parse(widget.pickupLatitude),
+                                //     double.parse(widget.pickupLongitude));
                               },
-                              controller: controller,
+                              controller: controller!,
                               osmOption: OSMOption(
                                 zoomOption: ZoomOption(
                                   initZoom: 14,
@@ -519,6 +604,7 @@ class _InTripScreenState extends State<InTripScreen> {
                               if (provider.tripStatus != "") {
                                 Map<String, dynamic> data = provider.tripData;
                                 int id = int.parse(data['id']);
+
                                 print(
                                     "==========================================");
                                 print(data);
@@ -545,6 +631,13 @@ class _InTripScreenState extends State<InTripScreen> {
                                     vehicelImage = data['vehicel_image'];
                                   }
                                   if (status == 'started') {
+                                    // to update the driver location
+                                    if (data['driver_id'] != null &&
+                                        timer == null) {
+                                      startPeriodicRequest(
+                                          int.parse(data['driver_id']));
+                                    }
+
                                     convertStart();
                                     // convertBoolean(isStartTrip);
                                   }

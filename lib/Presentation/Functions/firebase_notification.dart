@@ -85,6 +85,7 @@ class FirebaseNotificationsHandler {
 
       if (context != null && message.data["status"] != null) {
         inTripProvider.setData(message.data);
+        print(message.data["firebase notification inTripProvider"]);
         print(message.data["status"]);
       }
 

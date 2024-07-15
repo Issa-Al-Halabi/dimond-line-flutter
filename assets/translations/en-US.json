@@ -271,5 +271,8 @@
     "retry" : "Retry",
     "please select type" : "please select type of trip",
     "enable gallery" : "You should give app a permission to access gallery in setting to continue",
-    "search" : "search"
+    "search" : "search",
+    "your trip is waiting for payment" : "your trip is waiting for payment",
+    "go to payment page" : "go to payment page"
+
 }

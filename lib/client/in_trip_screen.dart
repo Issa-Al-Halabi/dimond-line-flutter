@@ -31,6 +31,7 @@ import '../../../../../../../constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart';
 
+// not used, I Dont know why
 class InTripScreen extends StatefulWidget {
   InTripScreen({
     required this.tripId,
@@ -143,19 +144,20 @@ class _InTripScreenState extends State<InTripScreen> {
     return byteData.buffer.asUint8List();
   }
 
-  void tripPolyline(double pickupLatitude, double pickupLongitude, double dropLatitude, double dropLongitude) async {
+  void tripPolyline(double pickupLatitude, double pickupLongitude,
+      double dropLatitude, double dropLongitude) async {
     polylineCoordinates.clear();
     Uint8List imageData = await getMarker();
     marker = Marker(
-        markerId: MarkerId("home"),
-        // position: latLngList.last,
-        position: LatLng(pickupLatitude, pickupLongitude),
-        rotation: course,
-        draggable: false,
-        zIndex: 2,
-        flat: true,
-        anchor: Offset(0.5, 0.5),
-        icon: BitmapDescriptor.fromBytes(imageData),
+      markerId: MarkerId("home"),
+      // position: latLngList.last,
+      position: LatLng(pickupLatitude, pickupLongitude),
+      rotation: course,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      icon: BitmapDescriptor.fromBytes(imageData),
     );
     circle = Circle(
         circleId: CircleId("car"),
@@ -551,11 +553,15 @@ class _InTripScreenState extends State<InTripScreen> {
                                               data['positions'][0]['longitude'];
                                           course =
                                               data['positions'][0]['course'];
-                                          isStartTrip == true ? tripPolyline(
-                                                  latRoute, lngRoute,
-                                                  double.parse(widget.dropLatitude),
-                                                  double.parse(widget.dropLongitude),
-                                          )
+                                          isStartTrip == true
+                                              ? tripPolyline(
+                                                  latRoute,
+                                                  lngRoute,
+                                                  double.parse(
+                                                      widget.dropLatitude),
+                                                  double.parse(
+                                                      widget.dropLongitude),
+                                                )
                                               // : isAcceptTrip == true ?
                                               // carPolyline(
                                               //     latRoute,
@@ -663,6 +669,8 @@ class _InTripScreenState extends State<InTripScreen> {
                                 int id = int.parse(data['id']);
                                 print(
                                     "==========================================");
+                                print(
+                                    "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                                 print(data);
                                 print(data['status']);
                                 print(widget.tripId);

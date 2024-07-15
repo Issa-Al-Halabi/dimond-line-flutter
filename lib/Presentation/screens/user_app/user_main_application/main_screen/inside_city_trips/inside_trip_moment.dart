@@ -81,8 +81,9 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
 
   List<GeoPoint> latLngList = [];
   ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
-  late MapController controller;
+  MapController? controller;
   bool isLoading = false;
+  Timer? timer;
 
   @override
   void initState() {
@@ -99,6 +100,16 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
   @override
   void dispose() {
     Loader.hide();
+    if (timer != null) {
+      print("timer != null");
+      timer!.cancel();
+      timer = null;
+    }
+
+    if (controller != null) {
+      controller!.dispose();
+      controller = null;
+    }
     super.dispose();
   }
 
@@ -109,9 +120,9 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
           longitude: double.parse(widget.momentTripModel.pickupLongitude!)),
     );
     isLoading = true;
-    tripPolyline(double.parse(widget.momentTripModel.pickupLatitude!),double.parse(widget.momentTripModel.pickupLongitude!));
+    // tripPolyline(double.parse(widget.momentTripModel.pickupLatitude!),
+    //     double.parse(widget.momentTripModel.pickupLongitude!));
     setState(() {});
-
   }
 
   Future<void> getCookie() async {
@@ -139,42 +150,55 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     double pickupLongitude,
   ) async {
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    print({
+      "latitude": pickupLatitude,
+      "longitude": pickupLongitude,
+    });
+
+    if (controller == null || !mounted) {
+      return;
+    }
+    // Create the new GeoPoint
+    final newGeoPoint = GeoPoint(
+      latitude: pickupLatitude,
+      longitude: pickupLongitude,
+    );
+
+    // Check if lastGeoPoint is not null and is different from the newGeoPoint
     if (lastGeoPoint.value != null) {
-      controller.changeLocationMarker(
-        oldLocation: lastGeoPoint.value!,
-        newLocation: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-      );
-    } else {
-      controller.addMarker(
-        GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-        markerIcon: MarkerIcon(
-          assetMarker:
-          AssetMarker(
-            scaleAssetImage: 2,
-            image: AssetImage(
-              "assets/images/caricon.png",
-            ),
+      print("Removing existing marker at ${lastGeoPoint.value}");
+
+      // Attempt to remove the existing marker
+      await controller!.removeMarker(lastGeoPoint.value!);
+      await controller!.removeMarkers([
+        lastGeoPoint.value!,
+        newGeoPoint,
+      ]);
+
+      print("Markers removed, adding new marker at $newGeoPoint");
+    }
+    // Add the new marker
+    await controller!.addMarker(
+      newGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
           ),
         ),
-      );
-    }
-    lastGeoPoint.value !=
-        GeoPoint(latitude: pickupLongitude, longitude: pickupLatitude);
-     controller.drawCircle(
+      ),
+    );
+
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = newGeoPoint;
+
+    print("Marker added and lastGeoPoint updated to $newGeoPoint");
+
+    await controller!.drawCircle(
       CircleOSM(
-
         key: "car",
-        centerPoint: GeoPoint(
-          latitude: pickupLatitude,
-          longitude: pickupLongitude,
-        ),
-
+        centerPoint: newGeoPoint,
         radius: 50,
         color: Colors.blue,
         strokeWidth: 0.3,
@@ -184,10 +208,12 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
 
   /// Draw main Road
   void roadActionBt() async {
-    RoadInfo roadInfo = await controller.drawRoad(
-      GeoPoint(
-          latitude: double.parse(widget.momentTripModel.pickupLatitude!),
-          longitude: double.parse(widget.momentTripModel.pickupLongitude!)),
+    final pickupGeoPoint = GeoPoint(
+        latitude: double.parse(widget.momentTripModel.pickupLatitude!),
+        longitude: double.parse(widget.momentTripModel.pickupLongitude!));
+
+    RoadInfo roadInfo = await controller!.drawRoad(
+      pickupGeoPoint,
       GeoPoint(
         latitude: double.parse(widget.momentTripModel.dropLatitude!),
         longitude: double.parse(widget.momentTripModel.dropLongitude!),
@@ -199,6 +225,21 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
         zoomInto: true,
       ),
     );
+
+    // init marker
+    await controller!.addMarker(
+      pickupGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
+          ),
+        ),
+      ),
+    );
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = pickupGeoPoint;
 
     print("${roadInfo.distance}km");
     print("${roadInfo.duration}sec");
@@ -312,18 +353,22 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
 
   bool convertAccept() {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      setState(() {
-        widget.isAcceptTrip = true;
-      });
+      if (!widget.isAcceptTrip) {
+        setState(() {
+          widget.isAcceptTrip = true;
+        });
+      }
     });
     return true;
   }
 
   bool convertStart() {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      setState(() {
-        isStartTrip = true;
-      });
+      if (!isStartTrip) {
+        setState(() {
+          isStartTrip = true;
+        });
+      }
     });
     return true;
   }
@@ -369,9 +414,36 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
     );
   }
 
+  ////////////////// to update the driver location //////////////////////////
+  void startPeriodicRequest(driver_id) {
+    timer = Timer.periodic(Duration(seconds: 10), (Timer tick) {
+      if (timer != null) {
+        updateDriverLocation(driver_id);
+      }
+    });
+  }
+
+  Future<void> updateDriverLocation(driver_id) async {
+    try {
+      final response = await AppRequests.updateDriverLocation(
+          driver_id: driver_id.toString());
+
+      if (response != null) {
+        print('Response data: ${response}');
+        tripPolyline(double.parse(response["latitude"].toString()),
+            double.parse(response["longitude"].toString()));
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Request failed with catch: ${e}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print('7777777');
+    print("insideTripMoment");
     return WillPopScope(
       onWillPop: () async {
         if (Loader.isShown == true) {
@@ -398,7 +470,7 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
         }
       },
       child: Scaffold(
-        body: isLoading == false
+        body: isLoading == false || controller == null
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -437,13 +509,13 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                               data['positions'][0]['longitude'];
                                           course =
                                               data['positions'][0]['course'];
-                                          isStartTrip == true
-                                              // ? updateMainPolyline(
-                                              ? tripPolyline(
-                                                  latRoute,
-                                                  lngRoute,
-                                                )
-                                              : null;
+                                          // isStartTrip == true
+                                          //     // ? updateMainPolyline(
+                                          //     ? tripPolyline(
+                                          //         latRoute,
+                                          //         lngRoute,
+                                          //       )
+                                          //     : null;
                                         }
                                       }
                                     } else {}
@@ -471,10 +543,13 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                             child: OSMFlutter(
                               onMapIsReady: (p0) {
                                 roadActionBt();
-                                tripPolyline(double.parse(widget.momentTripModel.pickupLatitude!),double.parse(widget.momentTripModel.pickupLongitude!));
-
+                                // tripPolyline(
+                                //     double.parse(
+                                //         widget.momentTripModel.pickupLatitude!),
+                                //     double.parse(widget
+                                //         .momentTripModel.pickupLongitude!));
                               },
-                              controller: controller,
+                              controller: controller!,
                               osmOption: OSMOption(
                                 zoomOption: ZoomOption(
                                   initZoom: 14,
@@ -556,9 +631,17 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                             bottom: 0.h,
                             child: Consumer<InTripProvider>(
                                 builder: (context, provider, child) {
-                              if (provider.tripStatus != "") {
-                                Map<String, dynamic> data = provider.tripData;
-                                int id = int.parse(data['id']);
+                              print(provider.tripStatus);
+                              if (widget.momentTripModel.status != "" ||
+                                  provider.tripStatus != "") {
+                                Map<String, dynamic>? data;
+                                if (provider.tripStatus != "") {
+                                  data = provider.tripData;
+                                }
+                                bool isData = data != null;
+                                int id = int.parse(isData
+                                    ? data['id']
+                                    : widget.momentTripModel.id.toString());
                                 print(data);
                                 // print(data);
                                 // if(id.toString() == int.parse(widget.momentTripModel.id)){
@@ -566,39 +649,74 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                     widget.momentTripModel.id.toString()) {
                                   print('xxxxxxxxxxxxxxxxxxxxxx');
                                   //   setState(() {
-                                  widget.momentTripModel.status =
-                                      data['status'];
+                                  widget.momentTripModel.status = isData
+                                      ? data['status']
+                                      : widget.momentTripModel.status;
+
                                   // print(widget.momentTripModel.status);
                                   if (widget.momentTripModel.status ==
                                       'accepted') {
                                     convertAccept();
                                     // convertBoolean(widget.isAcceptTrip);
                                     widget.momentTripModel.vehicelDeviceNumber =
-                                        data['vehicel_device_number'];
+                                        isData
+                                            ? data['vehicel_device_number']
+                                            : widget.momentTripModel
+                                                .vehicelDeviceNumber;
+
                                     widget.momentTripModel.driverFirstName =
-                                        data['driver_first_name'];
+                                        isData
+                                            ? data['driver_first_name']
+                                            : widget.momentTripModel
+                                                .driverFirstName;
+
                                     widget.momentTripModel.driverLastName =
-                                        data['driver_last_name'];
+                                        isData
+                                            ? data['driver_last_name']
+                                            : widget
+                                                .momentTripModel.driverLastName;
+
                                     widget.momentTripModel.driverProfileImage =
-                                        data['driver_profile_image'];
-                                    widget.momentTripModel.driverPhone =
-                                        data['driver_phone'];
+                                        isData
+                                            ? data['driver_profile_image']
+                                            : widget.momentTripModel
+                                                .driverProfileImage;
+
+                                    widget.momentTripModel.driverPhone = isData
+                                        ? data['driver_phone']
+                                        : widget.momentTripModel.driverPhone;
+
                                     widget.momentTripModel.vehicelCarModel =
-                                        data['vehicel_car_model'];
-                                    widget.momentTripModel.vehicelColor =
-                                        data['vehicel_color'];
-                                    widget.momentTripModel.vehicelImage =
-                                        data['vehicel_image'];
+                                        isData
+                                            ? data['vehicel_car_model']
+                                            : widget.momentTripModel
+                                                .vehicelCarModel;
+
+                                    widget.momentTripModel.vehicelColor = isData
+                                        ? data['vehicel_color']
+                                        : widget.momentTripModel.vehicelColor;
+
+                                    widget.momentTripModel.vehicelImage = isData
+                                        ? data['vehicel_image']
+                                        : widget.momentTripModel.vehicelImage;
                                   }
                                   if (widget.momentTripModel.status ==
                                       'started') {
                                     // isStartTrip = true;
+                                    print("widget.momentTripModel.toJson()");
+                                    print(widget.momentTripModel.toJson());
+                                    if (widget.momentTripModel.driver_id !=
+                                            null &&
+                                        timer == null) {
+                                      startPeriodicRequest(
+                                          widget.momentTripModel.driver_id);
+                                    }
                                     convertStart();
                                     // convertBoolean(isStartTrip);
                                   }
                                   if (widget.momentTripModel.status ==
                                       'ended') {
-                                    finalCost = data['cost'];
+                                    finalCost = data!['cost'];
                                     print(finalCost);
                                     navigate();
                                   }
@@ -609,7 +727,8 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                   }
                                   if (widget.momentTripModel.status ==
                                       'wait for payment') {
-                                    finalCost = data['cost'];
+                                    finalCost = data!['cost'];
+
                                     // print(finalCost);
                                     provider.reset();
                                     navigate();
@@ -617,9 +736,9 @@ class _InsideTripMomentScreenState extends State<InsideTripMomentScreen> {
                                 } else {
                                   print('ttttttttttttt');
                                   print(data);
-                                  String statusDelayed = data['status'];
-                                  print(statusDelayed);
-                                  print(data['id']);
+                                  // String statusDelayed = data['status'];
+                                  // print(statusDelayed);
+                                  // print(data['id']);
                                 }
                                 return Row(
                                   children: [

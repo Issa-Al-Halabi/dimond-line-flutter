@@ -1,3 +1,5 @@
+import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_wait_for_payment_driver.dart';
+import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/trip_wait_for_payment.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -664,8 +666,7 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
                                                     // todo
                                                     Row(
                                                       children: [
-                                                        Image.asset(
-                                                            name,
+                                                        Image.asset(name,
                                                             height: 6.h,
                                                             width: 6.w),
                                                         SizedBox(
@@ -673,13 +674,13 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
                                                         ),
                                                         Expanded(
                                                           child: Text(
-                                                            '${tripsList[index].firstName.toString()}' + '\t' +  '${tripsList[index].lastName.toString()}',
-                                                            style:
-                                                            TextStyle(
+                                                            '${tripsList[index].firstName.toString()}' +
+                                                                '\t' +
+                                                                '${tripsList[index].lastName.toString()}',
+                                                            style: TextStyle(
                                                               color:
-                                                              primaryBlue,
-                                                              fontSize:
-                                                              5.sp,
+                                                                  primaryBlue,
+                                                              fontSize: 5.sp,
                                                             ),
                                                           ),
                                                         ),
@@ -690,15 +691,13 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
                                                           child: InkWell(
                                                             child: Text(
                                                               '${tripsList[index].phone.toString()}',
-                                                              style:
-                                                              TextStyle(
+                                                              style: TextStyle(
                                                                 color:
-                                                                lightBlue4,
-                                                                fontSize:
-                                                                5.sp,
+                                                                    lightBlue4,
+                                                                fontSize: 5.sp,
                                                                 decoration:
-                                                                TextDecoration
-                                                                    .underline,
+                                                                    TextDecoration
+                                                                        .underline,
                                                               ),
                                                             ),
                                                             onTap: () {
@@ -831,8 +830,8 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
                                                                     ),
                                                                   )
                                                         : tripsList[index]
-                                                        .status ==
-                                                        'arrived'
+                                                                    .status ==
+                                                                'arrived'
                                                             ? Center(
                                                                 child:
                                                                     ContainerWidget(
@@ -887,26 +886,71 @@ class _EfficientDriverTripsState extends State<EfficientDriverTrips> {
                                                                   },
                                                                 ),
                                                               )
-                                                            : Center(
-                                                                child:
-                                                                    ContainerWidget(
-                                                                  text: 'arrive'
-                                                                      .tr(),
-                                                                  h: 5.h,
-                                                                  w: 35.w,
-                                                                  onTap: () {
-                                                                    print(tripsList[
-                                                                            index]
-                                                                        .id
-                                                                        .toString());
-                                                                    driverArriveApi(
-                                                                        tripsList[index]
+                                                            : tripsList[index]
+                                                                        .status ==
+                                                                    'wait for payment'
+                                                                ? Center(
+                                                                    child:
+                                                                        ContainerWidget(
+                                                                      text: 'go to payment page'
+                                                                          .tr(),
+                                                                      h: 5.h,
+                                                                      w: 65.w,
+                                                                      onTap:
+                                                                          () {
+                                                                        print(tripsList[index]
                                                                             .id
-                                                                            .toString(),
-                                                                        index);
-                                                                  },
-                                                                ),
-                                                              ),
+                                                                            .toString());
+                                                                        Navigator.of(context)
+                                                                            .push(
+                                                                          PageRouteBuilder(
+                                                                            pageBuilder: (BuildContext context,
+                                                                                Animation<double> animation,
+                                                                                Animation<double> secondaryAnimation) {
+                                                                              return TripWaitForPaymentDriverScreen(
+                                                                                  adminFare: "0",
+                                                                                  // adminFare: tripsList[index].endTime.toString(),
+                                                                                  endTime: tripsList[index].endTime.toString(),
+                                                                                  finalDistance: tripsList[index].km.toString(),
+                                                                                  tripId: tripsList[index].id.toString(),
+                                                                                  finalCost: tripsList[index].cost.toString());
+                                                                            },
+                                                                            transitionsBuilder: (BuildContext context,
+                                                                                Animation<double> animation,
+                                                                                Animation<double> secondaryAnimation,
+                                                                                Widget child) {
+                                                                              return Align(
+                                                                                child: SizeTransition(
+                                                                                  sizeFactor: animation,
+                                                                                  child: child,
+                                                                                ),
+                                                                              );
+                                                                            },
+                                                                            transitionDuration:
+                                                                                Duration(milliseconds: 500),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  )
+                                                                : Center(
+                                                                    child:
+                                                                        ContainerWidget(
+                                                                      text: 'arrive'
+                                                                          .tr(),
+                                                                      h: 5.h,
+                                                                      w: 35.w,
+                                                                      onTap:
+                                                                          () {
+                                                                        print(tripsList[index]
+                                                                            .id
+                                                                            .toString());
+                                                                        driverArriveApi(
+                                                                            tripsList[index].id.toString(),
+                                                                            index);
+                                                                      },
+                                                                    ),
+                                                                  ),
                                                     SizedBox(
                                                       height: 2.h,
                                                     ),

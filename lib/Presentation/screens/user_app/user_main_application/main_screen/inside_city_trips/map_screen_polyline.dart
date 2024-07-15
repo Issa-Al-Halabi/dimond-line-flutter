@@ -124,7 +124,8 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
     String url = "https://api.distancematrix.ai/maps/api/distancematrix/json?origins=$latcurrent,$lancurrent&destinations=$lat,$lng&mode=driving&key=byog9DctX5CYHt2F4PM16gX5oxjAOzakrCGBXiiltIiUKIaArrEH8ZSHE2O4gT2s";
     print(url);
     Response response = await dio.get(url);
-
+    print("response response response response response response ");
+    print(response.data);
     int t = response.data["rows"][0]["elements"][0]["duration"]["value"];
     double t2 = t / 60;
     timeOfTrip = t2.toString();

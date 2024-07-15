@@ -59,12 +59,14 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
   int filteredLength = 0;
 
   ///////////////////////// filter vechiles api //////////////////////////////////
-  Future<void> checkNetwork(String category_id, String subcategory_id, String seats, String bags, filterVechileProvider creat) async {
+  Future<void> checkNetwork(String category_id, String subcategory_id,
+      String seats, String bags, filterVechileProvider creat) async {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
       Loader.show(context, progressIndicator: LoaderWidget());
-      await creat.getFilterVechilesCategory(category_id, subcategory_id, seats, bags, widget.distance.toString(), widget.timeOfTrip.toString());
+      await creat.getFilterVechilesCategory(category_id, subcategory_id, seats,
+          bags, widget.distance.toString(), widget.timeOfTrip.toString());
       if (creat.data.error == false) {
         Loader.hide();
         print('@@@@@@@@@@@@@');
@@ -72,7 +74,6 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
         print('@@@@@@@@@@@@@');
 
         for (int i = 0; i < creat.data.data!.length; i++) {
-
           setState(() {
             vechileImage.add(creat.data.data![i].vehicleImage);
             vechileType.add(creat.data.data![i].vehicletype);
@@ -167,7 +168,7 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
       return 'select date'.tr();
     } else {
       print('selectedDate $selectedDate');
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
+      return DateFormat('yyyy-MM-dd', 'en_US').format(selectedDate);
     }
   }
 
@@ -287,7 +288,8 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                     value: items,
                                     child: Padding(
                                         padding: EdgeInsets.only(left: 1.w),
-                                        child: Text(items)),
+                                        child:
+                                            Text('person'.tr() + " " + items)),
                                   );
                                 }).toList(),
                                 onChanged: (val) {
@@ -338,7 +340,7 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                     value: items,
                                     child: Padding(
                                         padding: EdgeInsets.only(left: 1.w),
-                                        child: Text(items)),
+                                        child: Text('bags'.tr() + " " + items)),
                                   );
                                 }).toList(),
                                 onChanged: (val) {
@@ -418,8 +420,10 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                                     selectedDate != DateTime.now() &&
                                     dropDownValue != null &&
                                     dropDownValue2 != null) {
-                                  var creat = await Provider.of<filterVechileProvider>(context, listen: false);
-
+                                  var creat =
+                                      await Provider.of<filterVechileProvider>(
+                                          context,
+                                          listen: false);
 
                                   checkNetwork(
                                     widget.categoryId!,

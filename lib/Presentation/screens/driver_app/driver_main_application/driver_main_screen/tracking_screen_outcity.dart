@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:connectivity/connectivity.dart';
 import 'package:diamond_line/Data/network/network_client.dart';
+import 'package:diamond_line/Presentation/screens/driver_app/driver_main_application/driver_main_screen/trip_wait_for_payment_driver.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -60,10 +62,12 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
   Marker? marker2;
   Marker? marker3;
   Circle? circle;
+  Timer? timer;
+  ValueNotifier<GeoPoint?> lastGeoPoint = ValueNotifier(null);
 
   IOWebSocketChannel? _channel;
 
-  late MapController controller;
+  MapController? controller;
   bool isLoading = false;
 
   Future<void> getCookie() async {
@@ -83,7 +87,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
 
   @override
   void initState() {
-    markerOfMainWay();
+    // markerOfMainWay();
     getLatAndLong();
     initShared();
     getPer();
@@ -93,46 +97,56 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
   }
 
   getpoly() async {
-    markerOfMainWay();
+    // markerOfMainWay();
     getLatAndLong();
   }
 
-  void markerOfMainWay() {
-    marker2 = Marker(
-      markerId: MarkerId("from"),
-      position: LatLng(double.parse(widget.pickupLatitude),
-          double.parse(widget.pickupLongitude)),
-      rotation: 2,
-      draggable: false,
-      zIndex: 2,
-      flat: true,
-      anchor: Offset(0.5, 0.5),
-      infoWindow: InfoWindow(
-        title: 'from'.tr(),
-      ),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-    );
+  // void markerOfMainWay() {
+  //   marker2 = Marker(
+  //     markerId: MarkerId("from"),
+  //     position: LatLng(double.parse(widget.pickupLatitude),
+  //         double.parse(widget.pickupLongitude)),
+  //     rotation: 2,
+  //     draggable: false,
+  //     zIndex: 2,
+  //     flat: true,
+  //     anchor: Offset(0.5, 0.5),
+  //     infoWindow: InfoWindow(
+  //       title: 'from'.tr(),
+  //     ),
+  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+  //   );
 
-    marker3 = Marker(
-      markerId: MarkerId("to"),
-      position: LatLng(double.parse(widget.dropLatitude),
-          double.parse(widget.dropLongitude)),
-      rotation: 2,
-      draggable: false,
-      zIndex: 2,
-      flat: true,
-      anchor: Offset(0.5, 0.5),
-      infoWindow: InfoWindow(
-        title: 'to'.tr(),
-      ),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-    );
-  }
-
+  //   marker3 = Marker(
+  //     markerId: MarkerId("to"),
+  //     position: LatLng(double.parse(widget.dropLatitude),
+  //         double.parse(widget.dropLongitude)),
+  //     rotation: 2,
+  //     draggable: false,
+  //     zIndex: 2,
+  //     flat: true,
+  //     anchor: Offset(0.5, 0.5),
+  //     infoWindow: InfoWindow(
+  //       title: 'to'.tr(),
+  //     ),
+  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+  //   );
+  // }
   @override
   void dispose() {
+    print("dispose()");
     if (_channel != null) {
       _channel!.sink.close();
+    }
+    if (timer != null) {
+      print("timer != null");
+      timer!.cancel();
+      timer = null;
+    }
+
+    if (controller != null) {
+      controller!.dispose();
+      controller = null;
     }
     super.dispose();
   }
@@ -185,7 +199,6 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     if (mounted) {
       setState(() {});
     }
-
   }
 
   Future getPer() async {
@@ -233,25 +246,26 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     setState(() {});
   }
 
-  /// رسم المسار الاساسي
-  ///////////////////////// OSM FLUTTER //////////////////////////////////
+  /// رسم المسار الاساس
   void roadActionBt() async {
-    controller.addMarker(
-      GeoPoint(
-        latitude: lat,
-        longitude: lng,
-      ),
-      markerIcon: MarkerIcon(
-        assetMarker: AssetMarker(
-          scaleAssetImage: 2,
-          image: AssetImage("assets/images/caricon.png"),
-        ),
-      ),
-    );
-    RoadInfo roadInfo = await controller.drawRoad(
-      GeoPoint(
-          latitude: double.parse(widget.pickupLatitude),
-          longitude: double.parse(widget.pickupLongitude)),
+    // controller.addMarker(
+    //   GeoPoint(
+    //     latitude: lat,
+    //     longitude: lng,
+    //   ),
+    //   markerIcon: MarkerIcon(
+    //     assetMarker: AssetMarker(
+    //       scaleAssetImage: 2,
+    //       image: AssetImage("assets/images/caricon.png"),
+    //     ),
+    //   ),
+    // );
+    final pickupGeoPoint = GeoPoint(
+        latitude: double.parse(widget.pickupLatitude),
+        longitude: double.parse(widget.pickupLongitude));
+
+    RoadInfo roadInfo = await controller!.drawRoad(
+      pickupGeoPoint,
       GeoPoint(
         latitude: double.parse(widget.dropLatitude),
         longitude: double.parse(widget.dropLongitude),
@@ -264,6 +278,20 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
       ),
     );
 
+    // init marker
+    await controller!.addMarker(
+      pickupGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
+          ),
+        ),
+      ),
+    );
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = pickupGeoPoint;
     // controller.changeLocationMarker(oldLocation: oldLocation, newLocation: newLocation)
 
     print("${roadInfo.distance}km");
@@ -272,7 +300,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
   }
 
   void UpdateRoadActionBt(double pickupLatitude, double pickupLongitude) async {
-    await controller.removeLastRoad();
+    await controller!.removeLastRoad();
     // controller.changeLocationMarker(
     //   oldLocation: GeoPoint(latitude: lat, longitude: lng),
     //   newLocation: GeoPoint(latitude: lat, longitude: lng),
@@ -282,7 +310,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     //     ),
     //   ),
     // );
-    await controller.drawCircle(
+    await controller!.drawCircle(
       CircleOSM(
         key: "car",
         centerPoint: GeoPoint(latitude: lat, longitude: lng),
@@ -291,7 +319,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
         strokeWidth: 0.3,
       ),
     );
-    RoadInfo roadInfo = await controller.drawRoad(
+    RoadInfo roadInfo = await controller!.drawRoad(
       GeoPoint(
         latitude: pickupLatitude,
         longitude: pickupLongitude,
@@ -342,7 +370,8 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
   }
 
   /////////////////////////trip end api //////////////////////////////////
-  Future<void> endTripApi(String trip_id, String end_time, String finalDistance) async {
+  Future<void> endTripApi(
+      String trip_id, String end_time, String finalDistance) async {
     _isNetworkAvail = await isNetworkAvailable();
     print(trip_id);
     print(end_time);
@@ -425,12 +454,156 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
     ));
   }
 
+  /////////////////////////wait For Payment api //////////////////////////////////
+  Future<void> waitForPaymentApi(
+      String trip_id, String end_time, String finalDistance) async {
+    _isNetworkAvail = await isNetworkAvailable();
+    if (_isNetworkAvail) {
+      Loader.show(context, progressIndicator: LoaderWidget());
+      var data = await AppRequests.tripWaitForPaymentRequest(
+        trip_id: trip_id,
+        end_time: end_time,
+        km: finalDistance,
+      );
+      print(data);
+
+      if (data != null) {
+        if (_channel != null) {
+          _channel!.sink.close();
+        }
+        Loader.hide();
+        setSnackbar(data["message"].toString(), context);
+        setState(() {
+          Future.delayed(const Duration(seconds: 3)).then((_) async {
+            totalPrice = data["data"]["new_cost"].toString();
+            adminFare = data["data"]["admin_fare"].toString();
+            // Navigator.of(context).push(
+            Navigator.of(context).pushReplacement(
+              PageRouteBuilder(
+                pageBuilder: (BuildContext context, Animation<double> animation,
+                    Animation<double> secondaryAnimation) {
+                  return TripWaitForPaymentDriverScreen(
+                    tripId: widget.tripId,
+                    finalCost: totalPrice.toString(),
+                    adminFare: adminFare.toString(),
+                    endTime: end_time.toString(),
+                    finalDistance: finalDistance.toString(),
+                  );
+                },
+                transitionsBuilder: (BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    Widget child) {
+                  return Align(
+                    child: SizeTransition(
+                      sizeFactor: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                transitionDuration: Duration(milliseconds: 500),
+              ),
+            );
+          });
+        });
+      } else {
+        Loader.hide();
+        setSnackbar("حدث خطأ ما", context);
+      }
+    } else {
+      setSnackbar("nointernet".tr(), context);
+    }
+  }
+
+  void updateMarker(
+    double pickupLatitude,
+    double pickupLongitude,
+  ) async {
+    print('2222222222222222222222222222');
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    print({
+      "latitude": pickupLatitude,
+      "longitude": pickupLongitude,
+    });
+    if (controller == null || !mounted) {
+      return;
+    }
+    // Create the new GeoPoint
+    final newGeoPoint = GeoPoint(
+      latitude: pickupLatitude,
+      longitude: pickupLongitude,
+    );
+
+    // Check if lastGeoPoint is not null and is different from the newGeoPoint
+    if (lastGeoPoint.value != null) {
+      print("Removing existing marker at ${lastGeoPoint.value}");
+
+      // Attempt to remove the existing marker
+      await controller!.removeMarker(lastGeoPoint.value!);
+      await controller!.removeMarkers([
+        lastGeoPoint.value!,
+        newGeoPoint,
+      ]);
+
+      print("Markers removed, adding new marker at $newGeoPoint");
+    }
+    // Add the new marker
+    await controller!.addMarker(
+      newGeoPoint,
+      markerIcon: MarkerIcon(
+        assetMarker: AssetMarker(
+          scaleAssetImage: 2,
+          image: AssetImage(
+            "assets/images/caricon.png",
+          ),
+        ),
+      ),
+    );
+
+    // Update lastGeoPoint with the new coordinates
+    lastGeoPoint.value = newGeoPoint;
+
+    print("Marker added and lastGeoPoint updated to $newGeoPoint");
+
+    await controller!.drawCircle(
+      CircleOSM(
+        key: "car",
+        centerPoint: newGeoPoint,
+        radius: 50,
+        color: Colors.blue,
+        strokeWidth: 0.3,
+      ),
+    );
+  }
+
+  ////////////////// to update the driver location //////////////////////////
+  void startPeriodicRequest() {
+    timer = Timer.periodic(Duration(seconds: 10), (Timer tick) {
+      if (timer != null) {
+        updateDriverLocation();
+      }
+
+      print("timer :" + tick.tick.toString());
+    });
+  }
+
+  Future<void> updateDriverLocation() async {
+    try {
+      Position currentLocation =
+          await Geolocator.getCurrentPosition().then((value) => value);
+      updateMarker(currentLocation.latitude, currentLocation.longitude);
+    } catch (e) {
+      print('updateDriverLocation failed with catch: ${e}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("tracking outcity");
     return WillPopScope(
       onWillPop: willPopLoader,
       child: Scaffold(
-        body: isLoading == false
+        body: isLoading == false || controller == null
             ? Center(child: LoaderWidget())
             : Container(
                 height: getScreenHeight(context),
@@ -471,36 +644,58 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                       print(snapshot.data);
                                       print(snapshot.connectionState);
                                       if (snapshot.hasData == true) {
-                                        var data = json.decode(snapshot.data.toString());
-                                        print('--------------------------------');
+                                        var data = json
+                                            .decode(snapshot.data.toString());
+                                        print(
+                                            '--------------------------------');
                                         if (data['positions'] != null) {
                                           // if (data['positions'][0]['deviceId'] == 252) {
                                           //TODO
                                           // if (data['positions'][0]['deviceId'] ==
                                           //     274) {
-                                          if (data['positions'][0]['deviceId'] == deviceNumb) {
-                                            print('////////////////////////////');
+                                          if (data['positions'][0]
+                                                  ['deviceId'] ==
+                                              deviceNumb) {
+                                            print(
+                                                '////////////////////////////');
                                             // print(data['positions'][0]['deviceId']);
                                             // print(data['positions'][0]['latitude']);
                                             // print(data['positions'][0]['longitude']);
                                             print('course me');
-                                            print(data['positions'][0]['course']);
-                                            lat = data['positions'][0]['latitude'];
-                                            lng = data['positions'][0]['longitude'];
-                                            course = data['positions'][0]['course'];
-                                            if (latList.last != lat && lngList.last != lng) {
-                                              print('lats and longs isnt equal');
+                                            print(
+                                                data['positions'][0]['course']);
+                                            lat = data['positions'][0]
+                                                ['latitude'];
+                                            lng = data['positions'][0]
+                                                ['longitude'];
+                                            course =
+                                                data['positions'][0]['course'];
+                                            if (latList.last != lat &&
+                                                lngList.last != lng) {
+                                              print(
+                                                  'lats and longs isnt equal');
                                               latList.add(lat);
                                               lngList.add(lng);
-                                              List<String> strList = latList.map((i) => i.toString()).toList();
-                                              prefs.setStringList("latList", strList);
-                                              List<String> strList2 = lngList.map((i) => i.toString()).toList();
-                                              prefs.setStringList("lngList", strList2);
+                                              List<String> strList = latList
+                                                  .map((i) => i.toString())
+                                                  .toList();
+                                              prefs.setStringList(
+                                                  "latList", strList);
+                                              List<String> strList2 = lngList
+                                                  .map((i) => i.toString())
+                                                  .toList();
+                                              prefs.setStringList(
+                                                  "lngList", strList2);
                                               points.add(LatLng(lat, lng));
-                                              GeoPoints.add(GeoPoint(latitude: lat, longitude: lng));
-                                              updatePolyline();
-                                              UpdateRoadActionBt(lat, lng);
-                                              getLocationApi(lat.toString(), lng.toString(), deviceNumb.toString());
+                                              GeoPoints.add(GeoPoint(
+                                                  latitude: lat,
+                                                  longitude: lng));
+                                              // updatePolyline();
+                                              // UpdateRoadActionBt(lat, lng);
+                                              // getLocationApi(
+                                              //     lat.toString(),
+                                              //     lng.toString(),
+                                              //     deviceNumb.toString());
                                             }
                                           }
                                         }
@@ -527,8 +722,13 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                 color: backgroundColor,
                               ),
                               child: OSMFlutter(
-                              onMapIsReady: (p0) => roadActionBt(),
-                                controller: controller,
+                                onMapIsReady: (p0) {
+                                  roadActionBt();
+                                  if (timer == null) {
+                                    startPeriodicRequest();
+                                  }
+                                },
+                                controller: controller!,
                                 osmOption: OSMOption(
                                   zoomOption: ZoomOption(initZoom: 14),
                                   staticPoints: [
@@ -573,7 +773,6 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                       ],
                                     ),
                                   ],
-
                                 ),
                               ),
                               // child: GoogleMap(
@@ -636,7 +835,7 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                     text: 'end'.tr(),
                                     h: 7.h,
                                     w: 50.w,
-                                    onTap: () {
+                                    onTap: () async {
                                       DateTime t = DateTime.now();
                                       print(t);
                                       String end_time =
@@ -658,12 +857,21 @@ class _TrackingScreenOutsideState extends State<TrackingScreenOutside> {
                                       prefs.remove('latList');
                                       prefs.remove('lngList');
                                       for (int i = 0; i < latList.length; i++) {
-                                        points.add(LatLng(latList[i], lngList[i]));
-                                        GeoPoints.add(GeoPoint(latitude: latList[i],longitude:  lngList[i]));
+                                        points.add(
+                                            LatLng(latList[i], lngList[i]));
+                                        GeoPoints.add(GeoPoint(
+                                            latitude: latList[i],
+                                            longitude: lngList[i]));
                                       }
                                       ;
-                                      endTripApi(widget.tripId, end_time,
-                                          finalDistance.toString());
+                                      getDistance(
+                                        double.parse(widget.pickupLatitude),
+                                        double.parse(widget.pickupLongitude),
+                                        double.parse(widget.dropLatitude),
+                                        double.parse(widget.dropLongitude),
+                                      );
+                                      await waitForPaymentApi(widget.tripId,
+                                          end_time, finalDistance.toString());
                                     }))
                           ]),
                         ),
