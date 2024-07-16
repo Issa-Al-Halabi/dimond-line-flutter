@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart'
+    as html_widget;
 import 'package:permission_handler/permission_handler.dart';
 import '../../../../Buisness_logic/provider/User_Provider/send_otp_provider.dart';
 import '../../../widgets/loader_widget.dart';
@@ -903,11 +905,12 @@ class _MyDialogState extends State<alert> {
           child: SingleChildScrollView(
               child: Column(
             children: [
-              // widget.privacy != null && widget.privacy != ""
-              //     ? Html(
-              //         data: widget.privacy.toString(),
-              //       )
-              //     : CircularProgressIndicator(color: primaryBlue),
+              widget.privacy != null && widget.privacy != ""
+                  ? html_widget.HtmlWidget(widget.privacy.toString())
+                  //     Html(
+                  //         data: widget.privacy.toString(),
+                  //       )
+                  : CircularProgressIndicator(color: primaryBlue),
               SizedBox(
                 height: 2.h,
               ),

@@ -251,7 +251,8 @@ class _EcashWebViewState extends State<EcashWebView> {
       );
       return false;
     } else {
-      var creat = await Provider.of<CheckPaymentStatusProvider>(context, listen: false);
+      var creat =
+          await Provider.of<CheckPaymentStatusProvider>(context, listen: false);
       checkPayment(creat);
       return false;
     }

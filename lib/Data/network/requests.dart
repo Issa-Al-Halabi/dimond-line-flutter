@@ -1746,7 +1746,8 @@ class AppRequests {
       print("fetchServices status 200");
       return GetDriverTripsModel.fromJson(json.decode(response.body));
     } else {
-      return GetDriverTripsModel.fromJson(json.decode(response.body));
+      return GetDriverTripsModel();
+      // return GetDriverTripsModel.fromJson(json.decode(response.body));
     }
   }
 

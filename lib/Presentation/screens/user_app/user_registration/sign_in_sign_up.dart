@@ -22,6 +22,8 @@ import 'package:flutter_overlay_loader/flutter_overlay_loader.dart';
 import '../../../../constants.dart';
 import '../user_main_application/main_screen/user_dashboard.dart';
 // import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart'
+    as html_widget;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -60,12 +62,11 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
-  initBoolean(){
+  initBoolean() {
     totalAgree = false;
     isAgree = false;
     newValue = false;
   }
-
 
   Future initShared() async {
     prefs = await SharedPreferences.getInstance();
@@ -369,9 +370,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   setSnackbar(
-      String msg,
-      BuildContext context,
-      ) {
+    String msg,
+    BuildContext context,
+  ) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration: Duration(seconds: 3),
       content: Text(
@@ -402,322 +403,323 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         backgroundColor: primaryBlue,
         body: SingleChildScrollView(
-            child: Container(
-              height: getScreenHeight(context),
-              width: getScreenWidth(context),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(background),
-                  fit: BoxFit.fill,
-                ),
+          child: Container(
+            height: getScreenHeight(context),
+            width: getScreenWidth(context),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(background),
+                fit: BoxFit.fill,
               ),
-              child: DefaultTabController(
-                length: 2,
-                child: Padding(
-                  padding: EdgeInsets.only(top: 9.h, bottom: 7.h),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                      color: backgroundColor,
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 10.h,
-                          child: TabBar(
-                            indicatorColor: primaryBlue2,
-                            tabs: [
-                              Tab(
-                                child: myText(
-                                  text: 'login'.tr(),
-                                  fontSize: 6.sp,
-                                  color: primaryBlue,
-                                ),
+            ),
+            child: DefaultTabController(
+              length: 2,
+              child: Padding(
+                padding: EdgeInsets.only(top: 9.h, bottom: 7.h),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                    color: backgroundColor,
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 10.h,
+                        child: TabBar(
+                          indicatorColor: primaryBlue2,
+                          tabs: [
+                            Tab(
+                              child: myText(
+                                text: 'login'.tr(),
+                                fontSize: 6.sp,
+                                color: primaryBlue,
                               ),
-                              Tab(
-                                child: myText(
-                                    text: 'signup'.tr(),
-                                    fontSize: 6.sp,
-                                    color: primaryBlue),
+                            ),
+                            Tab(
+                              child: myText(
+                                  text: 'signup'.tr(),
+                                  fontSize: 6.sp,
+                                  color: primaryBlue),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: TabBarView(children: [
+                          // first tab bar view widget for login
+                          IndexedStack(
+                            index: loginIndex,
+                            children: [
+                              // first index for indexed stack log in
+                              Form(
+                                key: formKey,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(height: 15.h),
+                                      Builder(builder: (context) {
+                                        return PhoneField(
+                                          txt: phoneController,
+                                          onSaved: (value) {
+                                            setState(() {
+                                              phoneController.text = value!;
+                                            });
+                                          },
+                                        );
+                                      }),
+                                      SizedBox(height: 5.h),
+                                      Container(
+                                        height: 6.h,
+                                        width: 80.w,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
+                                              spreadRadius: 2,
+                                              blurRadius: 7,
+                                              offset: Offset(0, 0),
+                                            ),
+                                          ],
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15)),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 5.w, right: 5.w),
+                                          child: TextFormField(
+                                            controller: passwordController,
+                                            obscureText: showPassword == true
+                                                ? false
+                                                : true,
+                                            decoration: InputDecoration(
+                                              errorStyle: TextStyle(
+                                                  fontSize: 4.sp,
+                                                  height: 0.01.h),
+                                              fillColor: Colors.white,
+                                              hintStyle: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 5.sp,
+                                              ),
+                                              suffixIcon: IconButton(
+                                                icon: showPassword == true
+                                                    ? Icon(
+                                                        Icons.visibility_off,
+                                                        color: Colors.grey,
+                                                      )
+                                                    : Icon(
+                                                        Icons.visibility,
+                                                        color: Colors.grey,
+                                                      ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (showPassword == false) {
+                                                      showPassword = true;
+                                                      print(showPassword);
+                                                    } else {
+                                                      showPassword = false;
+                                                      print(showPassword);
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                              hintText: 'pass hint'.tr(),
+                                              border: InputBorder.none,
+                                            ),
+                                            onChanged: (value) {},
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              if (phoneController.text.length ==
+                                                  9) {
+                                                print(phoneController.text);
+                                                var creat = Provider.of<
+                                                        SendOtpProvider>(
+                                                    context,
+                                                    listen: false);
+                                                sendOtpForgetApi(
+                                                    phoneController.text,
+                                                    creat);
+                                              } else {
+                                                setSnackbar(
+                                                    'tapPhone'.tr(), context);
+                                              }
+                                            },
+                                            child: Text(
+                                              "forget?".tr(),
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 4.sp,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationColor: grey,
+                                                decorationThickness: 1,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      ContainerWidget(
+                                          text: 'login'.tr(),
+                                          h: 7.h,
+                                          w: 80.w,
+                                          onTap: () async {
+                                            if (formKey.currentState
+                                                    ?.validate() ==
+                                                true) {
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                              print("save");
+                                              print(phoneController.text);
+                                              print(passwordController.text);
+                                              var creat =
+                                                  Provider.of<LogInProvider>(
+                                                      context,
+                                                      listen: false);
+                                              loginPhoneApi(
+                                                  phoneController.text,
+                                                  passwordController.text,
+                                                  creat);
+                                            } else {
+                                              print('not validate');
+                                            }
+                                          }),
+                                      SizedBox(height: 10.h),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        Expanded(
-                          child: TabBarView(children: [
-                            // first tab bar view widget for login
-                            IndexedStack(
-                              index: loginIndex,
-                              children: [
-                                // first index for indexed stack log in
-                                Form(
-                                  key: formKey,
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        SizedBox(height: 15.h),
-                                        Builder(builder: (context) {
-                                          return PhoneField(
-                                            txt: phoneController,
-                                            onSaved: (value) {
-                                              setState(() {
-                                                phoneController.text = value!;
-                                              });
-                                            },
-                                          );
-                                        }),
-                                        SizedBox(height: 5.h),
-                                        Container(
-                                          height: 6.h,
-                                          width: 80.w,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color:
-                                                    Colors.grey.withOpacity(0.3),
-                                                spreadRadius: 2,
-                                                blurRadius: 7,
-                                                offset: Offset(0, 0),
-                                              ),
-                                            ],
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15)),
-                                          ),
-                                          child: Padding(
-                                            padding: EdgeInsets.only(left: 5.w, right: 5.w),
-                                            child: TextFormField(
-                                              controller: passwordController,
-                                              obscureText: showPassword == true
-                                                  ? false
-                                                  : true,
-                                              decoration: InputDecoration(
-                                                errorStyle: TextStyle(
-                                                    fontSize: 4.sp,
-                                                    height: 0.01.h),
-                                                fillColor: Colors.white,
-                                                hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 5.sp,
-                                                ),
-                                                suffixIcon: IconButton(
-                                                  icon: showPassword == true
-                                                      ? Icon(
-                                                          Icons.visibility_off,
-                                                          color: Colors.grey,
-                                                        )
-                                                      : Icon(
-                                                          Icons.visibility,
-                                                          color: Colors.grey,
-                                                        ),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      if (showPassword == false) {
-                                                        showPassword = true;
-                                                        print(showPassword);
-                                                      } else {
-                                                        showPassword = false;
-                                                        print(showPassword);
-                                                      }
-                                                    });
-                                                  },
-                                                ),
-                                                hintText: 'pass hint'.tr(),
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (value) {},
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 2.h),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                if (phoneController.text.length ==
-                                                    9) {
-                                                  print(phoneController.text);
-                                                  var creat = Provider.of<
-                                                          SendOtpProvider>(
-                                                      context,
-                                                      listen: false);
-                                                  sendOtpForgetApi(
-                                                      phoneController.text,
-                                                      creat);
-                                                } else {
-                                                  setSnackbar(
-                                                      'tapPhone'.tr(), context);
-                                                }
-                                              },
-                                              child: Text(
-                                                "forget?".tr(),
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 4.sp,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                  decorationColor: grey,
-                                                  decorationThickness: 1,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10.h),
-                                        ContainerWidget(
-                                            text: 'login'.tr(),
-                                            h: 7.h,
-                                            w: 80.w,
-                                            onTap: () async {
-                                              if (formKey.currentState
-                                                      ?.validate() ==
-                                                  true) {
-                                                FocusManager.instance.primaryFocus
-                                                    ?.unfocus();
-                                                print("save");
-                                                print(phoneController.text);
-                                                print(passwordController.text);
-                                                var creat =
-                                                    Provider.of<LogInProvider>(
-                                                        context,
-                                                        listen: false);
-                                                loginPhoneApi(
-                                                    phoneController.text,
-                                                    passwordController.text,
-                                                    creat);
-                                              } else {
-                                                print('not validate');
-                                              }
-                                            }),
-                                        SizedBox(height: 10.h),
-                                      ],
+                          Container(
+                              child: Form(
+                            key: formKey2,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 15.h,
+                                  ),
+                                  Center(
+                                    child: myText(
+                                      text: 'signup phone'.tr(),
+                                      fontSize: 5.sp,
+                                      color: grey,
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                                child: Form(
-                              key: formKey2,
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    Center(
-                                      child: myText(
-                                        text: 'signup phone'.tr(),
-                                        fontSize: 5.sp,
-                                        color: grey,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
-                                    Builder(builder: (context) {
-                                      return PhoneField(
-                                        txt: phoneController,
-                                        onSaved: (value) {
-                                          setState(() {
-                                            phoneController.text = value!;
-                                          });
-                                          validateFunction:
-                                          (value) =>
-                                              Validators.validatePhoneNumber(
-                                                  value);
-                                        },
-                                        validateFunction: (value) =>
-                                            Validators.validatePhoneNumber(value),
-                                      );
-                                    }),
-                                    SizedBox(
-                                      height: 2.h,
-                                    ),
-                                    InkWell(
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            // Builder(builder: (context) {
-                                            //   return Checkbox(
-                                            //     materialTapTargetSize:
-                                            //         MaterialTapTargetSize
-                                            //             .shrinkWrap,
-                                            //     value: newValue,
-                                            //     activeColor: primaryBlue,
-                                            //     onChanged: (bool? value) {
-                                            //       setState(() {
-                                            //         newValue = value!;
-                                            //         isAgree = value;
-                                            //         print(isAgree);
-                                            //         if (isAgree == true) {
-                                            //           showAlertDialog(context);
-                                            //         } else {
-                                            //           totalAgree = false;
-                                            //           isAgree = false;
-                                            //         }
-                                            //       });
-                                            //     },
-                                            //   );
-                                            // }),
-                                            getAgreeText(),
-                                          ]),
-                                      onTap: () {
-                                        showAlertDialog(context);
+                                  SizedBox(
+                                    height: 2.h,
+                                  ),
+                                  Builder(builder: (context) {
+                                    return PhoneField(
+                                      txt: phoneController,
+                                      onSaved: (value) {
+                                        setState(() {
+                                          phoneController.text = value!;
+                                        });
+                                        validateFunction:
+                                        (value) =>
+                                            Validators.validatePhoneNumber(
+                                                value);
                                       },
-                                    ),
-                                    SizedBox(
-                                      height: 22.h,
-                                    ),
-                                    ContainerWidget(
-                                        text: 'send code'.tr(),
-                                        h: 8.h,
-                                        w: 80.w,
-                                        onTap: () async {
-                                          if (formKey2.currentState?.validate() ==
-                                              true) {
-                                            if (totalAgree == true) {
-                                              print(phoneController.text);
-                                              print(type);
-                                              var creat2 =
-                                                  Provider.of<SendOtpProvider>(
-                                                      context,
-                                                      listen: false);
-                                              sendOtpRegistrationApi(
-                                                  phoneController.text, creat2);
-                                            } else {
-                                              // setSnackbar(
-                                              //     "agreePolicy".tr(), context);
-                                              showAlertDialog(context);
-
-                                              // Future.delayed(
-                                              //         const Duration(seconds: 2))
-                                              //     .then((_) async {
-                                              // showAlertDialog(context);
-                                              // });
-                                            }
+                                      validateFunction: (value) =>
+                                          Validators.validatePhoneNumber(value),
+                                    );
+                                  }),
+                                  SizedBox(
+                                    height: 2.h,
+                                  ),
+                                  InkWell(
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          // Builder(builder: (context) {
+                                          //   return Checkbox(
+                                          //     materialTapTargetSize:
+                                          //         MaterialTapTargetSize
+                                          //             .shrinkWrap,
+                                          //     value: newValue,
+                                          //     activeColor: primaryBlue,
+                                          //     onChanged: (bool? value) {
+                                          //       setState(() {
+                                          //         newValue = value!;
+                                          //         isAgree = value;
+                                          //         print(isAgree);
+                                          //         if (isAgree == true) {
+                                          //           showAlertDialog(context);
+                                          //         } else {
+                                          //           totalAgree = false;
+                                          //           isAgree = false;
+                                          //         }
+                                          //       });
+                                          //     },
+                                          //   );
+                                          // }),
+                                          getAgreeText(),
+                                        ]),
+                                    onTap: () {
+                                      showAlertDialog(context);
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 22.h,
+                                  ),
+                                  ContainerWidget(
+                                      text: 'send code'.tr(),
+                                      h: 8.h,
+                                      w: 80.w,
+                                      onTap: () async {
+                                        if (formKey2.currentState?.validate() ==
+                                            true) {
+                                          if (totalAgree == true) {
+                                            print(phoneController.text);
+                                            print(type);
+                                            var creat2 =
+                                                Provider.of<SendOtpProvider>(
+                                                    context,
+                                                    listen: false);
+                                            sendOtpRegistrationApi(
+                                                phoneController.text, creat2);
                                           } else {
-                                            print("not validate");
+                                            // setSnackbar(
+                                            //     "agreePolicy".tr(), context);
+                                            showAlertDialog(context);
+
+                                            // Future.delayed(
+                                            //         const Duration(seconds: 2))
+                                            //     .then((_) async {
+                                            // showAlertDialog(context);
+                                            // });
                                           }
-                                        })
-                                  ]),
-                            )),
-                          ]),
-                        ),
-                      ],
-                    ),
+                                        } else {
+                                          print("not validate");
+                                        }
+                                      })
+                                ]),
+                          )),
+                        ]),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
+        ),
       ),
     );
   }
@@ -754,7 +756,7 @@ class _MyDialogState extends State<alert> {
           title: Center(
               child: myText(
             text: 'TERM'.tr() + '\n\n' + "agreePolicy".tr(),
-                fontSize: 4.sp,
+            fontSize: 4.sp,
             color: primaryBlue,
           )),
           content: Scrollbar(
@@ -765,7 +767,10 @@ class _MyDialogState extends State<alert> {
               child: SingleChildScrollView(
                   child: Column(
                 children: [
-                  // widget.privacy != null && widget.privacy != ""
+                  widget.privacy != null && widget.privacy != ""
+                      ? html_widget.HtmlWidget(widget.privacy.toString())
+                      : CircularProgressIndicator(color: primaryBlue),
+
                   //     ? Html(
                   //         data: widget.privacy.toString(),
                   //       )

@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -31,14 +31,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_screenutil: ^5.1.1
   intl_phone_field: ^3.0.1
   easy_localization: any
-  image_picker: 
+  image_picker:
   intl: any
   shimmer: any
   awesome_dialog: ^3.0.1
@@ -52,7 +51,7 @@ dependencies:
   provider: any
   google_places_flutter: any
   fluttertoast: any
-  webview_flutter: any
+  webview_flutter: ^2.8.0
   web_socket_channel: ^2.1.0
   geocoder2: any
   flutter_rating_bar: any
@@ -65,7 +64,8 @@ dependencies:
   flutter_local_notifications: any
   animated_bottom_navigation_bar: ^1.2.0
   package_info: ^2.0.2
-#  flutter_html: ^2.1.5
+  #  flutter_html: ^2.1.5
+  flutter_widget_from_html: ^0.8.1
   lottie: ^1.1.0
   socket_io_client: ^2.0.1
   permission_handler: any
@@ -89,59 +89,58 @@ dependencies:
 #  gecoding:
 #  flutter_bloc: ^8.1.2
 #  flutter_svg: ^0.23.0+1
-  #  analytics_library: ^1.0.0
+#  analytics_library: ^1.0.0
 #  firebase_analytics: ^5.0.14
 #  firebase_analytics:
 #  firebase_auth:
 #  flutter_inappwebview: ^5.3.2
 #  flutter_webview_plugin:
-  # flutter_time_picker_spinner:
-  # form_data:
-  # geocoder:
-  # geocoder: ^0.2.1
-  # flutter_google_places:
-  # geocoding: 
-  # address_search_field:
-  # flutter_google_places_hoc081098:
-  # flutter_typeahead:
-  # carousel_slider: ^4.0.0
-  # dots_indicator: ^2.0.0
-  # pin_code_fields: ^7.3.0
-  # device_info_plus:
-  # table_calendar: ^3.0.0
-  # open_street_map_search_and_pick:
-  # splashscreen: 
-  # enhance_stepper: ^0.1.1
-  # image_picker: ^0.8.4+9
-  # dio: ^4.0.4
-  # flutter_launcher_icons: ^0.7.4
-  # confetti : ^0.6.0
-  # another_flushbar: ^1.10.28
-  # vibration: ^1.7.5
-  # firebase_core: 
-  # firebase_auth: ^2.0.0
-  # cloud_firestore:
-  # firebase_messaging: 
-  # firebase_messaging_platform_interface: 
-  # flutter_local_notifications:
-  # tflite_flutter: ^0.9.0
-  # image: ^3.0.1
-  # camera: ^0.9.4
-  # tflite: ^1.1.2
-  # image_picker: ^0.6.7+17
-  # flutter_typeahead: ^3.2.4
-  # country_code_picker: ^2.0.2
-  # form_data: ^0.0.1-nullsafety.1
-  # flutter_absolute_path: ^1.0.2
-  # http: ^0.13.4
-  # dio: ^4.0.4
-  # shared_preferences: ^2.0.13
-  # flutter_secure_storage: ^5.0.2
-  # bloc: ^8.0.2
-  # flutter_bloc: ^8.0.1
-  # proste_bezier_curve: ^2.0.2
-  # pull_down_button:
-  
+# flutter_time_picker_spinner:
+# form_data:
+# geocoder:
+# geocoder: ^0.2.1
+# flutter_google_places:
+# geocoding:
+# address_search_field:
+# flutter_google_places_hoc081098:
+# flutter_typeahead:
+# carousel_slider: ^4.0.0
+# dots_indicator: ^2.0.0
+# pin_code_fields: ^7.3.0
+# device_info_plus:
+# table_calendar: ^3.0.0
+# open_street_map_search_and_pick:
+# splashscreen:
+# enhance_stepper: ^0.1.1
+# image_picker: ^0.8.4+9
+# dio: ^4.0.4
+# flutter_launcher_icons: ^0.7.4
+# confetti : ^0.6.0
+# another_flushbar: ^1.10.28
+# vibration: ^1.7.5
+# firebase_core:
+# firebase_auth: ^2.0.0
+# cloud_firestore:
+# firebase_messaging:
+# firebase_messaging_platform_interface:
+# flutter_local_notifications:
+# tflite_flutter: ^0.9.0
+# image: ^3.0.1
+# camera: ^0.9.4
+# tflite: ^1.1.2
+# image_picker: ^0.6.7+17
+# flutter_typeahead: ^3.2.4
+# country_code_picker: ^2.0.2
+# form_data: ^0.0.1-nullsafety.1
+# flutter_absolute_path: ^1.0.2
+# http: ^0.13.4
+# dio: ^4.0.4
+# shared_preferences: ^2.0.13
+# flutter_secure_storage: ^5.0.2
+# bloc: ^8.0.2
+# flutter_bloc: ^8.0.1
+# proste_bezier_curve: ^2.0.2
+# pull_down_button:
 
 dev_dependencies:
   flutter_test:
@@ -165,7 +164,6 @@ flutter_icons:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
