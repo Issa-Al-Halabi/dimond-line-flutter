@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:diamond_line/Data/network/requests.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:diamond_line/Presentation/widgets/text.dart';
@@ -16,6 +17,7 @@ import '../../../../../Functions/helper.dart';
 import '../../../../../widgets/loader_widget.dart';
 import 'order_now.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 class MapScreen2 extends StatefulWidget {
   MapScreen2({Key? key}) : super(key: key);
@@ -101,37 +103,13 @@ class _MapScreen2State extends State<MapScreen2> {
   }
 
   convertToAddress(double lat, double long) async {
-    print('convertToAddress ');
-    print(address);
-    // String apiurl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$long&key=$APIKEY";
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    print(apiurl);
-    try {
-      Response response =
-          await get(Uri.parse(apiurl)); //send get request to API URL
-      print("response.statusCode " + response.statusCode.toString());
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        // address = data["results"][0]["address_components"][2]["long_name"] + "," + data["results"][0]["address_components"][1]["long_name"]; // f there is atleast one address
-        address = data["features"][0]["properties"]["geocoding"]
-            ["label"]; // f there is atleast one address
-        print("address --- Ahmad --- : " + address);
-        if (mounted)
-          setState(() {
-            print(address);
-          });
-      } else {
-        print("error while fetching geoconding data");
-        address = "";
-      }
-    } catch (e) {
-      print(e.toString());
-      if (mounted)
-        setSnackbar(
-            "Error While Connecting Please Check your Internet", context);
-      address = "";
-    }
+    address = await AppRequests.getLocationNameFromLatLng(
+        lat: lat.toString(), long: long.toString());
+
+    if (mounted)
+      setState(() {
+        print(address);
+      });
   }
 
   /////////////////////////// get nearest drivers cars (lats & lngs) api ///////////////////////////

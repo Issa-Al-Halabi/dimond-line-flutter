@@ -411,7 +411,12 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                           print(widget.date);
                                           print(widget.bags);
                                           print(widget.seats);
-                                          print('********');
+                                          print(
+                                              '************************************');
+                                          print(addressFromMarker);
+                                          print(addressToMarker);
+                                          print(
+                                              '************************************');
                                           print(orderTypeId);
                                           var creat = await Provider.of<
                                                   TripOutCityProvider>(context,
@@ -439,16 +444,16 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                             isAccept = true;
                                             print(isAccept);
                                           });
-                                          Timer timer = Timer.periodic(
-                                              // Duration(seconds: 20), (timer) {
-                                              Duration(hours: 24), (timer) {
-                                            setState(() {
-                                              isOrdered = true;
-                                              print(isAccept);
-                                              print(isOrdered);
-                                              timer.cancel();
-                                            });
-                                          });
+                                          // Timer timer = Timer.periodic(
+                                          //     // Duration(seconds: 20), (timer) {
+                                          //     Duration(hours: 24), (timer) {
+                                          //   setState(() {
+                                          //     isOrdered = true;
+                                          //     print(isAccept);
+                                          //     print(isOrdered);
+                                          //     timer.cancel();
+                                          //   });
+                                          // });
                                         }
                                       }
                                     }),
@@ -920,9 +925,9 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                                         ),
                                                         Text(
                                                           formatter
-                                                                  .format(
-                                                                      widget.priceList[
-                                                                          index])
+                                                                  .format(widget
+                                                                          .priceList[
+                                                                      index])
                                                                   .toString() +
                                                               'sp'.tr(),
                                                           style: TextStyle(
@@ -949,13 +954,17 @@ class _SelectCarOutCityState extends State<SelectCarOutCity> {
                                                             imageErrorBuilder:
                                                                 (context, error,
                                                                         stackTrace) =>
-                                                                    erroWidget(
-                                                                        100),
+                                                                    Image.asset(
+                                                                        logo),
                                                             placeholder:
-                                                                placeHolder(
-                                                                    100),
+                                                                AssetImage(
+                                                                    logo),
                                                           )
-                                                        : Container(),
+                                                        : Image.asset(
+                                                            logo,
+                                                            height: 12.h,
+                                                            width: 25.w,
+                                                          ),
                                                   ],
                                                 ),
                                               ],

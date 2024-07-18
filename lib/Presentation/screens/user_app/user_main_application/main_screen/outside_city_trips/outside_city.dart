@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +75,12 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
         print(creat.data.data!.length);
         print('@@@@@@@@@@@@@');
 
+        vechileImage.clear();
+        vechileType.clear();
+        vechileId.clear();
+        carModel.clear();
+        priceList.clear();
+
         for (int i = 0; i < creat.data.data!.length; i++) {
           setState(() {
             vechileImage.add(creat.data.data![i].vehicleImage);
@@ -84,6 +92,28 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
         }
         filteredLength = creat.data.data!.length;
         setState(() {
+          log({
+            "vechileImage": vechileImage,
+            "vechileType": vechileType,
+            "carModel": carModel,
+            "seats": seats,
+            "bags": bags,
+            "filteredLength": filteredLength,
+            "date": getDate(),
+            "time": getTime(selectedTime),
+            "to": widget.to!,
+            "categoryId": widget.categoryId!,
+            "subCategoryId": widget.subCategoryId!,
+            "vechileId": vechileId,
+            "fromLat": widget.fromLat,
+            "fromLon": widget.fromLon,
+            "distance": widget.distance,
+            "timeOfTrip": widget.timeOfTrip,
+            "toLat": widget.toLat,
+            "toLon": widget.toLon,
+            "priceList": priceList,
+          }.toString());
+
           Future.delayed(const Duration(seconds: 1)).then((_) async {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -365,8 +395,6 @@ class _OutsideCityScreenState extends State<OutsideCityScreen> {
                               onTap: () {
                                 _selectDate(context);
                                 showDate = true;
-                                print('getDate()');
-                                print(getDate());
                               },
                               color: backgroundColor,
                               textColor: lightBlue,

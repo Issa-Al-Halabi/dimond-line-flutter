@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:diamond_line/Data/network/requests.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -14,6 +15,7 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import '../../../../../Functions/helper.dart';
 import 'outside_city.dart';
+import 'package:intl/intl.dart';
 
 String addressFromMarker = '', addressToMarker = '';
 
@@ -114,15 +116,12 @@ class _MapScreenState extends State<MapScreen> {
 
   getTimeOfTrip(
       double latcurrent, double lancurrent, double lat, double lng) async {
-    Dio dio = new Dio();
-    String url =
-        "https://api.distancematrix.ai/maps/api/distancematrix/json?origins=$latcurrent,$lancurrent&destinations=$lat,$lng&mode=driving&key=byog9DctX5CYHt2F4PM16gX5oxjAOzakrCGBXiiltIiUKIaArrEH8ZSHE2O4gT2s";
-    print(url);
-    Response response = await dio.get(url);
-    print('time is --- Ahmad --- : ');
-    int t = response.data["rows"][0]["elements"][0]["duration"]["value"];
-    double t2 = t / 60;
-    timeOfTrip = t2.toString();
+    timeOfTrip = await AppRequests.getTimeFromLatLng(
+        fromLat: latcurrent.toString(),
+        fromLong: lancurrent.toString(),
+        toLat: lat.toString(),
+        toLong: lng.toString());
+
     if (mounted) {
       setState(() {});
     }
@@ -131,42 +130,29 @@ class _MapScreenState extends State<MapScreen> {
 
   convertFromAddress(double lat, double long) async {
     print(addressFromMarker);
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    http.Response response = await http.get(Uri.parse(apiurl));
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      addressFromMarker =
-          data["features"][0]["properties"]["geocoding"]["label"];
-      print("address --- Ahmad convertToAddress --- : " + addressFromMarker);
+
+    addressFromMarker = await AppRequests.getLocationNameFromLatLng(
+        lat: lat.toString(), long: long.toString());
+    if (addressFromMarker != "") {
       setState(() {
         print(addressFromMarker);
       });
     } else {
-      print("@@@@@@@@@@@@error while fetching geoconding data");
+      setSnackbar("Error While Connecting Please Check your Internet", context);
     }
   }
 
   convertToAddress(double lat, double long) async {
+    print("addressToMarker addressToMarker addressToMarker");
     print(addressToMarker);
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    try {
-      http.Response response =
-          await http.get(Uri.parse(apiurl)); //send get request to API URL
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        addressToMarker =
-            data["features"][0]["properties"]["geocoding"]["label"];
-        print("address --- Ahmad convertToAddress --- : " + addressToMarker);
-        setState(() {
-          print(addressToMarker);
-        });
-      } else {
-        print("error while fetching geoconding data");
-      }
-    } catch (e) {
-      print("error while fetching geoconding data " + e.toString());
+    addressToMarker = await AppRequests.getLocationNameFromLatLng(
+        lat: lat.toString(), long: long.toString());
+    if (addressToMarker != "") {
+      setState(() {
+        print(addressToMarker);
+      });
+    } else {
+      setSnackbar("Error While Connecting Please Check your Internet", context);
     }
   }
 
@@ -376,22 +362,36 @@ class _MapScreenState extends State<MapScreen> {
                                     print(widget.to);
                                     if (fromLat != 0.0 && toLat != 0.0) {
                                       Loader.hide();
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              OutsideCityScreen(
-                                            categoryId: widget.categoryId,
-                                            subCategoryId: widget.subCategoryId,
-                                            timeOfTrip: timeOfTrip,
-                                            distance: distance.toString(),
-                                            fromLat: fromLat.toString(),
-                                            fromLon: fromLon.toString(),
-                                            toLat: toLat.toString(),
-                                            toLon: toLon.toString(),
-                                            to: widget.to,
+                                      if (addressFromMarker == "" &&
+                                          addressToMarker == "") {
+                                        print("addressFromMarker " +
+                                            addressFromMarker);
+                                        print("addressToMarker " +
+                                            addressToMarker);
+                                        setSnackbar(
+                                          'somethingMSg'.tr(),
+                                          context,
+                                        );
+                                        convertToAddress(toLat, toLon);
+                                      } else {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OutsideCityScreen(
+                                              categoryId: widget.categoryId,
+                                              subCategoryId:
+                                                  widget.subCategoryId,
+                                              timeOfTrip: timeOfTrip,
+                                              distance: distance.toString(),
+                                              fromLat: fromLat.toString(),
+                                              fromLon: fromLon.toString(),
+                                              toLat: toLat.toString(),
+                                              toLon: toLon.toString(),
+                                              to: widget.to,
+                                            ),
                                           ),
-                                        ),
-                                      );
+                                        );
+                                      }
                                     } else {
                                       Loader.hide();
                                       setSnackbar(

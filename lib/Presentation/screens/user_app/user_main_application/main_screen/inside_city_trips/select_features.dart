@@ -122,6 +122,13 @@ class _SelectFeaturesState extends State<SelectFeatures> {
           optionsId,
           order_time);
       data = json.decode(data);
+      print(
+          "@@@@@@@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      for (var driver in data["data"]["nearest_driver"]) {
+        print(driver["id"]);
+        print(driver["driver_id"]);
+      }
+      print(data["data"]["nearest_driver"][0]["driver_id"]);
       if (data["error"] == false) {
         // Loader.hide();
         if (mounted)
@@ -212,6 +219,11 @@ class _SelectFeaturesState extends State<SelectFeatures> {
       );
 
       data = json.decode(data);
+      print(
+          "getNearestCarDelayedApi getNearestCarDelayedApi getNearestCarDelayedApi getNearestCarDelayedApi");
+      print(data);
+      print(
+          "getNearestCarDelayedApi getNearestCarDelayedApi getNearestCarDelayedApi getNearestCarDelayedApi ");
       if (data["error"] == false) {
         Loader.hide();
         setState(() {
@@ -463,7 +475,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                   text: 'request'.tr(),
                                   h: 7.h,
                                   w: 60.w,
-                                  onTap: () {
+                                  onTap: () async {
                                     Loader.show(context,
                                         progressIndicator: LoaderWidget());
                                     // if order now
@@ -476,7 +488,6 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                       String order_time =
                                           '${t.hour}:${t.minute}:${t.second}';
                                       print(order_time);
-                                      Loader.hide();
                                       // get nearest car
                                       print({
                                         widget.fromLat.toString(),
@@ -492,7 +503,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                         optionsId,
                                         order_time
                                       });
-                                      getNearestCarApi(
+                                      await getNearestCarApi(
                                           widget.fromLat.toString(),
                                           widget.fromLon.toString(),
                                           widget.toLat.toString(),
@@ -505,13 +516,13 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                           widget.id,
                                           optionsId,
                                           order_time);
+                                      Loader.hide();
                                     }
                                     // else if order later
                                     else {
                                       // get nearest delayed car
                                       print(optionsId);
-                                      Loader.hide();
-                                      getNearestCarDelayedApi(
+                                      await getNearestCarDelayedApi(
                                           widget.fromLat.toString(),
                                           widget.fromLon.toString(),
                                           widget.toLat.toString(),
@@ -525,6 +536,7 @@ class _SelectFeaturesState extends State<SelectFeatures> {
                                           widget.date,
                                           widget.time,
                                           optionsId);
+                                      Loader.hide();
                                     }
                                   }),
                               SizedBox(

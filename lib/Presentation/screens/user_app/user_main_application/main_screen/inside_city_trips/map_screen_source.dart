@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:diamond_line/Data/network/requests.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -11,12 +12,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'order_now.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 class MapScreenSource extends StatefulWidget {
   MapScreenSource(
       {required this.fromLat,
       required this.fromLon,
       required this.sourceAddress,
+      required this.destinationAddress,
+      required this.toLat,
+      required this.toLon,
       this.laterOrder,
       Key? key})
       : super(key: key);
@@ -24,6 +29,9 @@ class MapScreenSource extends StatefulWidget {
   double fromLat;
   double fromLon;
   String sourceAddress;
+  String destinationAddress;
+  double toLat;
+  double toLon;
   bool? laterOrder = false;
 
   @override
@@ -104,31 +112,13 @@ class _MapScreenSourceState extends State<MapScreenSource> {
   }
 
   convertToAddress(GeoPoint geoPoint) async {
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=${geoPoint.latitude}&lon=${geoPoint.longitude}";
-    Response response =
-        await get(Uri.parse(apiurl)); //send get request to API URL
+    widget.sourceAddress = await AppRequests.getLocationNameFromLatLng(
+        lat: geoPoint.latitude.toString(), long: geoPoint.longitude.toString());
 
-    if (response.statusCode == 200) {
-      //if connection is successful
-      var data = json.decode(response.body);
-      // Map data = response.data; //get response data
-      //if status is "OK" returned from REST API
-      //if there is atleast one address
-      widget.sourceAddress = data["features"][0]["properties"]["geocoding"]
-          ["label"]; // f there is atleast one address
-
-      print("address --- Ahmad convertToAddress --- : " + widget.sourceAddress);
-
-      if (mounted)
-        setState(() {
-          print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-          print(widget.sourceAddress.toString());
-          print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-        });
-    } else {
-      print("error while fetching geoconding data");
-    }
+    if (mounted)
+      setState(() {
+        print(widget.sourceAddress.toString());
+      });
   }
 
   void initMarker() {
@@ -266,8 +256,22 @@ class _MapScreenSourceState extends State<MapScreenSource> {
                                       print('map screen source done');
                                       print(widget.fromLat);
                                       print(widget.fromLon);
+                                      // if (lastGeoPoint.value != null) {
                                       convertToAddress(lastGeoPoint.value!);
+                                      // }
                                       print(widget.sourceAddress);
+
+                                      print({
+                                        "fromLat": lastGeoPoint.value!.latitude,
+                                        "fromLon":
+                                            lastGeoPoint.value!.longitude,
+                                        "sourceAddress": widget.sourceAddress,
+                                        "toLat": widget.toLat,
+                                        "toLon": widget.toLon,
+                                        "destAddress":
+                                            widget.destinationAddress,
+                                        "laterOrder": widget.laterOrder,
+                                      });
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -280,10 +284,12 @@ class _MapScreenSourceState extends State<MapScreenSource> {
                                                   lastGeoPoint.value!.longitude,
                                               sourceAddress:
                                                   widget.sourceAddress,
-                                              toLat: 0.0,
-                                              toLon: 0.0,
-                                              destAddress: '',
+                                              toLat: widget.toLat,
+                                              toLon: widget.toLon,
+                                              destAddress:
+                                                  widget.destinationAddress,
                                               laterOrder: widget.laterOrder,
+                                              getDestAdd: true,
                                             ),
                                           ));
                                     }),

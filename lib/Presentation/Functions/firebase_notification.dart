@@ -1,5 +1,6 @@
 import 'package:diamond_line/Buisness_logic/provider/Driver_Provider/wait_for_payment_provider.dart';
 import 'package:diamond_line/Buisness_logic/provider/User_Provider/in_trip_provider.dart';
+import 'package:diamond_line/constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +50,26 @@ class FirebaseNotificationsHandler {
   }
 
   Future<void> init() async {
+    print("firebase init");
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'high_importance_channel',
-      'High Importance Notifications',
+      'DiamondLine',
+      'DiamondLine',
       importance: Importance.max,
+      playSound: true,
     );
+
+    const AndroidNotificationChannel channelWithSound =
+        AndroidNotificationChannel(
+      'DiamondLine_req',
+      'DiamondLine_req',
+      importance: Importance.max,
+      enableVibration: true,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('carhonk'),
+      ledColor: primaryBlue,
+    );
+
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
@@ -62,6 +77,11 @@ class FirebaseNotificationsHandler {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channelWithSound);
 
     var android = const AndroidInitializationSettings('@mipmap/ic_launcher');
     var ios = const DarwinInitializationSettings();
@@ -107,11 +127,30 @@ class FirebaseNotificationsHandler {
                 notification.body,
                 NotificationDetails(
                   android: AndroidNotificationDetails(
-                    channel.id,
-                    channel.name,
+                    message.data["nearby_request"] != null
+                        ? channelWithSound.id
+                        : channel.id,
+                    "DiamondLine",
                     // icon: android!.smallIcon,
                     showWhen: true,
-//                    color: ColorManager.primaryColor,
+
+                    playSound: true,
+                    sound: RawResourceAndroidNotificationSound('carhonk'),
+                    // sound: const UriAndroidNotificationSound(
+                    //     "assets/car_horn_sound_effec.mp3"),
+                    importance: Importance.max,
+                    priority: Priority.high,
+                    color: primaryBlue,
+
+                    colorized: true,
+
+                    styleInformation: BigTextStyleInformation(
+                      notification.body ?? "",
+                      htmlFormatBigText: true,
+                      htmlFormatContent: true,
+                      htmlFormatContentTitle: true,
+                      htmlFormatSummaryText: true,
+                    ),
                   ),
                 ))
             .catchError((onError) {

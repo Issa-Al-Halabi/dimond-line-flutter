@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:diamond_line/Data/network/requests.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'order_now.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 class MapScreenDestination extends StatefulWidget {
   MapScreenDestination(
@@ -114,23 +116,12 @@ class _MapScreenDestinationState extends State<MapScreenDestination> {
   }
 
   convertToAddress(GeoPoint geoPoint) async {
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=${geoPoint.latitude}&lon=${geoPoint.longitude}";
-    Response response =
-        await get(Uri.parse(apiurl)); //send get request to API URL
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      widget.destinationAddress =
-          data["features"][0]["properties"]["geocoding"]["label"];
-      print("address --- Ahmad convertToAddress --- : " +
-          widget.destinationAddress);
-      if (mounted)
-        setState(() {
-          print(widget.destinationAddress.toString());
-        });
-    } else {
-      print("error while fetching geoconding data");
-    }
+    widget.destinationAddress = await AppRequests.getLocationNameFromLatLng(
+        lat: geoPoint.latitude.toString(), long: geoPoint.longitude.toString());
+    if (mounted)
+      setState(() {
+        print(widget.destinationAddress.toString());
+      });
   }
 
   void initMarker() {

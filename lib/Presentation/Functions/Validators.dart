@@ -79,7 +79,7 @@ class Validators {
     }
     if (value.length <= 2) return "short".tr();
 
-    if (!value.contains(RegExp(r'^[a-zA-Z]+$'))) {
+    if (!value.contains(RegExp(r'^[a-zA-Z\u0600-\u06FF\u0750-\u077F]+$'))) {
       return 'nonAlphabetic'.tr();
     } else if (value.length <= 15)
       return null;

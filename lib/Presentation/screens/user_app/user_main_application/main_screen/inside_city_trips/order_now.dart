@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Data/network/requests.dart';
 import 'package:flutter/material.dart';
 import '../../../../../widgets/loader_widget.dart';
 import 'package:easy_localization/src/public_ext.dart';
@@ -22,6 +23,7 @@ import 'map_screen_destination.dart';
 import 'map_screen_polyline.dart';
 import 'map_screen_source.dart';
 import 'package:http/http.dart' as http;
+// import 'dart:ui' as ui;
 
 class OrderNow extends StatefulWidget {
   OrderNow({
@@ -85,55 +87,32 @@ class _OrderNowState extends State<OrderNow> {
   convertToAddress(double lat, double long) async {
     print("convertToAddress");
     print(widget.sourceAddress.toString());
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    try {
-      http.Response response =
-          await http.get(Uri.parse(apiurl)); //send get request to API URL
-      if (response.statusCode == 200) {
-        //if connection is successful
-        var data = json.decode(response.body);
 
-        widget.sourceAddress = data["features"][0]["properties"]["geocoding"]
-            ["label"]; // f there is atleast one address
-        print(
-            "address --- Ahmad convertToAddress --- : " + widget.sourceAddress);
-        //you can use the JSON data to get address in your own format
-        setState(() {
-          //refresh UI
-          controllerFrom = TextEditingController(text: widget.sourceAddress);
-          print(widget.sourceAddress);
-        });
-      } else {
-        print("error while fetching geoconding data");
-      }
-    } catch (e) {
+    widget.sourceAddress = await AppRequests.getLocationNameFromLatLng(
+        lat: lat.toString(), long: long.toString());
+
+    if (widget.sourceAddress != "") {
+      setState(() {
+        controllerFrom = TextEditingController(text: widget.sourceAddress);
+        print(widget.sourceAddress);
+      });
+    } else {
       setSnackbar("Error While Connecting Please Check your Internet", context);
     }
   }
 
   convertToAddressDest(double lat, double long) async {
     print(widget.destAddress.toString());
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    http.Response response =
-        await http.get(Uri.parse(apiurl)); //send get request to API URL
-    // Response response = await http.get(apiurl); //send get request to API URL
-    if (response.statusCode == 200) {
-      //if connection is successful
-      var data = json.decode(response.body);
-      widget.destAddress =
-          data["features"][0]["properties"]["geocoding"]["label"];
-      print(
-          "address --- Ahamd convertToAddressDest --- : " + widget.destAddress);
-      //you can use the JSON data to get address in your own format
+
+    widget.destAddress = await AppRequests.getLocationNameFromLatLng(
+        lat: lat.toString(), long: long.toString());
+    if (widget.destAddress != "") {
       setState(() {
-        //refresh
         controllerTo = TextEditingController(text: widget.destAddress);
         print(widget.destAddress);
       });
     } else {
-      print("error while fetching geoconding data");
+      setSnackbar("Error While Connecting Please Check your Internet", context);
     }
   }
 
@@ -194,12 +173,15 @@ class _OrderNowState extends State<OrderNow> {
     _isNetworkAvail = await isNetworkAvailable();
     if (_isNetworkAvail) {
       print("There is internet");
-      print(pickup_latitude);
-      print(pickup_longitude);
-      print(drop_latitude);
-      print(drop_longitude);
-      print(km);
-      print(minutes);
+
+      print({
+        pickup_latitude,
+        pickup_longitude,
+        drop_latitude,
+        drop_longitude,
+        km,
+        minutes
+      });
       idList = [];
       vehicletypeList = [];
       baseKmList = [];
@@ -211,6 +193,11 @@ class _OrderNowState extends State<OrderNow> {
           drop_latitude, drop_longitude, km, minutes);
       if (creat.data.error == false) {
         length = creat.data.data!.length;
+        print(
+            "length length length length length length length length length length length length length ");
+        print(length);
+        print(
+            "length length length length length length length length length length length length length  ");
         for (int i = 0; i < creat.data.data!.length; i++) {
           setState(() {
             idList.add(creat.data.data![i].id);
@@ -378,24 +365,16 @@ class _OrderNowState extends State<OrderNow> {
 
   getTimeOfTrip(
       double latcurrent, double lancurrent, double lat, double lng) async {
-    Dio dio = new Dio();
-    // String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$latcurrent,$lancurrent&destinations=$lat,$lng&key=AIzaSyCPsxZeXKcSYK1XXw0O0RbrZiI_Ekou5DY";
-    String url =
-        "https://api.distancematrix.ai/maps/api/distancematrix/json?origins=$latcurrent,$lancurrent&destinations=$lat,$lng&mode=driving&key=byog9DctX5CYHt2F4PM16gX5oxjAOzakrCGBXiiltIiUKIaArrEH8ZSHE2O4gT2s";
-    try {
-      Response response = await dio.get(url);
-      int t = response.data["rows"][0]["elements"][0]["duration"]["value"];
-      print('time is --- Ahmad --- : $t');
-      double t2 = t / 60;
-      timeOfTrip = t2.toString();
-      print(timeOfTrip);
-      if (mounted) {
-        setState(() {});
-      }
-      return timeOfTrip;
-    } catch (e) {
-      setSnackbar("Error while Connecting", context);
+    timeOfTrip = await AppRequests.getTimeFromLatLng(
+        fromLat: latcurrent.toString(),
+        fromLong: lancurrent.toString(),
+        toLat: lat.toString(),
+        toLong: lng.toString());
+
+    if (mounted) {
+      setState(() {});
     }
+    return timeOfTrip;
   }
 
   @override
@@ -547,7 +526,10 @@ class _OrderNowState extends State<OrderNow> {
                                     print(widget.fromLat);
                                     print(widget.fromLon);
                                     print(widget.sourceAddress);
-                                    Navigator.push(
+                                    print(widget.destAddress);
+                                    print(widget.toLat);
+                                    print(widget.toLon);
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => MapScreenSource(
@@ -555,6 +537,10 @@ class _OrderNowState extends State<OrderNow> {
                                             fromLon: widget.fromLon,
                                             sourceAddress: widget.sourceAddress,
                                             laterOrder: widget.laterOrder,
+                                            destinationAddress:
+                                                widget.destAddress,
+                                            toLat: widget.toLat,
+                                            toLon: widget.toLon,
                                           ),
                                         ));
                                   },
@@ -662,7 +648,7 @@ class _OrderNowState extends State<OrderNow> {
                                       print(widget.toLon);
                                       print(widget.sourceAddress);
                                       print(widget.destAddress);
-                                      Navigator.push(
+                                      Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>

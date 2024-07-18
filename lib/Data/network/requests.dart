@@ -1079,7 +1079,7 @@ class AppRequests {
       print("fetchServices status 200");
       return TripOutCityModel.fromJson(json.decode(response.body));
     } else {
-      return TripOutCityModel.fromJson(json.decode(response.body));
+      return TripOutCityModel();
     }
   }
 
@@ -1696,7 +1696,8 @@ class AppRequests {
       // prefs.setString('deviceNumber', deviceNumber!);
       return DriverStatusModel.fromJson(json.decode(response.body));
     } else {
-      return DriverStatusModel.fromJson(json.decode(response.body));
+      return DriverStatusModel();
+      // return DriverStatusModel.fromJson(json.decode(response.body));
     }
   }
 
@@ -2449,6 +2450,104 @@ class AppRequests {
       return json.decode(response.body);
     } else {
       return null;
+    }
+  }
+
+  //get the location name from Openstreetmap api
+  static Future<String?> getLocationNameFromOpenstreetmap(
+      {required String lat, required String long}) async {
+    String apiUrl =
+        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
+
+    try {
+      http.Response response = await http.get(Uri.parse(apiUrl), headers: {
+        "Content-Type": "application/json",
+      });
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+
+        return data["features"][0]["properties"]["geocoding"]["label"];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("error while fetching getLocationNameFromOpenstreetmap data " +
+          e.toString());
+      return null;
+    }
+  }
+
+  //get the location name from distancematrix api
+  static Future<String?> getLocationNameFromDistancematrix(
+      {required String lat, required String long}) async {
+    String apiUrl =
+        "https://api.distancematrix.ai/maps/api/distancematrix/json?origins=$lat,$long&destinations=$lat,$long&mode=driving&key=byog9DctX5CYHt2F4PM16gX5oxjAOzakrCGBXiiltIiUKIaArrEH8ZSHE2O4gT2s&language=ar";
+
+    try {
+      http.Response response = await http.get(Uri.parse(apiUrl), headers: {
+        "Content-Type": "application/json",
+      });
+
+      if (response.statusCode == 200) {
+        var data = json.decode(utf8.decode(response.bodyBytes));
+
+        return data['destination_addresses'][0];
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("error while fetching getLocationNameFromDistancematrix data " +
+          e.toString());
+      return null;
+    }
+  }
+
+  //get the location name from lat lng
+  static Future<String> getLocationNameFromLatLng(
+      {required String lat, required String long}) async {
+    try {
+      String? location =
+          await getLocationNameFromOpenstreetmap(lat: lat, long: long);
+
+      if (location == null) {
+        location =
+            await getLocationNameFromDistancematrix(lat: lat, long: long);
+      }
+
+      return location ?? "";
+    } catch (e) {
+      print("error while fetching getLocationNameFromLatLng data " +
+          e.toString());
+      return "";
+    }
+  }
+
+  //get the location name from lat lng
+  static Future<String> getTimeFromLatLng(
+      {required String fromLat,
+      required String fromLong,
+      required String toLat,
+      required String toLong}) async {
+    String url =
+        "https://api.distancematrix.ai/maps/api/distancematrix/json?origins=$fromLat,$fromLong&destinations=$toLat,$toLong&mode=driving&key=byog9DctX5CYHt2F4PM16gX5oxjAOzakrCGBXiiltIiUKIaArrEH8ZSHE2O4gT2s";
+    try {
+      http.Response response = await http.get(Uri.parse(url), headers: {
+        "Content-Type": "application/json",
+      });
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        int t = data["rows"][0]["elements"][0]["duration"]["value"];
+        double t2 = t / 60;
+        return t2.toString();
+      } else {
+        return "0";
+      }
+    } catch (e) {
+      print("error while fetching getLocationNameFromDistancematrix data " +
+          e.toString());
+      return "0";
     }
   }
 

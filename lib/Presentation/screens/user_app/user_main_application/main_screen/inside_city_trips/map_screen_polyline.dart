@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:diamond_line/Data/network/requests.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -61,7 +62,7 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
   var lat;
   var long;
   String timeOfTrip = '';
-  var distance;
+  double distance = 0.0;
 
   late MapController controller;
   bool isLoading = false;
@@ -119,16 +120,12 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
 
   getTimeOfTrip(
       double latcurrent, double lancurrent, double lat, double lng) async {
-    Dio dio = new Dio();
-    // String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$latcurrent,$lancurrent&destinations=$lat,$lng&key=AIzaSyCPsxZeXKcSYK1XXw0O0RbrZiI_Ekou5DY";
-    String url = "https://api.distancematrix.ai/maps/api/distancematrix/json?origins=$latcurrent,$lancurrent&destinations=$lat,$lng&mode=driving&key=byog9DctX5CYHt2F4PM16gX5oxjAOzakrCGBXiiltIiUKIaArrEH8ZSHE2O4gT2s";
-    print(url);
-    Response response = await dio.get(url);
-    print("response response response response response response ");
-    print(response.data);
-    int t = response.data["rows"][0]["elements"][0]["duration"]["value"];
-    double t2 = t / 60;
-    timeOfTrip = t2.toString();
+    timeOfTrip = await AppRequests.getTimeFromLatLng(
+        fromLat: latcurrent.toString(),
+        fromLong: lancurrent.toString(),
+        toLat: lat.toString(),
+        toLong: lng.toString());
+
     if (mounted) {
       setState(() {});
     }
@@ -310,9 +307,7 @@ class _MapScreenPolylineState extends State<MapScreenPolyline> {
                                                             .toString(),
                                                         price: widget
                                                             .priceList[index],
-                                                        km: distance
-                                                            .toString()
-                                                            .toString(),
+                                                        km: distance.toString(),
                                                         minutes: timeOfTrip,
                                                         sourceAdd: widget
                                                             .sourceAdd

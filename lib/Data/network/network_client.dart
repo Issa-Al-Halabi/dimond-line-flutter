@@ -9,10 +9,12 @@ import 'package:web_socket_channel/io.dart';
 
 class network_client {
   ////  my car security Urls
-  static const String mycarSscSecurity_TOKEN = "MvPhJO38hOUiyJ333Mh2Ct0w6Jn3o5R1";
-  static const String mycarSscSecurity_URL = "https://mycar.ssc-security.net:8085/api/session?token=${mycarSscSecurity_TOKEN}";
-  static const String mycarSscSecurity_SOCKET = "ws://mycar.ssc-security.net:8085/api/socket";
-
+  static const String mycarSscSecurity_TOKEN =
+      "MvPhJO38hOUiyJ333Mh2Ct0w6Jn3o5R1";
+  static const String mycarSscSecurity_URL =
+      "https://mycar.ssc-security.net:8085/api/session?token=${mycarSscSecurity_TOKEN}";
+  static const String mycarSscSecurity_SOCKET =
+      "ws://mycar.ssc-security.net:8085/api/socket";
 
   ////  ---------------------------------
 
@@ -80,6 +82,7 @@ class network_client {
         // else
         return _client.get(Uri.parse("$_baseUrl/$path"), headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
           "Authorization": "Bearer " + token!
 //          "locale": AppLocale().locale.languageCode
         });

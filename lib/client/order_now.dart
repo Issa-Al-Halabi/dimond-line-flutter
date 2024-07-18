@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:diamond_line/Data/network/requests.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/map_screen_destination.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/map_screen_polyline.dart';
 import 'package:diamond_line/Presentation/screens/user_app/user_main_application/main_screen/inside_city_trips/map_screen_source.dart';
@@ -88,56 +89,24 @@ class _OrderNowState extends State<OrderNow> {
 
   convertToAddress(double lat, double long) async {
     print(widget.sourceAddress.toString());
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    try {
-      http.Response response =
-          await http.get(Uri.parse(apiurl)); //send get request to API URL
-      if (response.statusCode == 200) {
-        //if connection is successful
-        var data = json.decode(response.body);
 
-        widget.sourceAddress = data["features"][0]["properties"]["geocoding"]
-            ["label"]; // f there is atleast one address
-        print(
-            "address --- Ahmad convertToAddress --- : " + widget.sourceAddress);
-        //you can use the JSON data to get address in your own format
-        setState(() {
-          //refresh UI
-          controllerFrom = TextEditingController(text: widget.sourceAddress);
-          print(widget.sourceAddress);
-        });
-      } else {
-        print("error while fetching geoconding data");
-      }
-    } catch (e) {
-      setSnackbar("Error While Connecting Please Check your Internet", context);
-    }
+    widget.sourceAddress = await AppRequests.getLocationNameFromLatLng(
+        lat: lat.toString(), long: long.toString());
+
+    setState(() {
+      controllerFrom = TextEditingController(text: widget.sourceAddress);
+    });
   }
 
   convertToAddressDest(double lat, double long) async {
     print(widget.destAddress.toString());
-    String apiurl =
-        "https://nominatim.openstreetmap.org/reverse?format=geocodejson&accept-language=ar&lat=$lat&lon=$long";
-    http.Response response =
-        await http.get(Uri.parse(apiurl)); //send get request to API URL
-    // Response response = await http.get(apiurl); //send get request to API URL
-    if (response.statusCode == 200) {
-      //if connection is successful
-      var data = json.decode(response.body);
-      widget.destAddress =
-          data["features"][0]["properties"]["geocoding"]["label"];
-      print(
-          "address --- Ahamd convertToAddressDest --- : " + widget.destAddress);
-      //you can use the JSON data to get address in your own format
-      setState(() {
-        //refresh
-        controllerTo = TextEditingController(text: widget.destAddress);
-        print(widget.destAddress);
-      });
-    } else {
-      print("error while fetching geoconding data");
-    }
+    widget.destAddress = await AppRequests.getLocationNameFromLatLng(
+        lat: lat.toString(), long: long.toString());
+
+    setState(() {
+      controllerTo = TextEditingController(text: widget.destAddress);
+      print(widget.destAddress);
+    });
   }
 
   String getTime(TimeOfDay tod) {
@@ -381,23 +350,14 @@ class _OrderNowState extends State<OrderNow> {
 
   getTimeOfTrip(
       double latcurrent, double lancurrent, double lat, double lng) async {
-    Dio dio = new Dio();
-    // String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$latcurrent,$lancurrent&destinations=$lat,$lng&key=AIzaSyCPsxZeXKcSYK1XXw0O0RbrZiI_Ekou5DY";
-    String url =
-        "https://api.distancematrix.ai/maps/api/distancematrix/json?origins=$latcurrent,$lancurrent&destinations=$lat,$lng&mode=driving&key=byog9DctX5CYHt2F4PM16gX5oxjAOzakrCGBXiiltIiUKIaArrEH8ZSHE2O4gT2s";
-    try {
-      Response response = await dio.get(url);
-      int t = response.data["rows"][0]["elements"][0]["duration"]["value"];
-      print('time is --- Ahmad --- : $t');
-      double t2 = t / 60;
-      timeOfTrip = t2.toString();
-      print(timeOfTrip);
-      if (mounted) {
-        setState(() {});
-      }
-      return timeOfTrip;
-    } catch (e) {
-      setSnackbar("Error while Connecting", context);
+    timeOfTrip = await AppRequests.getTimeFromLatLng(
+        fromLat: latcurrent.toString(),
+        fromLong: lancurrent.toString(),
+        toLat: lat.toString(),
+        toLong: lng.toString());
+
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -548,6 +508,10 @@ class _OrderNowState extends State<OrderNow> {
                                             fromLon: widget.fromLon,
                                             sourceAddress: widget.sourceAddress,
                                             laterOrder: widget.laterOrder,
+                                            destinationAddress:
+                                                widget.destAddress,
+                                            toLat: widget.toLat,
+                                            toLon: widget.toLon,
                                           ),
                                         ));
                                   },
